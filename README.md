@@ -37,4 +37,6 @@ pip install . --user
 pip install -e . --user
 ```
 
+## Resources
+For more details, please refer to [GoBigger Doc](https://opendilab.github.io/GoBigger/).
 
