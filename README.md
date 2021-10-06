@@ -4,7 +4,7 @@
 
 > GoBigger allows users to interact with the multi-agent environment easily. Through the given interface, users can get observations by actions created by their policy. Users can also customize their game environments by changing the args in the config.
 
-<div align=center><img width = '600' height ='300' src ="https://github.com/opendilab/GoBigger/blob/main/images/overview.gif"/></div>
+<div align=center><img width = '640' height ='256' src ="https://github.com/opendilab/GoBigger/blob/main/images/overview.gif"/></div>
 
 ## Installation
 
