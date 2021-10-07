@@ -23,7 +23,7 @@ Python version: 3.6.8
 First get and download the official repository with the following command line.
 
 ```
-git clone git@github.com:opendilab/GoBigger.git
+git clone https://github.com/opendilab/GoBigger.git
 ```
 
 You can install from source:
