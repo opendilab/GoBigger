@@ -102,7 +102,7 @@ python -m gobigger.bin.play --player-num 1 --vision-type partial
 
 Your vision depends on all your balls’ positions and their size.
 
-<div align=center><img width = '640' height ='640' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.jpg"/></div>
+<div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.jpg"/></div>
 
 ## Resources
 
