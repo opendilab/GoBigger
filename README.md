@@ -89,7 +89,7 @@ If you want to play real-time game on your PC with your friends, you can launch 
 python -m gobigger.bin.play --player-num 2 --vision-type full
 ```
 
-In this mode, player1 use `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows the balls move, [ means eject spore on your moving direction, ] means split your balls, and `\` means stop all your balls and gather them together. player2 use `W` & `S` & `A` & `D` allows the balls move, `1` means eject spore on your moving direction, `2` means split your balls, and `3` means stop all your balls and gather them together.
+In this mode, player1 use `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows the balls move, `[` means eject spore on your moving direction, `]` means split your balls, and `\` means stop all your balls and gather them together. player2 use `W` & `S` & `A` & `D` allows the balls move, `1` means eject spore on your moving direction, `2` means split your balls, and `3` means stop all your balls and gather them together.
 
 <div align=center><img width = '640' height ='640' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.jpg"/></div>
 
