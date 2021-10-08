@@ -2,9 +2,67 @@
 
 GoBigger is a **multi-agent** environment not only for reinforce learning. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
+<div align=center><img width = '640' height ='200' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
+
+## Introduction
+
 GoBigger allows users to interact with the multi-agent environment easily. Through the given interface, users can get observations by actions created by their policy. Users can also customize their game environments by changing the args in the config.
 
-<div align=center><img width = '640' height ='200' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
+### Basic Rules
+
+GoBigger provides a few concepts in the environment as following:
+
+* Match: In each match, GoBigger will allow serveral agents (4 by default) to control teams by default. There are also many different in a match, such as food balls, thorns balls, spore balls and player balls.
+* Agent: Each AI agent control a team including serveral players (3 by default). Each agent should gain more size to get a higher rank when this match ends.
+* Player: Each player starts with one ball. In order to improve the operability of the game, GoBigger provides serveral operation for a player ball, including `split`, `eject` and `stop`.
+* Ball: GoBigger provides 4 kinds of ball in a match.
+    - Food Ball: Food balls are the neutral resources in the game. If a player ball eat a food ball, the food ball’s size will be parsed to the player ball.
+    - Thorn Ball: If a player-ball eat a thorns ball, the thorns ball’s size will be parsed to the player ball. But at the same time, the player ball will explode and will be splited into several pieces (10 by default).
+    - Spore Ball: Spore-balls are ejected by the player-balls. 
+    - Player Ball: Player balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ center. 
+
+### Observation Space
+
+GoBigger also provide a wealth of observable information, and the observation space can be devided into two part. Here is the brief description of the observation space, please refer to [observation-space](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space) for more details.
+
+#### Global State
+
+Global state provides information related to the whole match, such as the map size, the total time and the last time of the match, and the leaderboard within team name and score.
+
+#### Player State
+
+Player state should be like:
+
+```
+{
+    player_name: {
+        'feature_layers': list(numpy.ndarray), # features of player
+        'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
+        'overlap': {
+            'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'thorns': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'spore': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of food is not sure
+        }, # all balls' info in vision
+        'team_name': team_name, # the team which this player belongs to 
+    }
+}
+```
+
+We define that `feature_layers` in `player_state` represents the feature of this player. `feature_layers` has several channels, and each channel gives the info of food balls, or spore balls, or thorns balls, or player balls in its vision. For example, in a match we have 4 teams and 3 players for each team, then we get `feature_layers` as a list, and the length of this list should be 15, including 12 player channel, 1 food ball channel , 1 spore ball channel and 1 thorns ball channel.
+
+Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render.
+
+### Action Space
+
+In fact, a ball can only move, eject, split, and stop in a match, thus the action space simply includes:
+
+* Moving direction for the player balls.
+* Split: Players can split a ball into two when it reaches a sufficient size.
+* Eject: Player balls can eject spore on your moving direction.
+* Stop: Stop player balls and gather together together.
+
+More details in [action-space](https://opendilab.github.io/GoBigger/tutorial/space.html#action-space)
 
 ## Getting Started
 
