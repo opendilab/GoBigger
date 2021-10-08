@@ -44,6 +44,7 @@ pip install -e . --user
 After installation, you can launch your game environment easily according the following code:
 
 ```python
+import random
 from gobigger.server import Server
 from gobigger.render import EnvRender
 
