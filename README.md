@@ -12,14 +12,14 @@ GoBigger allows users to interact with the multi-agent environment easily within
 
 In order to understand the rules in the environment, GoBigger provides a few concepts in the environment as following:
 
-* Match: In each match, GoBigger will allow serveral agents (4 by default) to control teams by default. There are also many different in a match, such as food balls, thorns balls, spore balls and player balls.
-* Agent: Each AI agent control a team including serveral players (3 by default). Each agent should gain more size to get a higher rank when this match ends.
-* Player: Each player starts with one ball. In order to improve the operability of the game, GoBigger provides serveral operation for a player ball, including `split`, `eject` and `stop`.
-* Ball: GoBigger provides 4 kinds of balls in a match.
-    - Food Ball: Food balls are the neutral resources in the game. If a player ball eat a food ball, the food ball’s size will be parsed to the player ball.
-    - Thorn Ball: If a player-ball eat a thorns ball, the thorns ball’s size will be parsed to the player ball. But at the same time, the player ball will explode and will be splited into several pieces (10 by default).
-    - Spore Ball: Spore-balls are ejected by the player-balls. 
-    - Player Ball: Player balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ center. 
+* `Match`: In each match, GoBigger will allow serveral agents (4 by default) to control teams by default. There are also many different in a match, such as food balls, thorns balls, spore balls and player balls.
+* `Agent`: Each AI agent control a team including serveral players (3 by default). Each agent should gain more size to get a higher rank when this match ends.
+* `Player`: Each player starts with one ball. In order to improve the operability of the game, GoBigger provides serveral operation for a player ball, including `split`, `eject` and `stop`.
+* `Ball`: GoBigger provides 4 kinds of balls in a match.
+    - `Food Ball`: Food balls are the neutral resources in the game. If a player ball eat a food ball, the food ball’s size will be parsed to the player ball.
+    - `Thorn Ball`: If a player ball eat a thorns ball, the thorns ball’s size will be parsed to the player ball. But at the same time, the player ball will explode and will be splited into several pieces (10 by default).
+    - `Spore Ball`: Spore balls are ejected by the player balls. 
+    - `Player Ball`: Player balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ center. 
 
 For more details, please refer to [what-is-gobigger](https://opendilab.github.io/GoBigger/tutorial/what_is_gobigger.html#what-is-gobigger).
 
