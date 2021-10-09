@@ -53,7 +53,7 @@ Player state should be like:
 
 We define that `feature_layers` in `player_state` represents the feature of this player. `feature_layers` has several channels, and each channel gives the info of food balls, or spore balls, or thorns balls, or player balls in its vision. For example, in a match we have 4 teams and 3 players for each team, then we get `feature_layers` as a list, and the length of this list should be 15, including 12 player channel, 1 food ball channel , 1 spore ball channel and 1 thorns ball channel.
 
-Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render.
+Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render. More details [here](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space-without-feature-layers).
 
 ### Action Space
 
@@ -64,7 +64,7 @@ In fact, a ball can only move, eject, split, and stop in a match, thus the actio
 * Eject: Player balls can eject spore on your moving direction.
 * Stop: Stop player balls and gather together together.
 
-More details in [action-space](https://opendilab.github.io/GoBigger/tutorial/space.html#action-space)
+More details in [action-space](https://opendilab.github.io/GoBigger/tutorial/space.html#action-space).
 
 ## Getting Started
 
@@ -72,7 +72,7 @@ More details in [action-space](https://opendilab.github.io/GoBigger/tutorial/spa
 
 #### Prerequisites
 
-We test GoBigger within following system version:
+We test GoBigger within the following system:
 
 * Centos 7.6
 * Windows 10
@@ -132,6 +132,7 @@ We also build a simple env following gym.Env. For more details, you can refer to
 GoBigger allow users to play game on their personal computer in real-time. Serveral modes are supported for users to explore this game.
 
 #### Single Player
+
 If you want to play real-time game on your PC on your own, you can launch a game with the following code:
 
 ```bash
@@ -140,10 +141,10 @@ python -m gobigger.bin.play --player-num 1 --vision-type full
 
 In this mode, `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows your balls move, `Q` means eject spore on your moving direction, `W` means split your balls, and `E` means stop all your balls and gather them together.
 
-<div align=center><img width = '640' height ='640' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_single.jpg"/></div>
-
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_single.jpg"/></div>
 
 #### Double Players
+
 If you want to play real-time game on your PC with your friends, you can launch a game with the following code:
 
 ```bash
@@ -152,9 +153,10 @@ python -m gobigger.bin.play --player-num 2 --vision-type full
 
 In this mode, player1 use `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows the balls move, `[` means eject spore on your moving direction, `]` means split your balls, and `\` means stop all your balls and gather them together. player2 use `W` & `S` & `A` & `D` allows the balls move, `1` means eject spore on your moving direction, `2` means split your balls, and `3` means stop all your balls and gather them together.
 
-<div align=center><img width = '640' height ='640' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.jpg"/></div>
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.jpg"/></div>
 
 #### Single Players with partial vision
+
 If you want to play real-time game on your PC with only partial vision, you can launch a game with the following code:
 
 ```bash
@@ -168,4 +170,5 @@ Your vision depends on all your balls’ positions and their size.
 ## Resources
 
 For more details, please refer to [GoBigger Doc](https://opendilab.github.io/GoBigger/).
+
 
