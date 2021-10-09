@@ -141,7 +141,7 @@ python -m gobigger.bin.play --player-num 1 --vision-type full
 
 In this mode, `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows your balls move, `Q` means eject spore on your moving direction, `W` means split your balls, and `E` means stop all your balls and gather them together.
 
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_single.jpg"/></div>
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_single.gif"/></div>
 
 #### Double Players
 
@@ -153,7 +153,7 @@ python -m gobigger.bin.play --player-num 2 --vision-type full
 
 In this mode, player1 use `up arrow` & `down arrow` & `left arrow` & `rigth arrow` allows the balls move, `[` means eject spore on your moving direction, `]` means split your balls, and `\` means stop all your balls and gather them together. player2 use `W` & `S` & `A` & `D` allows the balls move, `1` means eject spore on your moving direction, `2` means split your balls, and `3` means stop all your balls and gather them together.
 
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.jpg"/></div>
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.gif"/></div>
 
 #### Single Players with partial vision
 
@@ -165,10 +165,14 @@ python -m gobigger.bin.play --player-num 1 --vision-type partial
 
 Your vision depends on all your balls’ positions and their size.
 
-<div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.jpg"/></div>
+<div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
 
 ## Resources
 
 For more details, please refer to [GoBigger Doc](https://opendilab.github.io/GoBigger/).
+
+## License
+
+GoBigger released under the Apache 2.0 license.
 
 
