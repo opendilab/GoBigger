@@ -1,19 +1,19 @@
 # Go-Bigger: Multi-Agent Decision Intelligence Environment
 
-GoBigger is a **multi-agent** environment not only for reinforce learning. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
+GoBigger is not only a multiplayer team competitive game, but also a **multi-agent** decision intelligence environment. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
 <div align=center><img width = '640' height ='200' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
 
 ## Introduction
 
-GoBigger allows users to interact with the multi-agent environment easily within the basic rules. Through the given interface, users can get observations by actions created by their policy. 
+GoBigger allows users to interact with the multi-agent environment easily within the basic rules. Through the given interface, users can simply get the observation in game and apply their operations for their agents.
 
 ### Basic Rules
 
-In order to understand the rules in the environment, GoBigger provides a few concepts in the environment as following:
+In order to understand the rules in the game, GoBigger provides a few concepts as following:
 
-* `Match`: In each match, GoBigger will allow serveral agents (4 by default) to control teams by default. There are also many different in a match, such as food balls, thorns balls, spore balls and player balls.
-* `Agent`: Each AI agent control a team including serveral players (3 by default). Each agent should gain more size to get a higher rank when this match ends.
+* `Match`: GoBigger will allow serveral agents (4 by default) to join in a match. There are many different units in a match, such as food balls, thorns balls, spore balls and player balls. Each agent should gain more size by eating other balls to get a higher rank when this match ends.
+* `Agent`: Each agent control a team including serveral players (3 by default). Teamwork is important for a agent to play against other agents.
 * `Player`: Each player starts with one ball. In order to improve the operability of the game, GoBigger provides serveral operation for a player ball, including `split`, `eject` and `stop`.
 * `Ball`: GoBigger provides 4 kinds of balls in a match.
     - `Food Ball`: Food balls are the neutral resources in the game. If a player ball eat a food ball, the food ball’s size will be parsed to the player ball.
@@ -25,7 +25,7 @@ For more details, please refer to [what-is-gobigger](https://opendilab.github.io
 
 ### Observation Space
 
-GoBigger also provide a wealth of observable information, and the observation space can be devided into two part. Here is the brief description of the observation space, please refer to [observation-space](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space) for more details.
+GoBigger also provide a wealth of observable information, and the observation space can be devided into two part. Here is the brief description of the observation space. For more details, please refer to [observation-space](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space).
 
 #### Global State
 
@@ -166,6 +166,16 @@ python -m gobigger.bin.play --player-num 1 --vision-type partial
 Your vision depends on all your balls’ positions and their size.
 
 <div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
+
+## High-level Operations in GoBigger
+
+<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
+
+<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/split_eat_all.gif"/></div>
+
+<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/fast_eat.gif"/></div>
+
+<div align=center><img width = '422' height ='284' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eject_merger.gif"/></div>
 
 ## Resources
 
