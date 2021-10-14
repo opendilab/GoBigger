@@ -169,12 +169,16 @@ Your vision depends on all your balls’ positions and their size.
 
 ## High-level Operations in GoBigger
 
+#### Eject towards the center
 <div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
 
+#### Surround others by splitting
 <div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/split_eat_all.gif"/></div>
 
+#### Eat food balls quickly
 <div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/fast_eat.gif"/></div>
 
+#### Concentrate size
 <div align=center><img width = '422' height ='284' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eject_merger.gif"/></div>
 
 ## Resources
