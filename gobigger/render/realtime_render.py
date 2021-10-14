@@ -5,10 +5,11 @@ from pygame.math import Vector2
 import pygame
 import random
 import cv2
+import math
 
 from .base_render import BaseRender
 from .env_render import EnvRender
-from gobigger.utils import Colors, GRAY, BLACK, RED, YELLOW, GREEN
+from gobigger.utils import Colors, GRAY, BLACK, RED, YELLOW, GREEN, to_aliased_circle
 
 
 class RealtimeRender(EnvRender):
@@ -33,7 +34,8 @@ class RealtimeRender(EnvRender):
         for ball in server.food_manager.get_balls():
             pygame.draw.circle(self.screen, BLACK, ball.position, ball.radius)
         for ball in server.thorns_manager.get_balls():
-            pygame.draw.circle(self.screen, GREEN, ball.position, ball.radius)
+            # pygame.draw.circle(self.screen, GREEN, ball.position, ball.radius)
+            pygame.draw.polygon(self.screen, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in server.spore_manager.get_balls():
             pygame.draw.circle(self.screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
@@ -101,12 +103,14 @@ class RealtimePartialRender(EnvRender):
         for ball in server.food_manager.get_balls():
             pygame.draw.circle(screen, BLACK, ball.position, ball.radius)
         for ball in server.thorns_manager.get_balls():
-            pygame.draw.circle(screen, GREEN, ball.position, ball.radius)
+            # pygame.draw.circle(screen, GREEN, ball.position, ball.radius)
+            pygame.draw.polygon(screen, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in server.spore_manager.get_balls():
             pygame.draw.circle(screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
             for ball in player.get_balls():
                 pygame.draw.circle(screen, Colors[int(ball.owner)], ball.position, ball.radius)
+
         screen_data = pygame.surfarray.array3d(screen)
 
         screen_data = self.get_clip_screen(screen_data, rectangle)

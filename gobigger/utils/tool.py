@@ -14,6 +14,18 @@ def get_probability(src,arr):
 def norm(arr):
     return [i/sum(arr) for i in arr]
 
+def to_aliased_circle(position, radius, cut_num=16, decrease=3):
+    point_list = []
+    radius_decrease = radius - decrease
+    assert radius_decrease > 0
+    piece_angle = math.pi / (cut_num)
+    for i in range(cut_num*2):
+        angle = piece_angle * i
+        if i % 2 == 0:
+            point_list.append([position.x + radius * math.cos(angle), position.y + radius * math.sin(angle)])
+        else:
+            point_list.append([position.x + radius_decrease * math.cos(angle), position.y + radius_decrease * math.sin(angle)])
+    return point_list
 
 if __name__ == '__main__':
 

@@ -11,7 +11,8 @@ import time
 from .base_render import BaseRender
 from gobigger.utils import Colors, BLACK, YELLOW, GREEN
 from gobigger.utils import PLAYER_COLORS, FOOD_COLOR, THORNS_COLOR, SPORE_COLOR
-from gobigger.utils import precision_algorithm, Border
+from gobigger.utils import precision_algorithm, Border, to_aliased_circle
+
 
 class EnvRender(BaseRender):
     '''
@@ -27,13 +28,14 @@ class EnvRender(BaseRender):
         self.vision_y_min = vision_y_min
         self.use_spatial = use_spatial
 
-    def fill_all(self, screen, food_balls, thorns_balls, spore_balls, players, ):
+    def fill_all(self, screen, food_balls, thorns_balls, spore_balls, players):
         font = pygame.font.SysFont('Menlo', 12, True)
         # render all balls
         for ball in food_balls:
             pygame.draw.circle(screen, FOOD_COLOR, ball.position, ball.radius)
         for ball in thorns_balls:
-            pygame.draw.circle(screen, THORNS_COLOR, ball.position, ball.radius)
+            # pygame.draw.circle(screen, THORNS_COLOR, ball.position, ball.radius)
+            pygame.draw.polygon(screen, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
             pygame.draw.circle(screen, SPORE_COLOR, ball.position, ball.radius)
         for index, player in enumerate(players):

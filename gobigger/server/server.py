@@ -351,19 +351,20 @@ class Server:
         return global_state, screen_data_players
 
     def save_mp4(self, save_path=''):
-        video_id = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        # self.video_id = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        self.video_id = str(uuid.uuid1())
         fps = self.action_tick_per_second
         # save all
-        video_file = os.path.join(save_path, '{}-all.mp4'.format(video_id))
-        out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'MP4V'), fps, self.screens_all[0].shape[:2])
+        video_file = os.path.join(save_path, '{}-all.mp4'.format(self.video_id))
+        out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, self.screens_all[0].shape[:2])
         for screen in self.screens_all:
             out.write(screen)
         out.release()
         cv2.destroyAllWindows()
         # save partial
         for player_name, screens in self.screens_partial.items():
-            video_file = os.path.join(save_path, '{}-{:02d}.mp4'.format(video_id, int(player_name)))
-            out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'MP4V'), fps, (300,300))
+            video_file = os.path.join(save_path, '{}-{:02d}.mp4'.format(self.video_id, int(player_name)))
+            out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (300,300))
             for screen in screens:
                 out.write(screen)
             out.release()
