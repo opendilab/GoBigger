@@ -34,8 +34,7 @@ class EnvRender(BaseRender):
         for ball in food_balls:
             pygame.draw.circle(screen, FOOD_COLOR, ball.position, ball.radius)
         for ball in thorns_balls:
-            # pygame.draw.circle(screen, THORNS_COLOR, ball.position, ball.radius)
-            pygame.draw.polygon(screen, GREEN, to_aliased_circle(ball.position, ball.radius))
+            pygame.draw.polygon(screen, THORNS_COLOR, to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
             pygame.draw.circle(screen, SPORE_COLOR, ball.position, ball.radius)
         for index, player in enumerate(players):
@@ -134,7 +133,7 @@ class EnvRender(BaseRender):
             }
         return screen_data_all, screen_data_players
 
-    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300):
+    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3):
         screen_all = pygame.Surface((self.width, self.height))
         screen_all.fill(self.background)
         font = pygame.font.SysFont('Menlo', 12, True)
@@ -142,12 +141,12 @@ class EnvRender(BaseRender):
         for ball in food_balls:
             pygame.draw.circle(screen_all, BLACK, ball.position, ball.radius)
         for ball in thorns_balls:
-            pygame.draw.circle(screen_all, GREEN, ball.position, ball.radius)
+            pygame.draw.polygon(screen_all, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
             pygame.draw.circle(screen_all, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(players):
             for ball in player.get_balls():
-                pygame.draw.circle(screen_all, Colors[int(ball.owner)], ball.position, ball.radius)
+                pygame.draw.circle(screen_all, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
         screen_data_all = pygame.surfarray.array3d(screen_all)
         screen_data_players = {}
         for player in players:

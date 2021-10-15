@@ -21,7 +21,7 @@ class RealtimeRender(EnvRender):
         super(RealtimeRender, self).__init__(width, height, background=background, padding=padding, 
                                              cell_size=cell_size, only_render=only_render)
 
-    def fill(self, server, direction=None, fps=0, last_time=0):
+    def fill(self, server, direction=None, fps=0, last_time=0, player_num_per_team=3):
         self.screen.fill(self.background)
 
         for x in range(0, self.width, self.cell_size):
@@ -40,7 +40,7 @@ class RealtimeRender(EnvRender):
             pygame.draw.circle(self.screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
             for ball in player.get_balls():
-                pygame.draw.circle(self.screen, Colors[int(ball.owner)], ball.position, ball.radius)
+                pygame.draw.circle(self.screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
 
         # for debug
         font= pygame.font.SysFont('Menlo', 15, True)
@@ -85,7 +85,7 @@ class RealtimePartialRender(EnvRender):
                                                     only_render=only_render)
         self.player_name = player_name
 
-    def fill(self, server, direction=None, fps=0, last_time=0):
+    def fill(self, server, direction=None, fps=0, last_time=0, player_num_per_team=3):
         if self.player_name is None:
             player = server.player_manager.get_players()[0]
         else:
@@ -109,7 +109,7 @@ class RealtimePartialRender(EnvRender):
             pygame.draw.circle(screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
             for ball in player.get_balls():
-                pygame.draw.circle(screen, Colors[int(ball.owner)], ball.position, ball.radius)
+                pygame.draw.circle(screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
 
         screen_data = pygame.surfarray.array3d(screen)
 
