@@ -136,7 +136,6 @@ class EnvRender(BaseRender):
     def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3):
         screen_all = pygame.Surface((self.width, self.height))
         screen_all.fill(self.background)
-        font = pygame.font.SysFont('Menlo', 12, True)
         # render all balls
         for ball in food_balls:
             pygame.draw.circle(screen_all, BLACK, ball.position, ball.radius)
@@ -144,9 +143,14 @@ class EnvRender(BaseRender):
             pygame.draw.polygon(screen_all, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
             pygame.draw.circle(screen_all, YELLOW, ball.position, ball.radius)
+        
         for index, player in enumerate(players):
             for ball in player.get_balls():
-                pygame.draw.circle(screen_all, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
+                # pygame.draw.circle(screen_all, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
+                pygame.draw.circle(screen_all, Colors[int(ball.team_name)][0], ball.position, ball.radius)
+                font = pygame.font.SysFont('Menlo', max(int(ball.radius/1.5+2), 6), True)
+                screen_all.blit(font.render(ball.owner, int(ball.radius/1.5+2), (255,255,255)), ball.position-Vector2(int(ball.radius/1.5+2), int(ball.radius/1.5+2))/2)
+                
         screen_data_all = pygame.surfarray.array3d(screen_all)
         screen_data_players = {}
         for player in players:

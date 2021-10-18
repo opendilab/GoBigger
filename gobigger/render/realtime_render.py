@@ -34,14 +34,16 @@ class RealtimeRender(EnvRender):
         for ball in server.food_manager.get_balls():
             pygame.draw.circle(self.screen, BLACK, ball.position, ball.radius)
         for ball in server.thorns_manager.get_balls():
-            # pygame.draw.circle(self.screen, GREEN, ball.position, ball.radius)
             pygame.draw.polygon(self.screen, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in server.spore_manager.get_balls():
             pygame.draw.circle(self.screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
             for ball in player.get_balls():
-                pygame.draw.circle(self.screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
-
+                # pygame.draw.circle(self.screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
+                pygame.draw.circle(self.screen, Colors[int(ball.team_name)][0], ball.position, ball.radius)
+                font = pygame.font.SysFont('Menlo', max(int(ball.radius/1.5+2), 6), True)
+                self.screen.blit(font.render(ball.owner, int(ball.radius/1.5+2), (255,255,255)), ball.position-Vector2(int(ball.radius/1.5+2), int(ball.radius/1.5+2))/2)
+                
         # for debug
         font= pygame.font.SysFont('Menlo', 15, True)
 
@@ -103,14 +105,16 @@ class RealtimePartialRender(EnvRender):
         for ball in server.food_manager.get_balls():
             pygame.draw.circle(screen, BLACK, ball.position, ball.radius)
         for ball in server.thorns_manager.get_balls():
-            # pygame.draw.circle(screen, GREEN, ball.position, ball.radius)
             pygame.draw.polygon(screen, GREEN, to_aliased_circle(ball.position, ball.radius))
         for ball in server.spore_manager.get_balls():
             pygame.draw.circle(screen, YELLOW, ball.position, ball.radius)
         for index, player in enumerate(server.player_manager.get_players()):
             for ball in player.get_balls():
-                pygame.draw.circle(screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
-
+                # pygame.draw.circle(screen, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
+                pygame.draw.circle(screen, Colors[int(ball.team_name)][0], ball.position, ball.radius)
+                font = pygame.font.SysFont('Menlo', max(int(ball.radius/1.5+2), 6), True)
+                screen.blit(font.render(ball.owner, int(ball.radius/1.5+2), (255,255,255)), ball.position-Vector2(int(ball.radius/1.5+2), int(ball.radius/1.5+2))/2)
+                
         screen_data = pygame.surfarray.array3d(screen)
 
         screen_data = self.get_clip_screen(screen_data, rectangle)
