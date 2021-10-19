@@ -183,7 +183,7 @@ class EnvRender(BaseRender):
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
             screen_data_player = self.get_clip_screen(screen_data_all, rectangle=rectangle)
-            screen_data_player = np.resize(np.rot90(np.fliplr(cv2.cvtColor(screen_data_player, cv2.COLOR_RGB2BGR))), (partial_size, partial_size, 3))
+            screen_data_player = cv2.resize(np.rot90(np.fliplr(cv2.cvtColor(screen_data_player, cv2.COLOR_RGB2BGR))), (partial_size, partial_size))
             screen_data_players[player.name] = screen_data_player
         screen_data_all = np.rot90(np.fliplr(cv2.cvtColor(screen_data_all, cv2.COLOR_RGB2BGR)))
         return screen_data_all, screen_data_players
