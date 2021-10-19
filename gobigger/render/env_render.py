@@ -133,24 +133,51 @@ class EnvRender(BaseRender):
             }
         return screen_data_all, screen_data_players
 
-    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3):
-        screen_all = pygame.Surface((self.width, self.height))
-        screen_all.fill(self.background)
+    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3, 
+                              bar_width=150, team_name_size=None):
+        screen_all = pygame.Surface((self.width+bar_width, self.height))
+        screen_all.fill((0, 43, 54))
+        pygame.draw.line(screen_all, BLACK, (self.width+1, 0), (self.width+1, self.height), width=3)
+
         # render all balls
         for ball in food_balls:
-            pygame.draw.circle(screen_all, BLACK, ball.position, ball.radius)
+            pygame.draw.circle(screen_all, (253, 246, 227), ball.position, ball.radius)
         for ball in thorns_balls:
-            pygame.draw.polygon(screen_all, GREEN, to_aliased_circle(ball.position, ball.radius))
+            pygame.draw.polygon(screen_all, (107, 194, 12), to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
             pygame.draw.circle(screen_all, YELLOW, ball.position, ball.radius)
         
+        player_name_size = {}
         for index, player in enumerate(players):
             for ball in player.get_balls():
                 # pygame.draw.circle(screen_all, Colors[int(ball.team_name)][int(ball.owner)%player_num_per_team], ball.position, ball.radius)
                 pygame.draw.circle(screen_all, Colors[int(ball.team_name)][0], ball.position, ball.radius)
-                font = pygame.font.SysFont('Menlo', max(int(ball.radius/1.5+2), 6), True)
-                screen_all.blit(font.render(ball.owner, int(ball.radius/1.5+2), (255,255,255)), ball.position-Vector2(int(ball.radius/1.5+2), int(ball.radius/1.5+2))/2)
-                
+                font_size = int(ball.radius/1.6)
+                font = pygame.font.SysFont('arial', max(font_size, 4), True)
+                # screen_all.blit(font.render('Team', font_size, (0,0,0)), ball.position-Vector2(font_size*1.2, font_size/1))
+                # screen_all.blit(font.render('{:02d}'.format(int(ball.owner)), font_size, (0,0,0)), ball.position-Vector2(font_size, 0))
+                # screen_all.blit(font.render('{:02d}'.format(int(ball.owner)), True, (0,0,0)), ball.position-Vector2(font_size, font_size/2))
+                txt = font.render('{}'.format(chr(int(ball.owner)%player_num_per_team+65)), True, (255,255,255))
+                txt_rect = txt.get_rect(center=(ball.position.x, ball.position.y))
+                screen_all.blit(txt, txt_rect)
+            player_name_size[player.name] = player.get_total_size()
+
+        team_name_size = sorted(team_name_size.items(), key=lambda d: d[1], reverse=True)
+        start = 10
+        for index, (team_name, size) in enumerate(team_name_size):
+            start += 20
+            font = pygame.font.SysFont('arial', 16, True)
+            fps_txt = font.render('{} : {:.3f}'.format(team_name, size), True, Colors[int(team_name)][0])
+            screen_all.blit(fps_txt, (self.width+20, start))
+            start += 20
+            font = pygame.font.SysFont('arial', 14, True)
+            for j in range(player_num_per_team):
+                player_name = str(int(team_name)*player_num_per_team+j)
+                player_size = player_name_size[player_name]
+                fps_txt = font.render('  {} : {:.3f}'.format(chr(int(player_name)%player_num_per_team+65), player_size), True, Colors[int(team_name)][0])
+                screen_all.blit(fps_txt, (self.width+20, start))
+                start += 20
+
         screen_data_all = pygame.surfarray.array3d(screen_all)
         screen_data_players = {}
         for player in players:

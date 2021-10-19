@@ -319,7 +319,9 @@ class Server:
                             food_balls=self.food_manager.get_balls(),
                             thorns_balls=self.thorns_manager.get_balls(),
                             spore_balls=self.spore_manager.get_balls(),
-                            players=self.player_manager.get_players())
+                            players=self.player_manager.get_players(),
+                            player_num_per_team=self.player_num_per_team,
+                            team_name_size=self.player_manager.get_teams_size())
                         self.screens_all.append(screen_data_all)
                         for player_name, screen_data_player in screen_data_players.items():
                             if player_name not in self.screens_partial:
@@ -356,7 +358,7 @@ class Server:
         fps = self.action_tick_per_second
         # save all
         video_file = os.path.join(save_path, '{}-all.mp4'.format(self.video_id))
-        out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, self.screens_all[0].shape[:2])
+        out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (self.screens_all[0].shape[1], self.screens_all[0].shape[0]))
         for screen in self.screens_all:
             out.write(screen)
         out.release()
