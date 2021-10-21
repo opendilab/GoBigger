@@ -94,6 +94,9 @@ class CloneBall(BaseBall):
         self.stop_flag = stop_flag
         self.last_given_acc = Vector2(0, 0) if last_given_acc is None else last_given_acc
 
+    def cal_vel_max(self, radius):
+        return 320/(radius+12)-2
+
     def move(self, given_acc=None, given_acc_center=None, duration=0.05):
         """
         Overview:
@@ -126,7 +129,7 @@ class CloneBall(BaseBall):
                 else: # Multiple balls
                     self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
                     acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-                    self.vel_max = 200/(self.radius+10) - 1
+                    self.vel_max = self.cal_vel_max(self.radius)
                     self.vel = format_vector(self.vel * 0.95 + (self.acc + acc_tmp) * duration, self.vel_max) # vel is multiplied by a number to prevent circling phenomenon
                     self.position = self.position + self.vel * duration
         else: # normal status
@@ -135,7 +138,7 @@ class CloneBall(BaseBall):
                 given_acc_center = Vector2(0, 0)
             self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
             acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-            self.vel_max = 200/(self.radius+10) - 1
+            self.vel_max = self.cal_vel_max(self.radius)
             self.vel = format_vector(self.vel + (self.acc + acc_tmp) * duration, self.vel_max)
             if self.cooling_last:
                 self.vel_last += self.acc_last * duration
