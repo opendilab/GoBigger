@@ -2,7 +2,7 @@
 
 GoBigger is not only a multiplayer team competitive game, but also a **multi-agent** decision intelligence environment. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
-<div align=center><img width = '640' height ='200' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
+<div align=center><img width = '640' height ='216' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
 
 ## Introduction
 
@@ -170,16 +170,16 @@ Your vision depends on all your balls’ positions and their size.
 ## High-level Operations in GoBigger
 
 #### Eject towards the center
-<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
 
 #### Surround others by splitting
-<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/split_eat_all.gif"/></div>
+<div align=center><img width = '310' height ='144' src ="https://github.com/opendilab/GoBigger/blob/main/assets/split_eat_all.gif"/></div>
 
 #### Eat food balls quickly
-<div align=center><img width = '320' height ='205' src ="https://github.com/opendilab/GoBigger/blob/main/assets/fast_eat.gif"/></div>
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/fast_eat.gif"/></div>
 
 #### Concentrate size
-<div align=center><img width = '422' height ='284' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eject_merger.gif"/></div>
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eject_merger.gif"/></div>
 
 ## Resources
 

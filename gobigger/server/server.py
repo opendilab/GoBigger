@@ -366,7 +366,7 @@ class Server:
         # save partial
         for player_name, screens in self.screens_partial.items():
             video_file = os.path.join(save_path, '{}-{:02d}.mp4'.format(self.video_id, int(player_name)))
-            out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (300,300))
+            out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, screens[0].shape[:2])
             for screen in screens:
                 out.write(screen)
             out.release()
