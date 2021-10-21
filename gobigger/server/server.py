@@ -105,7 +105,7 @@ class Server:
                         acc_max=30, 
                         vel_max=20,
                         radius_min=3, 
-                        radius_max=100, 
+                        radius_max=300, 
                         radius_init=3, 
                         part_num_max=16, 
                         on_thorns_part_num=10, 
