@@ -22,14 +22,40 @@ class PlayerManager(BaseManager):
         self.spore_manager_settings = spore_manager_settings
         self.spore_settings = self.spore_manager_settings.ball_settings
 
-    def init_balls(self):
-        for i in range(self.team_num):
-            team_name = str(i)
-            for j in range(self.player_num_per_team):
-                player_name = str(i * self.player_num_per_team + j)
-                player = HumanPlayer(cfg=self.cfg.ball_settings, team_name=team_name, name=player_name, border=self.border, spore_settings=self.spore_settings)
-                player.respawn(position=self.border.sample())
-                self.players[player_name] = player
+    def init_balls(self, custom_init=None):
+        if custom_init is None:
+            for i in range(self.team_num):
+                team_name = str(i)
+                for j in range(self.player_num_per_team):
+                    player_name = str(i * self.player_num_per_team + j)
+                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_name=team_name, name=player_name, border=self.border, spore_settings=self.spore_settings)
+                    player.respawn(position=self.border.sample())
+                    self.players[player_name] = player
+        else:
+            init_dict = {}
+            for i in range(self.team_num):
+                team_name = str(i)
+                init_dict[team_name] = {}
+                for j in range(self.player_num_per_team):
+                    player_name = str(i * self.player_num_per_team + j)
+                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_name=team_name, name=player_name, border=self.border, spore_settings=self.spore_settings)
+                    self.players[player_name] = player
+                    init_dict[team_name][player_name] = False
+            for ball_cfg in custom_init:
+                position = Vector2(*ball_cfg['position'])
+                radius = ball_cfg['radius']
+                player_name = ball_cfg['player']
+                team_name = ball_cfg['team']
+                self.players[player_name].add_balls(CloneBall(
+                            team_name=team_name, name=uuid.uuid1(), position=position, border=self.border, 
+                            size=radius**2, vel=Vector2(0,0), acc=Vector2(0,0),
+                            vel_last=Vector2(0,0), acc_last=Vector2(0,0), last_given_acc=Vector2(0,0),
+                            stop_flag=True, owner=player_name, spore_settings=self.spore_settings))
+                init_dict[team_name][player_name] = True
+            for team_name, team in init_dict.items():
+                for player_name, player_init_flag in team.items():
+                    if not player_init_flag:
+                        self.players[player_name].respawn(position=self.border.sample())
             
     def get_balls(self):
         balls = []

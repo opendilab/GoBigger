@@ -86,7 +86,13 @@ def demo_bot():
                     spore_radius_init=20, 
                 )
             )
-        )
+        ),
+        custom_init=dict(
+            food=[],
+            thorns=[],
+            spore=[],
+            clone=[],
+        ),
     ))
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
