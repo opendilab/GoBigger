@@ -36,6 +36,20 @@ class SporeManager(BaseManager):
             balls.remove()
             del self.balls[balls.name]
 
+    def spawn_ball(self, position=None, size=None):
+        if position is None:
+            position = self.border.sample()
+        if size is None:
+            size = random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
+        name = uuid.uuid1()
+        return SporeBall(name=name, position=position, border=self.border, direction=Vector2(1,0), vel_init=0)
+    
+    def init_balls(self, custom_init=None):
+        if custom_init is not None:
+            for ball_cfg in custom_init:
+                ball = self.spawn_ball(position=Vector2(*ball_cfg['position']), size=ball_cfg['radius']**2)
+                self.balls[ball.name] = ball
+
     def step(self, duration):
         return
 

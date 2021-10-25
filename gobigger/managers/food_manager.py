@@ -43,16 +43,23 @@ class FoodManager(BaseManager):
             balls.remove()
             del self.balls[balls.name]
 
-    def spawn_ball(self):
-        position = self.border.sample()
-        size = random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
+    def spawn_ball(self, position=None, size=None):
+        if position is None:
+            position = self.border.sample()
+        if size is None:
+            size = random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
         name = uuid.uuid1()
         return FoodBall(name=name, position=position, border=self.border, size=size, **self.ball_settings)
 
-    def init_balls(self):
-        for _ in range(self.cfg.num_init):
-            ball = self.spawn_ball()
-            self.balls[ball.name] = ball
+    def init_balls(self, custom_init=None):
+        if custom_init is None:
+            for _ in range(self.cfg.num_init):
+                ball = self.spawn_ball()
+                self.balls[ball.name] = ball
+        else:
+            for ball_cfg in custom_init:
+                ball = self.spawn_ball(position=Vector2(*ball_cfg['position']), size=ball_cfg['radius']**2)
+                self.balls[ball.name] = ball
 
     def step(self, duration):
         self.refresh_time_count += duration

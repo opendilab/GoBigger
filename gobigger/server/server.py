@@ -130,7 +130,13 @@ class Server:
                         spore_radius_init=20, 
                     )
                 )   
-            )
+            ),
+            custom_init=dict(
+                food=[], # only position and radius
+                thorns=[], # only position and radius
+                spore=[], # only position and radius
+                clone=[], # only position and radius and player and team
+            ),
         )
         return EasyDict(cfg)
 
@@ -151,6 +157,8 @@ class Server:
         self.state_tick_duration = 1 / self.state_tick_per_second
         self.action_tick_duration = 1 / self.action_tick_per_second
         self.state_tick_per_action_tick = self.state_tick_per_second // self.action_tick_per_second
+
+        self.custom_init = self.cfg.custom_init
         
         self.border = Border(0, 0, self.map_width, self.map_height)
         self.last_time = 0
@@ -169,11 +177,19 @@ class Server:
 
     def spawn_balls(self):
         '''
-        Initialize all balls
+        Overview:
+            Initialize all balls. If self.custom_init is set, initialize all balls based on it.
         '''
-        self.food_manager.init_balls() # init food
-        self.thorns_manager.init_balls() # init thorns
-        self.player_manager.init_balls() # init player
+        # check custom_init
+        custom_init_food = self.custom_init.food if self.custom_init.food else None
+        custom_init_thorns = self.custom_init.thorns if self.custom_init.thorns else None
+        custom_init_spore = self.custom_init.spore if self.custom_init.spore else None
+        custom_init_clone = self.custom_init.clone if self.custom_init.clone else None
+        # init
+        self.food_manager.init_balls(custom_init=custom_init_food) # init food
+        self.thorns_manager.init_balls(custom_init=custom_init_thorns) # init thorns
+        self.spore_manager.init_balls(custom_init=custom_init_spore) # init spore
+        self.player_manager.init_balls(custom_init=custom_init_clone) # init player
 
     def step_state_tick(self, actions=None):
         moving_balls = [] # Record all balls in motion
