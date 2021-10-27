@@ -31,6 +31,25 @@ class BotAgent(BaseAgent):
 
         my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
 
+        if len(my_clone_balls) >= 9 and my_clone_balls[4]['radius'] > 14:
+            self.actions_queue.put([None, None, 2])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, -1])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            self.actions_queue.put([None, None, 0])
+            action_ret = self.actions_queue.get()
+            return action_ret
+
         if len(others_clone_balls) > 0:
             if my_clone_balls[-1] > others_clone_balls[0]:
                 direction = (others_clone_balls[-1]['position'] - my_clone_balls[-1]['position']).normalize()

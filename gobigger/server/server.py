@@ -201,7 +201,6 @@ class Server:
               If sporulation and splitting operations occur at the same time, sporulation will be given priority
               If move and stop move occur at the same time in action, perform stop move operation
             '''
-
             for player in self.player_manager.get_players():
                 direction_x, direction_y, action_type = actions[player.name]
                 if direction_x is None or direction_y is None:
