@@ -110,7 +110,7 @@ Rules of Game
 
 There are a few rules to be aware of as following.
 
-1. Player-balls have a decay on size to ensure that they will not grow too large. For example, we set ``size_decay=0.00001`` in our default setting, which means that a player-ball's size will drop 0.001% in a state frame. Normaly we will have 40 state frames in a second, that means a player-ball's size will drop 0.04% in a second. If your player-ball's size is too large, you must eat more others to remain your size.
+1. Player-balls have a decay on size to ensure that they will not grow too large. For example, we set ``size_decay=0.00001`` in our default setting, which means that a player-ball's size will drop 0.001% in a state frame. Normaly we will have 20 state frames in a second, that means a player-ball's size will drop 0.02% in a second. If your player-ball's size is too large, you must eat more others to remain your size.
 
 2. If a player's all balls are eat, it will respawn in somewhere randomly and immediately.
 

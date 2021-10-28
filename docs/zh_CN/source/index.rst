@@ -23,4 +23,7 @@ GoBigger 提供了多种接口供用户方便快捷地与游戏环境进行交�
 
    installation/index
 
+.. toctree::
+   :maxdepth: 2
 
+   tutorial/index

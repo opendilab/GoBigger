@@ -1,10 +1,10 @@
-Quick Start
+快速开始
 ##############
 
-Launch a game environment
+通过代码与游戏环境进行交互
 ==================================
 
-After installation, you can launch your game environment easily according the following code:
+在安装完成之后，可以用以下代码快速实现与游戏环境进行交互：
 
 .. code-block:: python
 
@@ -28,19 +28,20 @@ After installation, you can launch your game environment easily according the fo
             break
     server.close()
 
+在上述代码中，首先构建了 ``Server`` 类作为游戏引擎，并构建 ``EnvRender`` 类作为渲染引擎，由二者协调游戏的进行。然后，通过 ``server.step()`` 完成游戏每一步的进行，通过 ``server.obs()`` 获取游戏环境的当前状态。
 
-We also build a simple env following ``gym.Env``. For more details, you can refer to ``gobigger/envs/gobigger_env.py``.
+我们也遵循 ``gym.Env`` 的接口完成了一个简单的 ``Env`` 类，具体可以查看 ``gobigger/envs/gobigger_env.py``。
 
 
-Customize your config
+自定义游戏环境
 ============================
 
-Class ``Server`` use default config to generate a game environment. To customize your environment, you can change the parameters and parse them to ``Server``.
+默认情况下，``Server`` 类使用了默认的配置来启动游戏环境。用户也可以选择通过修改配置 cfg 来自定义游戏环境。以下举了几个简单的例子。
 
-Add more players in a game
+修改游戏中的队伍数量和玩家数量
 ------------------------------------
 
-For example, you may want to allow 6 teams and 2 players per team in your game, and then please add ``team_num`` and ``player_num_per_team`` in config and parse it to ``Server``.
+如果用户想要在游戏中存在 6 个队伍，每个队伍中含有 2 名玩家，那么可以修改 ``team_num`` 和 ``player_num_per_team`` 并将其作为 ``Server`` 的参数。
 
 .. code-block:: python
 
@@ -51,9 +52,10 @@ For example, you may want to allow 6 teams and 2 players per team in your game, 
         player_num_per_team=2
     ))
 
-Extend the game time
+修改游戏时长
 ------------------------------------
-If you want to extend the game time to 20 minutes (1200 seconds), you can use the following codes.
+
+如果用户想要将游戏时长设置为 20 分钟（1200秒），可以修改 ``match_time``。
 
 .. code-block:: python
 
@@ -63,10 +65,10 @@ If you want to extend the game time to 20 minutes (1200 seconds), you can use th
         match_time=1200
     ))
 
-Change the size of the map
+修改游戏地图大小
 ------------------------------------
 
-If you want to have a larger map, you can change ``map_width`` and ``map_height`` in config.
+如果用户想要拥有一个更大的地图，可以修改 ``map_width`` 和 ``map_height``。
 
 .. code-block:: python
 
