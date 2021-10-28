@@ -28,8 +28,8 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'enum_tools.autoenum',
-    'sphinx.ext.githubpages',
+    # 'enum_tools.autoenum',
+    # 'sphinx.ext.githubpages',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
