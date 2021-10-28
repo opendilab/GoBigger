@@ -8,3 +8,4 @@ sphinx
 matplotlib
 tqdm
 trueskill
+git+http://github.com/opendilab/GoBigger@main
