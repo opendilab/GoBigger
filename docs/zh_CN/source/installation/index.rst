@@ -1,28 +1,27 @@
-安装
+Installation
 ##############
 
-前置需求
+Prerequisites
 =================
 
-我们已经在以下系统版本中进行过测试:
+System version:
 
     * Centos 7
     * Windows 10
     * MacOS 
 
-同时，我们推荐使用 Python 版本为 ``3.6.8``。
+Python version: 3.6.8
 
-
-快速安装 GoBigger
+Get and install GoBigger
 =============================
 
-首先，通过 github 下载 GoBigger 源码。
+First get and download the official repository with the following command line.
 
 .. code-block:: bash
 
     git clone https://github.com/opendilab/GoBigger.git
 
-然后，我们从源代码进行安装。
+You can install from source:
 
 .. code-block:: bash
 
