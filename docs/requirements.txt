@@ -1,0 +1,10 @@
+easydict
+gym
+pygame
+pytest
+opencv-python
+numpy
+sphinx
+matplotlib
+tqdm
+trueskill
