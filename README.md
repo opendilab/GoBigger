@@ -3,7 +3,7 @@
 [![Read the Docs](https://img.shields.io/readthedocs/gobigger)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
 [![Read the Docs](https://img.shields.io/readthedocs/gobigger?label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
 [![unit_test](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml)
-[![codecov](https://codecov.io/gh/opendilab/GoBigger/branch/master/graph/badge.svg?token=GwOV3jn0Le)](https://codecov.io/gh/opendilab/GoBigger)
+[![codecov](https://codecov.io/gh/opendilab/GoBigger/branch/main/graph/badge.svg?token=GwOV3jn0Le)](https://codecov.io/gh/opendilab/GoBigger)
 
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
