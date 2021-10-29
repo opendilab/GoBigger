@@ -1,5 +1,8 @@
 # Go-Bigger: Multi-Agent Decision Intelligence Environment
 
+[![Documentation Status](https://readthedocs.org/projects/gobigger/badge/?version=latest)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/gobigger-zh/badge/?version=latest&label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
+
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
 GoBigger is not only a multiplayer team competitive game, but also a **multi-agent** decision intelligence environment. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
