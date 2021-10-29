@@ -1,5 +1,7 @@
 # Go-Bigger: Multi-Agent Decision Intelligence Environment
 
+[![PyPI](https://img.shields.io/pypi/v/gobigger)](https://pypi.org/project/gobigger/)
+[![Anaconda-Server Badge](https://anaconda.org/opendilab/gobigger/badges/version.svg)](https://anaconda.org/opendilab/gobigger)
 [![Read the Docs](https://img.shields.io/readthedocs/gobigger)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
 [![Read the Docs](https://img.shields.io/readthedocs/gobigger?label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
 [![unit_test](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml)

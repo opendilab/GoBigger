@@ -27,7 +27,6 @@ jobs:
       - name: Generate coverage report
         run: |
           pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v
-          python -m coverage debug data
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
