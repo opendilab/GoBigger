@@ -24,7 +24,6 @@ jobs:
           pip install pytest-cov
           python -m pip install .
           pytest ./gobigger --cov=./gobigger --cov-report=xml --cov-report=term-missing --durations=0 -v
-          cat ./coverage.xml | grep TOTAL
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:

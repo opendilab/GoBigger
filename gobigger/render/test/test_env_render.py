@@ -5,9 +5,6 @@ from pygame.math import Vector2
 import pygame
 import random
 
-import sys
-sys.path.append("C:\zhengjinliang\桌面\coding\game\pyqqdzz")
-
 from gobigger.balls import BaseBall
 from gobigger.players import HumanPlayer
 from gobigger.utils import Border
