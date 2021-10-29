@@ -25,7 +25,7 @@ jobs:
           python -m pip install .
       - name: Generate coverage report
         run: |
-          pytest --cov-report=xml -v
+          pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
