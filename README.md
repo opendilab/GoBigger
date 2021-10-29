@@ -1,7 +1,8 @@
 # Go-Bigger: Multi-Agent Decision Intelligence Environment
 
-[![Documentation Status](https://readthedocs.org/projects/gobigger/badge/?version=latest)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
-[![Documentation Status](https://readthedocs.org/projects/gobigger-zh/badge/?version=latest&label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
+[![unit_test](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml)
+[![Read the Docs](https://img.shields.io/readthedocs/gobigger)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
+[![Read the Docs](https://img.shields.io/readthedocs/gobigger?label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
 
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
