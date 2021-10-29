@@ -16,7 +16,19 @@
 快速安装 GoBigger
 =============================
 
-首先，通过 github 下载 GoBigger 源码。
+我们可以通过 PyPI 直接安装：
+
+.. code-block:: bash
+
+    pip install gobigger
+
+同样，也可以通过 conda 进行安装：
+
+.. code-block:: bash
+
+    conda install -c opendilab gobigger
+
+如果想要使用最新的版本，可以通过源码进行安装。首先，通过 Github 下载 GoBigger 源码。
 
 .. code-block:: bash
 

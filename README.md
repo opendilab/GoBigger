@@ -91,13 +91,25 @@ And we recommend that your python version is 3.6.
 
 #### Get and install GoBigger
 
-First get and download the official repository with the following command line.
+You can simply install GoBigger from PyPI with the following command:
+
+```bash
+pip install gobigger
+```
+
+If you use Anaconda or Miniconda, you can install GoBigger through the following command:
+
+```bash
+conda install -c opendilab gobigger
+```
+
+You can also install with newest version through GitHub. First get and download the official repository with the following command line.
 
 ```bash
 git clone https://github.com/opendilab/GoBigger.git
 ```
 
-You can install from source:
+Then you can install from source:
 
 ```bash
 # install for use
