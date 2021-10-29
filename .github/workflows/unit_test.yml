@@ -12,9 +12,10 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7]
-
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -22,6 +23,7 @@ jobs:
       - name: Install depedendencies
         run: |
           pip install pytest-cov
+          pip install -r requirements.txt
       - name: Generate coverage report
         run: |
           pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v
