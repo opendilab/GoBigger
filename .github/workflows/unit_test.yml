@@ -19,10 +19,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: do_unittest
+      - name: Install depedendencies
         run: |
           pip install pytest-cov
           python -m pip install .
+      - name: Generate coverage report
+        run: |
           pytest ./gobigger --cov=./gobigger --cov-report=xml --cov-report=term-missing --durations=0 -v
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
