@@ -27,13 +27,11 @@ class TestFoodBall:
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
         food_ball = FoodBall(name, position, border=border, size=25, vel=None, acc=None)
-        with pytest.raises(Exception) as e:
-            food_ball.move()
+        food_ball.move(direction=None, duration=None)
 
     def test_eat(self):
         name = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
         food_ball = FoodBall(name, position, border=border, size=25, vel=None, acc=None)
-        with pytest.raises(Exception) as e:
-            food_ball.eat()
+        food_ball.eat(ball=None)

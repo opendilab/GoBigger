@@ -116,3 +116,21 @@ class TestEnvRender:
         players[0].respawn(position=border.sample())
         screen_data_all, screen_data_players = render.update_all(food_balls, thorns_balls, spore_balls, players)
         assert screen_data_all is None
+
+    def test_get_tick_all_colorful(self):
+        border = Border(0, 0, 1000, 1000)
+        render = EnvRender(width=1000, height=1000)
+        food_balls = [BaseBall('0', border.sample(), border=border)]
+        thorns_balls = [BaseBall('0', border.sample(), border=border)]
+        spore_balls = [BaseBall('0', border.sample(), border=border)]
+        players = [HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings,
+                               team_name='0', name='0', border=border,  
+                               spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings)]
+        players[0].respawn(border.sample())
+        screen_data_all, screen_data_players = render.get_tick_all_colorful(
+                            food_balls=food_balls,
+                            thorns_balls=thorns_balls,
+                            spore_balls=spore_balls,
+                            players=players,
+                            player_num_per_team=1,
+                            team_name_size={'0': 100.1111})

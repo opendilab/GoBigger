@@ -124,3 +124,25 @@ class TestHumanPlayer:
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
         assert isinstance(player.eject(), list)
+
+    def test_add_balls(self):
+        cfg = Server.default_config()
+        border = Border(0, 0, cfg.map_width, cfg.map_height)
+        player = self.get_player()
+        player.respawn(position=border.sample())
+
+        position = Vector2(100, 100)
+        team_name = uuid.uuid1()
+        name = uuid.uuid1()
+        size = CloneBall.default_config().radius_init ** 2
+        owner = uuid.uuid1()
+        ball1 = CloneBall(team_name, name, position, border=border, size=size, vel=None, acc=None, owner=owner, clone_num=1)
+        position = Vector2(102, 102)
+        team_name = uuid.uuid1()
+        name = uuid.uuid1()
+        size = CloneBall.default_config().radius_init ** 2
+        owner = uuid.uuid1()
+        ball2 = CloneBall(team_name, name, position, border=border, size=size, vel=None, acc=None, owner=owner, clone_num=1)
+        player.add_balls([ball1, ball2])
+
+

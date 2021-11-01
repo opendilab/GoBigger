@@ -65,6 +65,10 @@ class TestPlayerManager:
         player_manager.add_balls(ball)
         num_new = len(player_manager.get_balls())
         assert num_new - num_old == 1
+        ball1 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        ball2 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        balls = [ball1, ball2]
+        player_manager.add_balls(balls)
 
     def test_remove_balls(self):
         cfg = Server.default_config()
@@ -79,6 +83,10 @@ class TestPlayerManager:
         player_manager.remove_balls(ball)
         num_new = len(player_manager.get_balls())
         assert num_new - num_old == -1
+        ball1 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        ball2 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        balls = [ball1, ball2]
+        player_manager.remove_balls(balls)
 
     def test_step(self):
         cfg = Server.default_config()
@@ -116,6 +124,14 @@ class TestPlayerManager:
         player_manager.init_balls()
         player_names = player_manager.get_player_names()
         assert len(player_names) == cfg.team_num * cfg.player_num_per_team
+
+    def test_get_team_names(self):
+        cfg = Server.default_config()
+        border = Border(0, 0, cfg.map_width, cfg.map_height)
+        player_manager = self.get_manager()
+        player_manager.init_balls()
+        team_names = player_manager.get_team_names()
+        assert len(team_names) == cfg.team_num
     
     def test_get_player_names_with_team(self):
         cfg = Server.default_config()
@@ -136,3 +152,8 @@ class TestPlayerManager:
         assert len(player_names_with_team[0]) == cfg.player_num_per_team
         player_manager.reset()
         assert len(player_manager.players) == 0
+
+    def test_init_balls_custom(self):
+        custom_init = [{'position': (100, 100), 'radius': 10, 'player': '0', 'team': '0'}]
+        player_manager = self.get_manager()
+        player_manager.init_balls(custom_init)

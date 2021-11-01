@@ -35,6 +35,7 @@ class TestSporeManager:
         spore_manager = self.get_manager()
         for i in range(10):
             spore_manager.add_balls(self.get_spore_ball())
+        spore_manager.add_balls([self.get_spore_ball(), self.get_spore_ball()])
         balls = spore_manager.get_balls()
         for i in range(10):
             logging.debug(balls[i])
@@ -58,3 +59,8 @@ class TestSporeManager:
         balls = spore_manager.get_balls()
         spore_manager.reset()
         assert len(spore_manager.balls) == 0
+
+    def test_init_balls_with_custom(self):
+        custom_init = [{'position': (100, 100), 'radius': 2}]
+        spore_manager = self.get_manager()
+        spore_manager.init_balls(custom_init)

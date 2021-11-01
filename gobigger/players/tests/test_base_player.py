@@ -16,11 +16,11 @@ class TestBasePlayer:
     def test_all(self):
         base_player = BasePlayer(name='test')
         with pytest.raises(Exception) as e:
-            base_player.move()
+            base_player.move(direction=None)
         with pytest.raises(Exception) as e:
             base_player.eject()
         with pytest.raises(Exception) as e:
-            base_player.eat()
+            base_player.eat(ball=None)
         with pytest.raises(Exception) as e:
             base_player.stop()
         with pytest.raises(Exception) as e:

@@ -65,10 +65,7 @@ class HumanPlayer(BasePlayer):
         if self.stop_flag: 
             if self.get_clone_num() == 1: 
                 for ball in self.balls.values():
-                    try:
-                        ball.move(given_acc=None, given_acc_center=None, duration=duration)
-                    except:
-                        import pdb; pdb.set_trace()
+                    ball.move(given_acc=None, given_acc_center=None, duration=duration)
             else: #If there are multiple balls, control them to move to the center
                 centroid = self.cal_centroid()
                 for ball in self.balls.values():
