@@ -3,7 +3,7 @@ import pytest
 import uuid
 from pygame.math import Vector2
 
-from gobigger.balls import ThornsBall, SporeBall
+from gobigger.balls import BaseBall, ThornsBall, SporeBall
 from gobigger.utils import Border
 
 logging.basicConfig(level=logging.DEBUG)
@@ -57,8 +57,28 @@ class TestThornsBall:
         position = Vector2(400, 400)
         owner = None
         name = uuid.uuid1()
-        base_ball = ThornsBall(name, position, border, size=100)
+        thorns_ball = ThornsBall(name, position, border, size=100)
         rectangle = [300, 300, 500, 500]
-        logging.debug(base_ball.judge_in_rectangle(rectangle))
+        logging.debug(thorns_ball.judge_in_rectangle(rectangle))
         assert True
 
+    def test_eat_others(self):
+        border = Border(0, 0, 800, 800)
+        position = Vector2(400, 400)
+        owner = None
+        name = uuid.uuid1()
+        thorns_ball = ThornsBall(name, position, border, size=100)
+        position = Vector2(10, 10)
+        owner = None
+        name = uuid.uuid1()
+        base_ball = BaseBall(name, position, border=border, owner=owner, size=1, 
+                 acc_max=5, vel_max=10, radius_min=5, radius_max=10)
+        thorns_ball.eat(base_ball)
+
+        name = uuid.uuid1()
+        spore_position = Vector2(100, 100)
+        spore_size = SporeBall.default_config().spore_radius_init ** 2
+        direction = Vector2(1, 0)
+        spore_ball = SporeBall(name, spore_position, border=border, size=spore_size, direction=direction)
+        thorns_ball.set_size(thorns_ball.radius_max**2)
+        thorns_ball.eat(spore_ball)

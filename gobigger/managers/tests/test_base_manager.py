@@ -28,13 +28,13 @@ class TestBaseManager:
         with pytest.raises(Exception) as e:
             base_manager.refresh()
         with pytest.raises(Exception) as e:
-            base_manager.remove_balls()
+            base_manager.remove_balls(balls=None)
         with pytest.raises(Exception) as e:
             base_manager.spawn_ball()
         with pytest.raises(Exception) as e:
             base_manager.init_balls()
         with pytest.raises(Exception) as e:
-            base_manager.step()
+            base_manager.step(duration=None)
         with pytest.raises(Exception) as e:
             base_manager.obs()
         with pytest.raises(Exception) as e:
