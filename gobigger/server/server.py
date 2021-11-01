@@ -295,7 +295,7 @@ class Server:
                 elif isinstance(target_ball, SporeBall): 
                     moving_ball.eat(target_ball)
                     self.spore_manager.remove_balls(target_ball)
-            elif isinstance(moving_ball, ThornsBall):
+            elif isinstance(moving_ball, SporeBall):
                 if isinstance(target_ball, CloneBall) or isinstance(target_ball, ThornsBall): 
                     target_ball.eat(moving_ball)
                     self.spore_manager.remove_balls(moving_ball)
