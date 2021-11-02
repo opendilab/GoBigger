@@ -16,26 +16,6 @@ from gobigger.render import RealtimeRender, RealtimePartialRender, EnvRender
 logging.basicConfig(level=logging.DEBUG)
 
 
-def play_control_by_mouse():
-    server = Server()
-    server.start()
-    fps_set = server.action_tick_per_second
-    clock = pygame.time.Clock()
-    render = RealtimeRender(server.map_width, server.map_height)
-    for i in range(10000):
-        # ================= control by mouse =================
-        pygame.event.wait()
-        mouse_pos = pygame.mouse.get_pos()
-        direction = [(mouse_pos[0]-server.map_width/2)/(server.map_width/2), 
-                     (mouse_pos[1]-server.map_height/2)/(server.map_height/2)]
-        actions = {player.name: [direction.x, direction.y, -1] for player in range(server.player_manager.get_players())}
-        server.step(actions=actions)
-        render.fill(server, direction)
-        render.show()
-        clock.tick(fps_set)
-    render.close()
-    server.close()
-
 def play_control_by_keyboard():
     server = Server(dict(
             team_num=1, 
