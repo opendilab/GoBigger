@@ -3,6 +3,9 @@ Real-time Interaction with game
 
 GoBigger allow users to play game on their personal computer in real-time. Serveral modes are supported for users to explore this game.
 
+.. note::
+
+    If your version of GoBigger is v0.1.0, please upgrade for a better experience. You can use ``pip install --upgrade gobigger`` to access the latest version of GoBigger.
 
 Single Player
 --------------------

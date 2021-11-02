@@ -22,6 +22,7 @@ setup(
         'gobigger.players',
         'gobigger.render',
         'gobigger.envs',
+        'gobigger.bin',
     ],
     install_requires=[
         'easydict',
