@@ -5,7 +5,7 @@ import copy
 from easydict import EasyDict
 from pygame.math import Vector2
 
-from gobigger.utils import format_vector, add_size, Border
+from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
 from .base_ball import BaseBall
 from .food_ball import FoodBall
 from .thorns_ball import ThornsBall
@@ -54,7 +54,7 @@ class CloneBall(BaseBall):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = CloneBall.default_config()
-        cfg.update(kwargs)
+        cfg = deep_merge_dicts(cfg, kwargs)
         super(CloneBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **cfg)
         self.vel_max = cfg.vel_max
         self.acc_max = cfg.acc_max

@@ -18,7 +18,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 def demo_bot():
     server = Server(dict(
-        version='0.1',
         team_num=4, 
         player_num_per_team=3, 
         map_width=1000, 
@@ -26,7 +25,9 @@ def demo_bot():
         match_time=60*10, 
         state_tick_per_second=20, # frame
         action_tick_per_second=5, 
-        collision_detection_type='precision', 
+        collision_detection_type='precision',
+        save_video=True,
+        save_path='',
         manager_settings=dict(
             # food setting
             food_manager=dict(
@@ -113,7 +114,7 @@ def demo_bot():
         t2 = time.time()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
         t3 = time.time()
-        finish_flag = server.step(actions=actions, save_video=True)
+        finish_flag = server.step(actions=actions)
         t4 = time.time()
         tmp_obs = t2-t1
         tmp_step = t4-t3

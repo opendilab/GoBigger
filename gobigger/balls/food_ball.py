@@ -1,7 +1,7 @@
 import logging
 from easydict import EasyDict
 
-from gobigger.utils import format_vector, add_size, Border
+from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
 from .base_ball import BaseBall
 
 
