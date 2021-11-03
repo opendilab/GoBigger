@@ -129,48 +129,52 @@ class EnvRender(BaseRender):
             }
         return screen_data_all, screen_data_players
 
-    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3, 
-                              bar_width=150, team_name_size=None):
-        screen_all = pygame.Surface((self.width+bar_width, self.height))
-        screen_all.fill(BACKGROUND)
-        pygame.draw.line(screen_all, BLACK, (self.width+1, 0), (self.width+1, self.height), width=3)
-
+    def render_all_balls_colorful(self, screen, food_balls, thorns_balls, spore_balls, players, player_num_per_team):
         # render all balls
         for ball in food_balls:
-            pygame.draw.circle(screen_all, FOOD_COLOR, ball.position, ball.radius)
+            pygame.draw.circle(screen, FOOD_COLOR, ball.position, ball.radius)
         for ball in thorns_balls:
-            pygame.draw.polygon(screen_all, THORNS_COLOR, to_aliased_circle(ball.position, ball.radius))
+            pygame.draw.polygon(screen, THORNS_COLOR, to_aliased_circle(ball.position, ball.radius))
         for ball in spore_balls:
-            pygame.draw.circle(screen_all, SPORE_COLOR, ball.position, ball.radius)
-        
+            pygame.draw.circle(screen, SPORE_COLOR, ball.position, ball.radius)
         player_name_size = {}
         for index, player in enumerate(players):
             for ball in player.get_balls():
-                pygame.draw.circle(screen_all, PLAYER_COLORS[int(ball.team_name)][0], ball.position, ball.radius)
+                pygame.draw.circle(screen, PLAYER_COLORS[int(ball.team_name)][0], ball.position, ball.radius)
                 font_size = int(ball.radius/1.6)
                 font = pygame.font.SysFont('arial', max(font_size, 4), True)
                 txt = font.render('{}'.format(chr(int(ball.owner)%player_num_per_team+65)), True, WHITE)
                 txt_rect = txt.get_rect(center=(ball.position.x, ball.position.y))
-                screen_all.blit(txt, txt_rect)
+                screen.blit(txt, txt_rect)
             player_name_size[player.name] = player.get_total_size()
+        return screen, player_name_size
 
-        # add leaderboard
+    def render_leaderboard_colorful(self, screen, team_name_size, player_name_size, player_num_per_team):
         team_name_size = sorted(team_name_size.items(), key=lambda d: d[1], reverse=True)
         start = 10
         for index, (team_name, size) in enumerate(team_name_size):
             start += 20
             font = pygame.font.SysFont('arial', 16, True)
             fps_txt = font.render('{} : {:.3f}'.format(team_name, size), True, PLAYER_COLORS[int(team_name)][0])
-            screen_all.blit(fps_txt, (self.width+20, start))
+            screen.blit(fps_txt, (self.width+20, start))
             start += 20
             font = pygame.font.SysFont('arial', 14, True)
             for j in range(player_num_per_team):
                 player_name = str(int(team_name)*player_num_per_team+j)
                 player_size = player_name_size[player_name]
                 fps_txt = font.render('  {} : {:.3f}'.format(chr(int(player_name)%player_num_per_team+65), player_size), True, PLAYER_COLORS[int(team_name)][0])
-                screen_all.blit(fps_txt, (self.width+20, start))
+                screen.blit(fps_txt, (self.width+20, start))
                 start += 20
+        return screen
 
+    def get_tick_all_colorful(self, food_balls, thorns_balls, spore_balls, players, partial_size=300, player_num_per_team=3, 
+                              bar_width=150, team_name_size=None):
+        screen_all = pygame.Surface((self.width+bar_width, self.height))
+        screen_all.fill(BACKGROUND)
+        pygame.draw.line(screen_all, BLACK, (self.width+1, 0), (self.width+1, self.height), width=3)
+        screen_all, player_name_size = self.render_all_balls_colorful(screen_all, food_balls, thorns_balls, spore_balls, players, 
+                                                                      player_num_per_team=player_num_per_team)
+        screen_all = self.render_leaderboard_colorful(screen_all, team_name_size, player_name_size, player_num_per_team=player_num_per_team)
         screen_data_all = pygame.surfarray.array3d(screen_all)
         screen_data_players = {}
         for player in players:

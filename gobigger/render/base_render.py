@@ -19,7 +19,7 @@ class BaseRender:
         self.fpsClock = pygame.time.Clock() 
         if not only_render:
             self.screen = pygame.display.set_mode((self.width_full, self.height_full),  0, 32)
-            pygame.display.set_caption("GoBigger - Opendilab Challenge")
+            pygame.display.set_caption("GoBigger - OpenDILab Environment")
 
     def fill(self, server):
         raise NotImplementedError

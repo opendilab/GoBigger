@@ -9,7 +9,7 @@ import math
 
 from .base_render import BaseRender
 from .env_render import EnvRender
-from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, RED
+from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, RED, WHITE
 from gobigger.utils import to_aliased_circle
 
 
@@ -24,28 +24,13 @@ class RealtimeRender(EnvRender):
 
     def fill(self, server, direction=None, fps=0, last_time=0, player_num_per_team=3):
         self.screen.fill(BACKGROUND)
-
-        # for x in range(0, self.width, self.cell_size):
-        #     pygame.draw.line(self.screen, GRAY, (x, 0), (x, self.height))
-        # for y in range(0, self.height, self.cell_size):
-        #     pygame.draw.line(self.screen, GRAY, (0, y), (self.width, y))
-
         # Render all balls
-        for ball in server.food_manager.get_balls():
-            pygame.draw.circle(self.screen, FOOD_COLOR, ball.position, ball.radius)
-        for ball in server.thorns_manager.get_balls():
-            pygame.draw.polygon(self.screen, THORNS_COLOR, to_aliased_circle(ball.position, ball.radius))
-        for ball in server.spore_manager.get_balls():
-            pygame.draw.circle(self.screen, SPORE_COLOR, ball.position, ball.radius)
-        for index, player in enumerate(server.player_manager.get_players()):
-            for ball in player.get_balls():
-                pygame.draw.circle(self.screen, PLAYER_COLORS[int(ball.team_name)][0], ball.position, ball.radius)
-                font_size = int(ball.radius/1.6)
-                font = pygame.font.SysFont('arial', max(font_size, 4), True)
-                txt = font.render('{}'.format(chr(int(ball.owner)%player_num_per_team+65)), True, (255,255,255))
-                txt_rect = txt.get_rect(center=(ball.position.x, ball.position.y))
-                self.screen.blit(txt, txt_rect)
-
+        self.screen, _ = self.render_all_balls_colorful(self.screen, 
+                                                        food_balls=server.food_manager.get_balls(), 
+                                                        thorns_balls=server.thorns_manager.get_balls(), 
+                                                        spore_balls=server.spore_manager.get_balls(), 
+                                                        players=server.player_manager.get_players(), 
+                                                        player_num_per_team=1)
         # for debugƒ
         font= pygame.font.SysFont('Menlo', 15, True)
 
@@ -98,25 +83,13 @@ class RealtimePartialRender(EnvRender):
 
         screen = pygame.Surface((self.width, self.height))
         screen.fill(BACKGROUND)
-        # for x in range(0, self.width, self.cell_size):
-        #     pygame.draw.line(screen, GRAY, (x, 0), (x, self.height))
-        # for y in range(0, self.height, self.cell_size):
-        #     pygame.draw.line(screen, GRAY, (0, y), (self.width, y))
 
-        for ball in server.food_manager.get_balls():
-            pygame.draw.circle(screen, FOOD_COLOR, ball.position, ball.radius)
-        for ball in server.thorns_manager.get_balls():
-            pygame.draw.polygon(screen, THORNS_COLOR, to_aliased_circle(ball.position, ball.radius))
-        for ball in server.spore_manager.get_balls():
-            pygame.draw.circle(screen, SPORE_COLOR, ball.position, ball.radius)
-        for index, player in enumerate(server.player_manager.get_players()):
-            for ball in player.get_balls():
-                pygame.draw.circle(screen, PLAYER_COLORS[int(ball.team_name)][0], ball.position, ball.radius)
-                font_size = int(ball.radius/1.6)
-                font = pygame.font.SysFont('arial', max(font_size, 4), True)
-                txt = font.render('{}'.format(chr(int(ball.owner)%player_num_per_team+65)), True, (255,255,255))
-                txt_rect = txt.get_rect(center=(ball.position.x, ball.position.y))
-                screen.blit(txt, txt_rect)
+        screen, _ = self.render_all_balls_colorful(screen, 
+                                                   food_balls=server.food_manager.get_balls(), 
+                                                   thorns_balls=server.thorns_manager.get_balls(), 
+                                                   spore_balls=server.spore_manager.get_balls(), 
+                                                   players=server.player_manager.get_players(), 
+                                                   player_num_per_team=1)
 
         screen_data = pygame.surfarray.array3d(screen)
 
