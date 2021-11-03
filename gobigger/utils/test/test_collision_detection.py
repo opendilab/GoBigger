@@ -143,7 +143,7 @@ class SpeedTest:
 
 class TestSpeed:
 
-    def test_get_speed_by_query_num(self, total_num=3000, start_num=0, end_num=1, stride=0.5, changed_p=0.2, iter=1):
+    def test_get_speed_by_query_num(self, total_num=30, start_num=0, end_num=1, stride=0.5, changed_p=0.2, iter=1):
         speed_test = SpeedTest(total_num , border=Border(0,0,1000,1000))
         exhaustive_time = []
         precision_time = []
@@ -160,7 +160,7 @@ class TestSpeed:
             remove_time.append(result[3])
         return x_index, exhaustive_time, precision_time, rebuild_time, remove_time
 
-    def test_get_speed_by_change_num(self, total_num=3000, start_num=0, end_num=1, stride=0.5, query_p=0.2, iter=1):
+    def test_get_speed_by_change_num(self, total_num=30, start_num=0, end_num=1, stride=0.5, query_p=0.2, iter=1):
         speed_test = SpeedTest(total_num , border=Border(0,0,1000,1000))
         exhaustive_time = []
         precision_time = []
@@ -177,7 +177,7 @@ class TestSpeed:
             remove_time.append(result[3])
         return x_index, exhaustive_time, precision_time, rebuild_time, remove_time
 
-    def test_get_speed_by_iter(self, total_num=3000, start_num=1, end_num=51, stride=25, query_p=0.2, changed_p=0.2):
+    def test_get_speed_by_iter(self, total_num=30, start_num=1, end_num=51, stride=25, query_p=0.2, changed_p=0.2):
         speed_test = SpeedTest(total_num , border=Border(0,0,1000,1000))
         exhaustive_time = []
         precision_time = []

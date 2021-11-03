@@ -184,7 +184,7 @@ class EnvRender(BaseRender):
     def transfer_rgb_to_features(self, rgb, player_num=12):
         '''
         Overview:
-            12 player + food + spore + thorns
+            If player_num == 12, then the features list will contain 15 elements(12 player + food + spore + thorns)
         '''
         features = []
         assert len(rgb.shape) == 2

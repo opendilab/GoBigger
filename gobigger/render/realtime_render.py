@@ -9,7 +9,7 @@ import math
 
 from .base_render import BaseRender
 from .env_render import EnvRender
-from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND
+from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, RED
 from gobigger.utils import to_aliased_circle
 
 

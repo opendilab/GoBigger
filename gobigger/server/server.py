@@ -264,7 +264,8 @@ class Server:
 
     def step(self, actions=None):
         if self.last_time >= self.match_time:
-            self.save_mp4(save_path=self.save_path)
+            if self.save_video:
+                self.save_mp4(save_path=self.save_path)
             self.stop()
             return True
         if not self._end_flag:
