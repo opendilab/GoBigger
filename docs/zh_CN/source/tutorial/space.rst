@@ -113,22 +113,78 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
 * channel 14: 视野内荆棘球所处位置。
 
 
-.. note::
+``player_state`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。``overlap`` 是一个简单的字典，每个键值对代表了视野中的一种球的信息。``overlap`` 中包含了食物球，荆棘球，孢子球，分身球的结构化信息（位置和半径，如果是分身球则包含所属玩家名称和队伍名称）。请注意，每一种球的信息列表的长度是不确定的。例如，在当前帧视野中一共有20个食物球，那么当前 ``food`` 对应的列表长度为20。在下一帧，视野内的食物球如果变为25，则对应的列表长度将会变成25。 此外，如果某个球只有一部分出现在玩家视野中，GoBigger也会在 ``overlap`` 中给出该球的圆心和半径信息。
 
-    ``player_state`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。此外，如果某个球只有一部分出现在玩家视野中，GoBigger也会在 ``overlap`` 中给出该球的圆心和半径信息。
 
-状态空间 - 不含 feature_layers
+状态空间 - 自定义
 ============================================
 
-实际上，在游戏环境返回给用户的状态信息中，``feature_layers`` and ``overlap`` 二者包含的信息内容是一致的，只不过给出的形式不同。因此，我们可以通过设置在获取状态中不包含 ``feature_layers`` 来减少 ``server.obs()`` 的时间消耗。可以通过在初始化 ``EnvRender`` 时添加 ``use_spatial=False`` 来指定。
+除了上述的状态空间以外，GoBigger 还支持不同种类的状态空间。用户可以在 server 的输入 cfg 中通过修改 ``obs_settings`` 来实现。
 
 .. code-block:: python
 
-    server = Server()
-    render = EnvRender(server.map_width, server.map_height, use_spatial=False) # drop feature_layers
-    server.set_render(render)
-    server.start()
+    server = Server(cfg=dict(
+        ...
+        obs_settings=dict(
+            with_spatial=True,
+            with_speed=False,
+            with_all_vision=False,
+        ),
+    ))
+
+下面我们介绍 ``obs_settings`` 中各个值的作用。
+
+携带 Spatial 信息
+------------------
+
+实际上，在游戏环境返回给用户的状态信息中，``feature_layers`` and ``overlap`` 二者包含的信息内容是一致的，只不过给出的形式不同。因此，我们可以通过设置在获取状态中不包含 ``feature_layers`` 来减少 ``server.obs()`` 的时间消耗。可以通过指定 ``with_spatial=False`` 来指定。
+
+携带速度信息
+------------------
+
+我们可以对同一个球通过计算帧间相对位置来获取到该球的运动速度信息。为了减轻用户的负担，GoBigger 提供了 ``with_speed=True`` 来帮助用户直接在 observation 中获取到所有球的速度信息。一旦指定了 ``with_speed=True``，用户获取到的 ``overlap`` 中将会在对应元素中添加 ``speed`` 键值对，来表示该球的运动速度。
 
 .. note::
 
-    如果在渲染引擎中添加了 ``use_spatial=False``，用户将无法进行保存 demo 的操作，因为相关的渲染动作会被取消。
+    ``overlap`` 中只有 ``spore``，``thorn``，以及 ``clone`` 会含有速度信息。
+
+获取全局视野
+------------------
+
+局部视野的存在可能会使得训练变得复杂。因此，GoBigger 提供了全局视野接口。通过指定 ``with_all_vision=True`` 来获取全局视野的信息。注意，在此模式下，由于不同玩家的视野是相同的，为了减少信息传输压力，我们只会在第一个玩家的信息字典中给出对应的全局视野信息。例如，假设一局游戏中有 2 个队伍，每个队伍中有 2 人，那么获取到的 ``player_state`` 将会如下：
+
+.. code-block:: python
+
+    {
+        '0': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...], 
+                'thorns': [{'position': position, 'radius': radius}, ...], 
+                'spore': [{'position': position, 'radius': radius}, ...], 
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+            }, 
+            'team_name': team_name, 
+        },
+        '1': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+        '2': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+        '3': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+    }
+
+请注意，除了 ``'0'`` 号玩家以外，其他玩家的信息中对应的 ``feature_layers`` 和 ``overlap`` 将会置为 ``None``。
