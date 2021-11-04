@@ -219,7 +219,7 @@ def play_control_by_keyboard_vs_bot(team_num=2):
     server = Server(dict(
             team_num=team_num, 
             player_num_per_team=1,
-            match_time=60*0.1,
+            match_time=60*10,
             save_video=True
         ))
     server.start()

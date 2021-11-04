@@ -40,8 +40,8 @@ server_default_config = dict(
         # player setting
         player_manager=dict(
             ball_settings=dict(  # The specific parameter description can be viewed in the ball module
-                acc_max=30, 
-                vel_max=20,
+                acc_max=100, 
+                vel_max=25,
                 radius_min=3, 
                 radius_max=300, 
                 radius_init=3, 

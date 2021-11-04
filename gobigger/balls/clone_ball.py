@@ -29,8 +29,8 @@ class CloneBall(BaseBall):
 
         cfg = BaseBall.default_config()
         cfg.update(dict(
-            acc_max=5, # Maximum acceleration
-            vel_max=10, # Maximum velocity
+            acc_max=50, # Maximum acceleration
+            vel_max=25, # Maximum velocity
             radius_min=2, # Minimum radius
             radius_max=100, # Maximum radius
             radius_init=2, # The initial radius of the player's ball
@@ -95,7 +95,7 @@ class CloneBall(BaseBall):
         self.last_given_acc = Vector2(0, 0) if last_given_acc is None else last_given_acc
 
     def cal_vel_max(self, radius):
-        return 320/(radius+12)-2
+        return self.vel_max*20/(radius+10)
 
     def move(self, given_acc=None, given_acc_center=None, duration=0.05):
         """
@@ -127,19 +127,21 @@ class CloneBall(BaseBall):
                 if given_acc_center is None: # Single ball
                     return
                 else: # Multiple balls
-                    self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+                    # self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+                    self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
                     acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-                    self.vel_max = self.cal_vel_max(self.radius)
-                    self.vel = format_vector(self.vel * 0.95 + (self.acc + acc_tmp) * duration, self.vel_max) # vel is multiplied by a number to prevent circling phenomenon
+                    self.vel_max_ball = self.cal_vel_max(self.radius)
+                    self.vel = format_vector(self.vel * 0.95 + (self.acc + acc_tmp) * duration, self.vel_max_ball) # vel is multiplied by a number to prevent circling phenomenon
                     self.position = self.position + self.vel * duration
         else: # normal status
             self.acc_stop = Vector2(0, 0)
             if given_acc_center is None:
                 given_acc_center = Vector2(0, 0)
-            self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+            # self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+            self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
             acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-            self.vel_max = self.cal_vel_max(self.radius)
-            self.vel = format_vector(self.vel + (self.acc + acc_tmp) * duration, self.vel_max)
+            self.vel_max_ball = self.cal_vel_max(self.radius)
+            self.vel = format_vector(self.vel + (self.acc + acc_tmp) * duration, self.vel_max_ball)
             if self.cooling_last:
                 self.vel_last += self.acc_last * duration
                 if self.age >= self.split_vel_zero_time:
