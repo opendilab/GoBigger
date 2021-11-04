@@ -127,7 +127,6 @@ class CloneBall(BaseBall):
                 if given_acc_center is None: # Single ball
                     return
                 else: # Multiple balls
-                    # self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
                     self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
                     acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
                     self.vel_max_ball = self.cal_vel_max(self.radius)
@@ -137,7 +136,6 @@ class CloneBall(BaseBall):
             self.acc_stop = Vector2(0, 0)
             if given_acc_center is None:
                 given_acc_center = Vector2(0, 0)
-            # self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
             self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
             acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
             self.vel_max_ball = self.cal_vel_max(self.radius)
@@ -153,7 +151,6 @@ class CloneBall(BaseBall):
         if self.vel.length() > 0 or self.vel_last.length() > 0:
             self.direction = (self.vel + self.vel_last).normalize()
         self.check_border()
-
 
     def eat(self, ball, clone_num=None):
         """

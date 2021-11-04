@@ -51,7 +51,7 @@ class BotAgent(BaseAgent):
             return action_ret
 
         if len(others_clone_balls) > 0:
-            if my_clone_balls[-1] > others_clone_balls[0]:
+            if my_clone_balls[-1]['radius'] > others_clone_balls[0]['radius']:
                 direction = (others_clone_balls[-1]['position'] - my_clone_balls[-1]['position']).normalize()
             else:
                 direction = (my_clone_balls[0]['position'] - others_clone_balls[0]['position']).normalize()

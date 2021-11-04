@@ -87,6 +87,7 @@ class Server:
         self.custom_init = self.cfg.custom_init
         self.save_video = self.cfg.save_video
         self.save_path = self.cfg.save_path
+        self.obs_settings = self.cfg.obs_settings
         
         self.border = Border(0, 0, self.map_width, self.map_height)
         self.last_time = 0
@@ -262,7 +263,7 @@ class Server:
                     self.screens_partial[player_name] = []
                 self.screens_partial[player_name].append(screen_data_player)
 
-    def step(self, actions=None):
+    def step(self, actions=None, **kwargs):
         if self.last_time >= self.match_time:
             if self.save_video:
                 self.save_mp4(save_path=self.save_path)
@@ -279,6 +280,7 @@ class Server:
 
     def set_render(self, render):
         self.render = render
+        self.render.set_obs_settings(self.obs_settings)
 
     def obs(self, obs_type='all'):
         assert obs_type in ['all', 'single']

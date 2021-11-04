@@ -76,6 +76,7 @@ server_default_config = dict(
         clone=[], # only position and radius and player and team
     ),
     obs_settings=dict(
+        with_spatial=True,
         with_speed=False,
         with_all_vision=False,
     ),

@@ -20,13 +20,17 @@ class EnvRender(BaseRender):
         No need to use a new window, giving a global view and the view that each player can see
     '''
     def __init__(self, width, height, padding=(0,0), cell_size=10, 
-                 scale_up_ratio=1.5, vision_x_min=100, vision_y_min=100, only_render=True, use_spatial=True):
+                 scale_up_ratio=1.5, vision_x_min=100, vision_y_min=100, only_render=True):
         super(EnvRender, self).__init__(width, height, padding=padding, 
                                         cell_size=cell_size, only_render=only_render)
         self.scale_up_ratio = scale_up_ratio
         self.vision_x_min = vision_x_min
         self.vision_y_min = vision_y_min
-        self.use_spatial = use_spatial
+
+    def set_obs_settings(self, obs_settings):
+        self.with_spatial = obs_settings.get('with_spatial', True)
+        self.with_speed = obs_settings.get('with_speed', False)
+        self.with_all_vision = obs_settings.get('with_all_vision', False)
 
     def fill_all(self, screen, food_balls, thorns_balls, spore_balls, players):
         font = pygame.font.SysFont('Menlo', 12, True)
@@ -79,54 +83,123 @@ class EnvRender(BaseRender):
         rectangle = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
         return rectangle
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, player):
-        def food_generator(rectangle, food_balls):
-            for ball in food_balls:
-                if ball.judge_in_rectangle(rectangle):
-                    yield({'position': tuple(ball.position), 'radius': ball.radius})
-
-        def thorns_generator(rectangle, thorns_balls):
-            for ball in thorns_balls:
-                if ball.judge_in_rectangle(rectangle):
-                    yield({'position': tuple(ball.position), 'radius': ball.radius})
-
-        def spore_generator(rectangle, spore_balls):
-            for ball in spore_balls:
-                if ball.judge_in_rectangle(rectangle):
-                    yield({'position': tuple(ball.position), 'radius': ball.radius})
-        
-        def player_generator(rectangle, player):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+        for ball in food_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in thorns_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in spore_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    yield({'position': tuple(ball.position), 'radius': ball.radius, 
-                                        'player': player.name, 'team': player.team_name})
+                    ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 
+                                         'player': player.name, 'team': player.team_name})
+        return ret
 
-        return  {'food': food_generator(rectangle, food_balls), 'thorns': thorns_generator(rectangle, thorns_balls), 
-                'spore': spore_generator(rectangle, spore_balls), 'clone': player_generator(rectangle, player)}
+    def get_overlap_wo_rectangle(self, food_balls, thorns_balls, spore_balls, players):
+        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+        for ball in food_balls:
+            ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in thorns_balls:
+            ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in spore_balls:
+            ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for player in players:
+            for ball in player.get_balls():
+                ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 
+                                     'player': player.name, 'team': player.team_name})
+        return ret
+
+    def get_overlap_wo_rectangle_with_speed(self, food_balls, thorns_balls, spore_balls, players):
+        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+        for ball in food_balls:
+            ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in thorns_balls:
+            ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+        for ball in spore_balls:
+            ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+        for player in players:
+            for ball in player.get_balls():
+                ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel+ball.vel_last), 
+                                     'player': player.name, 'team': player.team_name})
+        return ret
+
+    def get_overlap_with_speed(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+        for ball in food_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
+        for ball in thorns_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+        for ball in spore_balls:
+            if ball.judge_in_rectangle(rectangle):
+                ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+        for player in players:
+            for ball in player.get_balls():
+                if ball.judge_in_rectangle(rectangle):
+                    ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel+ball.vel_last), 
+                                         'player': player.name, 'team': player.team_name})
+        return ret
 
     def update_all(self, food_balls, thorns_balls, spore_balls, players):
         screen_data_all = None
         feature_layers = None
-        if self.use_spatial:
+        overlap = None
+        rectangle = None
+        if self.with_spatial:
             screen_all = pygame.Surface((self.width, self.height), depth=8)
             screen_all.fill(BACKGROUND_GRAYSCALE)
             screen_data_all = self.fill_all(screen_all, food_balls, thorns_balls, spore_balls, players)
         screen_data_players = {}
 
-        for player in players:
-            rectangle = self.get_rectangle_by_player(player)
-            if self.use_spatial:
-                screen_data_player = self.get_clip_screen(screen_data_all, rectangle=rectangle)
-                screen_data_player = np.fliplr(screen_data_player)
-                screen_data_player = np.rot90(screen_data_player)
-                feature_layers = self.transfer_rgb_to_features(screen_data_player, player_num=len(players))
-            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, player)
-            screen_data_players[player.name] = {
-                'feature_layers': feature_layers,
-                'rectangle': rectangle,
-                'overlap': overlap,
-                'team_name': player.team_name,
-            }
+        if self.with_all_vision:
+            for player in players:
+                if player.name == '0':
+                    if self.with_spatial:
+                        screen_data_player = np.fliplr(screen_data_all)
+                        screen_data_player = np.rot90(screen_data_player)
+                        feature_layers = self.transfer_rgb_to_features(screen_data_player, player_num=len(players))
+                    if self.with_speed:
+                        overlap = self.get_overlap_wo_rectangle_with_speed(food_balls, thorns_balls, spore_balls, players)
+                    else:
+                        overlap = self.get_overlap_wo_rectangle(food_balls, thorns_balls, spore_balls, players)
+                    screen_data_players[player.name] = {
+                        'feature_layers': feature_layers,
+                        'rectangle': rectangle,
+                        'overlap': overlap,
+                        'team_name': player.team_name,
+                    }
+                else:
+                    screen_data_players[player.name] = {
+                        'feature_layers': None,
+                        'rectangle': None,
+                        'overlap': None,
+                        'team_name': player.team_name,
+                    }
+        else:
+            for player in players:
+                rectangle = self.get_rectangle_by_player(player)
+                if self.with_spatial:
+                    screen_data_player = self.get_clip_screen(screen_data_all, rectangle=rectangle)
+                    screen_data_player = np.fliplr(screen_data_player)
+                    screen_data_player = np.rot90(screen_data_player)
+                    feature_layers = self.transfer_rgb_to_features(screen_data_player, player_num=len(players))
+                if self.with_speed:
+                    overlap = self.get_overlap_with_speed(rectangle, food_balls, thorns_balls, spore_balls, players)
+                else:
+                    overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
+                screen_data_players[player.name] = {
+                    'feature_layers': feature_layers,
+                    'rectangle': rectangle,
+                    'overlap': overlap,
+                    'team_name': player.team_name,
+                }
         return screen_data_all, screen_data_players
 
     def render_all_balls_colorful(self, screen, food_balls, thorns_balls, spore_balls, players, player_num_per_team):
@@ -194,7 +267,6 @@ class EnvRender(BaseRender):
         assert len(rgb.shape) == 2
         h, w = rgb.shape
         for i in range(player_num):
-            # import pdb; pdb.set_trace()
             features.append((rgb==PLAYER_COLORS_GRAYSCALE[i]).astype(int))
         features.append((rgb==FOOD_COLOR_GRAYSCALE).astype(int))
         features.append((rgb==SPORE_COLOR_GRAYSCALE).astype(int))
