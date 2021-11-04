@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 import pygame
 
-from gobigger.agents import BotAgent, LevelBotAgent
+from gobigger.agents import BotAgent
 from gobigger.utils import Border
 from gobigger.server import Server
 from gobigger.render import RealtimeRender, RealtimePartialRender, EnvRender
@@ -99,8 +99,7 @@ def demo_bot():
     server.start()
     bot_agents = []
     for player in server.player_manager.get_players():
-        #bot_agents.append(BotAgent(player.name))
-        bot_agents.append(LevelBotAgent(player.name, level=1))
+        bot_agents.append(BotAgent(player.name, level=1))
     time_obs = 0
     time_step = 0
     time_fill_all = 0

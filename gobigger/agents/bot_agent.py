@@ -8,16 +8,27 @@ from pygame.math import Vector2
 from .base_agent import BaseAgent
 
 
+level_para = {
+    1 : 30,  # all weight = 19000
+    2 : 20,  # all weight = 25000
+    3 : 15,  # all weight = 32000
+    4 : 10,  # all weight = 40000
+    5 : 5,   # all weight = 60000
+    6 : 1,   # all weight = 75000
+}
+
+
 class BotAgent(BaseAgent):
     '''
     Overview:
         A simple script bot
     '''
-    def __init__(self, name=None):
+    def __init__(self, name=None, level=1):
         self.name = name
         self.actions_queue = queue.Queue()
         self.last_clone_num = 1
         self.last_total_size = 0
+        self.noise_ratio = level_para[level]
 
     def step(self, obs):
         if self.actions_queue.qsize() > 0:
@@ -122,6 +133,7 @@ class BotAgent(BaseAgent):
                 new_overlap[k][index]['position'] = Vector2(*vv['position'])
         return new_overlap
     
-    def add_noise_to_direction(self, direction, noise_ratio=0.1):
+    def add_noise_to_direction(self, direction):
+        noise_ratio = self.noise_ratio
         direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, ((random.random() * 2 - 1)*noise_ratio)*direction.y)
         return direction
