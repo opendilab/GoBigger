@@ -1,0 +1,37 @@
+# This workflow will check pytest
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: unit_test
+
+on: [push, pull_request]
+
+jobs:
+  test_unittest:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install depedendencies
+        run: |
+          pip install pytest-cov
+          pip install -e .
+      - name: Generate coverage report
+        run: |
+          pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false

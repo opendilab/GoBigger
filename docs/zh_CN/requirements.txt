@@ -1,0 +1,11 @@
+easydict
+gym
+pygame
+pytest
+opencv-python
+numpy
+sphinx
+matplotlib
+tqdm
+trueskill
+git+http://github.com/opendilab/GoBigger@main

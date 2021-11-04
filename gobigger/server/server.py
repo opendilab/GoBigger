@@ -201,7 +201,6 @@ class Server:
               If sporulation and splitting operations occur at the same time, sporulation will be given priority
               If move and stop move occur at the same time in action, perform stop move operation
             '''
-
             for player in self.player_manager.get_players():
                 direction_x, direction_y, action_type = actions[player.name]
                 if direction_x is None or direction_y is None:
@@ -296,7 +295,7 @@ class Server:
                 elif isinstance(target_ball, SporeBall): 
                     moving_ball.eat(target_ball)
                     self.spore_manager.remove_balls(target_ball)
-            elif isinstance(moving_ball, ThornsBall):
+            elif isinstance(moving_ball, SporeBall):
                 if isinstance(target_ball, CloneBall) or isinstance(target_ball, ThornsBall): 
                     target_ball.eat(moving_ball)
                     self.spore_manager.remove_balls(moving_ball)

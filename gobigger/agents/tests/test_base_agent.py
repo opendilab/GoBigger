@@ -26,6 +26,6 @@ class TestBaseAgent:
     def test_step(self):
         base_agent = BaseAgent()
         with pytest.raises(Exception) as e:
-            base_agent.step()
+            base_agent.step(obs=None)
             
 

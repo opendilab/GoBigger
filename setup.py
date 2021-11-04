@@ -7,8 +7,8 @@ from setuptools import setup
 
 setup(
     name='gobigger',
-    version='0.1',
-    description='Go-Bigger: Multi-Agent Decision Intelligence Challenge',
+    version='0.1.0',
+    description='Go-Bigger: Multi-Agent Decision Intelligence Environment',
     author='OpenDILab',
     license='Apache License, Version 2.0',
     keywords='Go-Bigger DI',
@@ -21,16 +21,16 @@ setup(
         'gobigger.managers',
         'gobigger.players',
         'gobigger.render',
+        'gobigger.envs',
+        'gobigger.bin',
     ],
     install_requires=[
         'easydict',
         'gym>=0.15.3',  # pypy incompatible
         'pygame>=2.0.0',
         'pytest>=5.0.0',
-        # 'sphinx_toolbox',
         'opencv-python',
         'numpy>=1.10',
         'matplotlib',
-        'trueskill'
     ]
 )

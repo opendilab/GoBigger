@@ -36,7 +36,7 @@ class TestBaseBall:
         name = uuid.uuid1()
         base_ball = BaseBall(name, position, border, size=36)
         with pytest.raises(Exception) as e:
-            base_ball.move()
+            base_ball.move(direction=None, duration=None)
 
     def test_eat(self):
         border = Border(0, 0, 800, 800)
@@ -44,7 +44,7 @@ class TestBaseBall:
         name = uuid.uuid1()
         base_ball = BaseBall(name, position, border, size=36)
         with pytest.raises(Exception) as e:
-            base_ball.eat()
+            base_ball.eat(ball=None)
 
     def test_op_override(self):
         border = Border(0, 0, 800, 800)

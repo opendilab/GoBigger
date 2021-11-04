@@ -33,5 +33,4 @@ class TestSporesBall:
         size = SporeBall.default_config().spore_radius_init ** 2
         direction = Vector2(1, 0)
         spore_ball = SporeBall(name, position, border=border, size=size, vel=None, acc=None, direction=direction)
-        with pytest.raises(Exception) as e:
-            spore_ball.eat()
+        spore_ball.eat(ball=None)
