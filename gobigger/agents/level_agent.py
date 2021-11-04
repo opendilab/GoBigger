@@ -21,7 +21,6 @@ class LevelBotAgent(BotAgent):
     
     def add_noise_to_direction(self, direction):
         noise_ratio = self.noise_ratio
-        print(noise_ratio)
         direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, ((random.random() * 2 - 1)*noise_ratio)*direction.y)
         return direction
     
