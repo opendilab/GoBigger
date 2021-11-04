@@ -28,7 +28,7 @@ class TestBotAgent:
         player_num_per_team=3, 
         map_width=1000, 
         map_height=1000, 
-        match_time=60*10, 
+        match_time=60*0.1, 
         state_tick_per_second=20, # frame
         action_tick_per_second=5, # frame
         collision_detection_type='precision', 
@@ -106,7 +106,7 @@ class TestBotAgent:
         time_get_clip = 0
         time_cvt = 0
         time_overlap = 0
-        for i in range(10):
+        for i in range(100):
             t1 = time.time()
             obs = server.obs()
             t2 = time.time()

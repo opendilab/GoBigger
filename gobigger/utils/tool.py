@@ -26,30 +26,3 @@ def to_aliased_circle(position, radius, cut_num=16, decrease=3):
         else:
             point_list.append([position.x + radius_decrease * math.cos(angle), position.y + radius_decrease * math.sin(angle)])
     return point_list
-
-if __name__ == '__main__':
-
-    print('......example 1......')
-    src = 0
-    arr = [1,2,3,4]
-    prob = get_probability(src,arr)
-    prob = norm(prob)
-    prob = np.array(prob)
-    print(prob)
-    for i in range(100):
-        a = np.random.choice(arr, 2, replace=False, p=prob.ravel())
-        #print(a)
-
-    print('......example 2......')
-    src = 0
-    arr = [0,0,0,0]
-    prob = get_probability(src,arr)
-    prob = norm(prob)
-    prob = np.array(prob)
-    print(prob)
-    for i in range(100):
-        a = np.random.choice(arr, 2, replace=False, p=prob.ravel())
-        #print(a)
-
-
-

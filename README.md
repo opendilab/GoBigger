@@ -1,8 +1,17 @@
 # Go-Bigger: Multi-Agent Decision Intelligence Environment
 
+[![PyPI](https://img.shields.io/pypi/v/gobigger)](https://pypi.org/project/gobigger/)
+[![Anaconda-Server Badge](https://anaconda.org/opendilab/gobigger/badges/version.svg)](https://anaconda.org/opendilab/gobigger)
+[![Read the Docs](https://img.shields.io/readthedocs/gobigger)](https://gobigger.readthedocs.io/en/latest/?badge=latest)
+[![Read the Docs](https://img.shields.io/readthedocs/gobigger?label=%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)](https://gobigger.readthedocs.io/zh_CN/latest/?badge=latest)
+[![unit_test](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml)
+[![codecov](https://codecov.io/gh/opendilab/GoBigger/branch/main/graph/badge.svg?token=GwOV3jn0Le)](https://codecov.io/gh/opendilab/GoBigger)
+
+[GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
+
 GoBigger is not only a multiplayer team competitive game, but also a **multi-agent** decision intelligence environment. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
-<div align=center><img width = '640' height ='216' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
+<div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
 
 ## Introduction
 
@@ -21,11 +30,11 @@ In order to understand the rules in the game, GoBigger provides a few concepts a
     - `Spore Ball`: Spore balls are ejected by the player balls. 
     - `Player Ball`: Player balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ center. 
 
-For more details, please refer to [what-is-gobigger](https://opendilab.github.io/GoBigger/tutorial/what_is_gobigger.html#what-is-gobigger).
+For more details, please refer to [what-is-gobigger](https://gobigger.readthedocs.io/en/latest/tutorial/what_is_gobigger.html).
 
 ### Observation Space
 
-GoBigger also provide a wealth of observable information, and the observation space can be devided into two part. Here is the brief description of the observation space. For more details, please refer to [observation-space](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space).
+GoBigger also provide a wealth of observable information, and the observation space can be devided into two part. Here is the brief description of the observation space. For more details, please refer to [observation-space](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#observation-space).
 
 #### Global State
 
@@ -53,7 +62,7 @@ Player state should be like:
 
 We define that `feature_layers` in `player_state` represents the feature of this player. `feature_layers` has several channels, and each channel gives the info of food balls, or spore balls, or thorns balls, or player balls in its vision. For example, in a match we have 4 teams and 3 players for each team, then we get `feature_layers` as a list, and the length of this list should be 15, including 12 player channel, 1 food ball channel , 1 spore ball channel and 1 thorns ball channel.
 
-Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render. More details [here](https://opendilab.github.io/GoBigger/tutorial/space.html#observation-space-without-feature-layers).
+Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render. More details [here](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#observation-space-without-feature-layers).
 
 ### Action Space
 
@@ -64,7 +73,7 @@ In fact, a ball can only move, eject, split, and stop in a match, thus the actio
 * Eject: Player balls can eject spore on your moving direction.
 * Stop: Stop player balls and gather together together.
 
-More details in [action-space](https://opendilab.github.io/GoBigger/tutorial/space.html#action-space).
+More details in [action-space](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#action-space).
 
 ## Getting Started
 
@@ -82,13 +91,25 @@ And we recommend that your python version is 3.6.
 
 #### Get and install GoBigger
 
-First get and download the official repository with the following command line.
+You can simply install GoBigger from PyPI with the following command:
+
+```bash
+pip install gobigger
+```
+
+If you use Anaconda or Miniconda, you can install GoBigger through the following command:
+
+```bash
+conda install -c opendilab gobigger
+```
+
+You can also install with newest version through GitHub. First get and download the official repository with the following command line.
 
 ```bash
 git clone https://github.com/opendilab/GoBigger.git
 ```
 
-You can install from source:
+Then you can install from source:
 
 ```bash
 # install for use
@@ -183,7 +204,7 @@ Your vision depends on all your balls’ positions and their size.
 
 ## Resources
 
-For more details, please refer to [GoBigger Doc](https://opendilab.github.io/GoBigger/).
+For more details, please refer to [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/)).
 
 ## License
 

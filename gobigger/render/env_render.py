@@ -11,7 +11,7 @@ import time
 from .base_render import BaseRender
 from gobigger.utils import Colors, BLACK, YELLOW, GREEN
 from gobigger.utils import PLAYER_COLORS, FOOD_COLOR, THORNS_COLOR, SPORE_COLOR
-from gobigger.utils import precision_algorithm, Border, to_aliased_circle
+from gobigger.utils import Border, to_aliased_circle
 
 
 class EnvRender(BaseRender):
@@ -110,8 +110,6 @@ class EnvRender(BaseRender):
             screen_all.fill(self.background)
             screen_data_all = self.fill_all(screen_all, food_balls, thorns_balls, spore_balls, players)
         screen_data_players = {}
-
-      #  food_balls = precision_algorithm(Border(0, 0, 1000, 1000), food_balls)
 
         for player in players:
             rectangle = self.get_rectangle_by_player(player)

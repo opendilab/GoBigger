@@ -63,4 +63,16 @@ class TestFoodManager:
         food_manager.reset()
         balls = food_manager.get_balls()
         assert len(balls) == 0
+
+    def test_add_balls(self):
+        to_add_list = []
+        food_manager = self.get_manager()
+        for _ in range(2):
+            to_add_list.append(food_manager.spawn_ball())
+        assert food_manager.add_balls(to_add_list)
+
+    def test_init_balls_custom(self):
+        custom_init = [{'position': (100, 100), 'radius': 2}]
+        food_manager = self.get_manager()
+        food_manager.init_balls(custom_init)
     

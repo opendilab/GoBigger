@@ -3,7 +3,7 @@ import pytest
 import uuid
 from pygame.math import Vector2
 
-from gobigger.balls import ThornsBall, SporeBall, CloneBall, FoodBall
+from gobigger.balls import BaseBall, ThornsBall, SporeBall, CloneBall, FoodBall
 from gobigger.utils import Border
 
 logging.basicConfig(level=logging.DEBUG)
@@ -133,4 +133,33 @@ class TestCloneBall:
         logging.debug('===================== after rigid_collision =====================')
         logging.debug('clone_ball_1: {}'.format(clone_ball_1))
         logging.debug('clone_ball_2: {}'.format(clone_ball_2))
-        
+
+    def test_move_wo_stop_flag(self):
+        clone_ball = self.get_clone()
+        clone_ball.stop_flag = True
+        clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
+        clone_ball.stop_time = clone_ball.stop_zero_time
+        clone_ball.move(given_acc=None, given_acc_center=Vector2(1,0), duration=0.05)
+        clone_ball.stop_flag = False
+        clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
+
+    def test_eat_max(self):
+        clone_ball = self.get_clone()
+        clone_ball.set_size(clone_ball.radius_max**2)
+        food_ball = self.get_food()
+        clone_ball.eat(food_ball)
+
+    def test_eat_baseball(self):
+        border = Border(0, 0, 100, 100)
+        position = Vector2(10, 10)
+        owner = None
+        name = uuid.uuid1()
+        base_ball = BaseBall(name, position, border=border, owner=owner, size=1, 
+                 acc_max=5, vel_max=10, radius_min=5, radius_max=10)
+        clone_ball = self.get_clone()
+        clone_ball.eat(base_ball)
+
+    def test_rigid_collision_self(self):
+        clone_ball = self.get_clone()
+        assert clone_ball.rigid_collision(clone_ball)
+
