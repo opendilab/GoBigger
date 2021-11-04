@@ -129,5 +129,67 @@ def demo_bot():
     server.close()
 
 
+def demo_bot_test():
+    server = Server(dict(
+        team_num=1, 
+        player_num_per_team=1, 
+        map_width=1000, 
+        map_height=1000, 
+        match_time=60*0.2, 
+        state_tick_per_second=20, # frame
+        action_tick_per_second=5, 
+        collision_detection_type='precision',
+        save_video=True,
+        save_path='',
+    ))
+    render = EnvRender(server.map_width, server.map_height)
+    server.set_render(render)
+    server.start()
+    bot_agents = []
+    for player in server.player_manager.get_players():
+        bot_agents.append(BotAgent(player.name))
+    server.player_manager.get_players()[0].get_balls()[0].set_size(256)
+
+    server.step(actions=None)
+    actions = {bot_agent.name: [1,0,-1] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    finish_flag = server.step(actions=actions)
+    finish_flag = server.step(actions=actions)
+    finish_flag = server.step(actions=actions)
+    actions = {bot_agent.name: [1,0,0] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    server.step(actions=None)
+    server.step(actions=None)
+    server.step(actions=None)
+    actions = {bot_agent.name: [0,1,0] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    server.step(actions=None)
+    server.step(actions=None)
+    server.step(actions=None)
+    actions = {bot_agent.name: [1,0,0] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    server.step(actions=None)
+    server.step(actions=None)
+    server.step(actions=None)
+    actions = {bot_agent.name: [0,1,3] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    server.step(actions=None)
+    server.step(actions=None)
+    server.step(actions=None)
+    actions = {bot_agent.name: [0,1,3] for bot_agent in bot_agents}
+    finish_flag = server.step(actions=actions)
+    server.step(actions=None)
+    server.step(actions=None)
+    server.step(actions=None)
+
+    for _ in range(1000):
+        finish_flag = server.step(actions=None)
+        if finish_flag:
+            logging.debug('Game Over')
+            break
+    server.close()
+
+
 if __name__ == '__main__':
-    demo_bot()
+    # demo_bot()
+    demo_bot_test()

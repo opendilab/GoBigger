@@ -210,23 +210,25 @@ class CloneBall(BaseBall):
             balls.append(around_ball)
         return balls
 
-    def eject(self) -> list:
+    def eject(self, direction=None) -> list:
         '''
         Overview:
             When spit out spores, the spores spit out must be in the moving direction of the ball, and the position is tangent to the original ball after spitting out
         Returns:
             Return a list containing the spores spit out
         '''
+        if direction is None:
+            direction = copy.deepcopy(self.direction)
         if self.radius >= self.eject_radius_min:
             spore_radius = self.spore_settings.radius_min
             self.set_size(self.size - spore_radius**2)
-            direction_unit = self.direction.normalize()
+            direction_unit = direction.normalize()
             position = self.position + direction_unit * (self.radius + spore_radius)
             return SporeBall(name=uuid.uuid1(), position=position, border=self.border, direction=direction_unit, **self.spore_settings)
         else:
             return False
 
-    def split(self, clone_num) -> list:
+    def split(self, clone_num, direction=None) -> list:
         '''
         Overview:
             Active splitting, the two balls produced by splitting have the same volume, and their positions are tangent to the forward direction
@@ -235,11 +237,13 @@ class CloneBall(BaseBall):
         Returns:
             The return value is the new ball after the split
         '''
+        if direction is None:
+            direction = copy.deepcopy(self.direction)
         if self.radius >= self.split_radius_min and clone_num < self.part_num_max:
             split_size = self.size / 2
             self.set_size(split_size)
             clone_num += 1
-            direction_unit = self.direction.normalize()
+            direction_unit = direction.normalize()
             position = self.position + direction_unit * (self.radius * 2)
             vel_split = self.split_vel_init * direction_unit
             acc_split = - self.split_acc_init * direction_unit

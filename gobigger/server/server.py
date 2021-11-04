@@ -136,17 +136,20 @@ class Server:
                     direction = None
                 else:
                     direction = Vector2(direction_x, direction_y).normalize()
-                if action_type == 0: # spore
-                    tmp_spore_balls = player.eject()
+                if action_type == 0 or action_type == 3: # eject
+                    tmp_spore_balls = player.eject(direction=direction)
                     for tmp_spore_ball in tmp_spore_balls:
                         if tmp_spore_ball:
                             self.spore_manager.add_balls(tmp_spore_ball) 
-                if action_type == 1: # split
-                    self.player_manager.add_balls(player.split())
+                if action_type == 1 or action_type == 4: # split 
+                    self.player_manager.add_balls(player.split(direction=direction))
                 if action_type == 2: # stop moving
                     player.stop()
-                else: # move
+                if action_type == 0 or action_type == 1: # move on new direction
                     player.move(direction=direction, duration=self.state_tick_duration)
+                    moving_balls.extend(player.get_balls())
+                elif action_type == 3 or action_type == 4: # move on old direction
+                    player.move(duration=self.state_tick_duration)
                     moving_balls.extend(player.get_balls())
         else:
             for player in self.player_manager.get_players():
@@ -276,6 +279,7 @@ class Server:
                     self.record_frame_for_video()
                 else:
                     self.step_state_tick()
+                    self.record_frame_for_video()
         return False
 
     def set_render(self, render):
@@ -303,7 +307,7 @@ class Server:
     def save_mp4(self, save_path=''):
         # self.video_id = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         self.video_id = str(uuid.uuid1())
-        fps = self.action_tick_per_second
+        fps = self.state_tick_per_second
         # save all
         video_file = os.path.join(save_path, '{}-all.mp4'.format(self.video_id))
         out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (self.screens_all[0].shape[1], self.screens_all[0].shape[0]))
