@@ -16,10 +16,19 @@ In fact, a ball can only move, eject, split, and stop in our game, thus the acti
 
 * action_type: Int
     * -1 means no actions
-    * 0 means eject spore on your moving direction
-    * 1 means split into several balls
+    * 0 means eject spore on given direction, and move on given direction
+    * 1 means split into several balls, and move on given direction
     * 2 means stop and gather all your balls together
+    * 3 means eject but not change direction
+    * 4 means split but not change direction
 
+It is important for a ball to do some actions on other direction without changing moving direction. That is why we add action_type 3 and 4 in our action space. A simple demo is as following. The ball can eject and change direction at the same time with ``action_type=0``, and it can also eject on other direction and not change its moving direction with ``action_type=3``.
+
+.. only:: html
+
+    .. figure:: images/eject_and_move.gif
+      :width: 300
+      :align: center
 
 If you have several players in your game, remember that server needs to know the relationship between the actions and the players. So you need to send actions in the following way:
 
