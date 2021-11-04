@@ -2,7 +2,7 @@ import logging
 from easydict import EasyDict
 from pygame.math import Vector2
 
-from gobigger.utils import format_vector, add_size, Border
+from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
 from .base_ball import BaseBall
 from .spore_ball import SporeBall
 
@@ -32,7 +32,7 @@ class ThornsBall(BaseBall):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = ThornsBall.default_config()
-        cfg.update(kwargs)
+        cfg = deep_merge_dicts(cfg, kwargs)
         super(ThornsBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **cfg)
         self.vel_max = cfg.vel_max
         self.radius_min = cfg.radius_min

@@ -5,7 +5,7 @@ from easydict import EasyDict
 from pygame.math import Vector2
 from functools import total_ordering
 
-from gobigger.utils import format_vector, Border
+from gobigger.utils import format_vector, Border, deep_merge_dicts
 
 
 @total_ordering
@@ -42,7 +42,7 @@ class BaseBall(ABC):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = BaseBall.default_config()
-        cfg.update(kwargs)
+        cfg = deep_merge_dicts(cfg, kwargs)
         self.color=color
         self.radius_min = cfg.radius_min
         self.radius_max = cfg.radius_max

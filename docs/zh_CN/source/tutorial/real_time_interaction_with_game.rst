@@ -41,3 +41,18 @@ GoBigger 允许用户在个人电脑中实时游玩。同时也提供了多种�
 
 玩家的视野由球的相对位置决定。尝试分散玩家的球，这样可以获得更大的视野。
 
+
+与bot对抗的单人游玩
+----------------------------------------
+
+如果你想和bot进行对抗，可以通过以下代码来启动游戏：
+
+.. code-block:: bash
+
+    python -m gobigger.bin.play --vs-bot
+
+你也可以往游戏里添加更多的bot，通过指定 ``--team-num`` 来实现这一功能。
+
+.. code-block:: bash
+
+    python -m gobigger.bin.play --vs-bot --team-num 4

@@ -6,15 +6,17 @@ import cv2
 import os
 import time
 import numpy as np
+import copy
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
 
 from pygame.math import Vector2
 
-from gobigger.utils import Border, create_collision_detection
+from gobigger.utils import Border, create_collision_detection, deep_merge_dicts
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 from gobigger.managers import FoodManager, SporeManager, ThornsManager, PlayerManager
+from .server_default_config import server_default_config
 
 
 class Server:
@@ -61,90 +63,14 @@ class Server:
 
     @staticmethod
     def default_config():
-        cfg = dict(
-            version='0.1',
-            team_num=4, 
-            player_num_per_team=3, 
-            map_width=1000,
-            map_height=1000, 
-            match_time=60*10,
-            state_tick_per_second=20, # frame
-            action_tick_per_second=5, # frame
-            collision_detection_type='precision', 
-            manager_settings=dict(
-                # food setting
-                food_manager=dict(
-                    num_init=2000, # initial number
-                    num_min=2000, # Minimum number
-                    num_max=2500, # Maximum number
-                    refresh_time=2, # Time interval (seconds) for refreshing food in the map
-                    refresh_num=30, # The number of refreshed foods in the map each time
-                    ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                        radius_min=2, 
-                        radius_max=2,
-                    ),
-                ),
-                # thorns setting
-                thorns_manager=dict(
-                    num_init=15, # initial number
-                    num_min=15, # Minimum number
-                    num_max=20, # Maximum number
-                    refresh_time=2, # Time interval (seconds) for refreshing thorns in the map
-                    refresh_num=2, # The number of refreshed  thorns in the map each time
-                    ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                        radius_min=12, 
-                        radius_max=20, 
-                        vel_max=100,
-                        eat_spore_vel_init=10, 
-                        eat_spore_vel_zero_time=1,
-                    )
-                ),
-                # player setting
-                player_manager=dict(
-                    ball_settings=dict(  # The specific parameter description can be viewed in the ball module
-                        acc_max=30, 
-                        vel_max=20,
-                        radius_min=3, 
-                        radius_max=300, 
-                        radius_init=3, 
-                        part_num_max=16, 
-                        on_thorns_part_num=10, 
-                        on_thorns_part_radius_max=20,
-                        split_radius_min=10, 
-                        eject_radius_min=10, 
-                        recombine_age=20,
-                        split_vel_init=30,
-                        split_vel_zero_time=1, 
-                        stop_zero_time=1,
-                        size_decay_rate=0.00005, 
-                        given_acc_weight=10,
-                    )
-                ),
-                # spore setting
-                spore_manager=dict(
-                    ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                        radius_min=3, 
-                        radius_max=3, 
-                        vel_init=250,
-                        vel_zero_time=0.3, 
-                        spore_radius_init=20, 
-                    )
-                )   
-            ),
-            custom_init=dict(
-                food=[], # only position and radius
-                thorns=[], # only position and radius
-                spore=[], # only position and radius
-                clone=[], # only position and radius and player and team
-            ),
-        )
+        cfg = copy.deepcopy(server_default_config)
         return EasyDict(cfg)
 
     def __init__(self, cfg=None):
         self.cfg = Server.default_config()
         if isinstance(cfg, dict):
             cfg = EasyDict(cfg)
-            self.cfg.update(cfg)
+            self.cfg = deep_merge_dicts(self.cfg, cfg)
         logging.debug(self.cfg)
         self.team_num = self.cfg.team_num
         self.player_num_per_team = self.cfg.player_num_per_team
@@ -159,6 +85,9 @@ class Server:
         self.state_tick_per_action_tick = self.state_tick_per_second // self.action_tick_per_second
 
         self.custom_init = self.cfg.custom_init
+        self.save_video = self.cfg.save_video
+        self.save_path = self.cfg.save_path
+        self.obs_settings = self.cfg.obs_settings
         
         self.border = Border(0, 0, self.map_width, self.map_height)
         self.last_time = 0
@@ -207,17 +136,20 @@ class Server:
                     direction = None
                 else:
                     direction = Vector2(direction_x, direction_y).normalize()
-                if action_type == 0: # spore
-                    tmp_spore_balls = player.eject()
+                if action_type == 0 or action_type == 3: # eject
+                    tmp_spore_balls = player.eject(direction=direction)
                     for tmp_spore_ball in tmp_spore_balls:
                         if tmp_spore_ball:
                             self.spore_manager.add_balls(tmp_spore_ball) 
-                if action_type == 1: # split
-                    self.player_manager.add_balls(player.split())
+                if action_type == 1 or action_type == 4: # split 
+                    self.player_manager.add_balls(player.split(direction=direction))
                 if action_type == 2: # stop moving
                     player.stop()
-                else: # move
+                if action_type == 0 or action_type == 1: # move on new direction
                     player.move(direction=direction, duration=self.state_tick_duration)
+                    moving_balls.extend(player.get_balls())
+                elif action_type == 3 or action_type == 4: # move on old direction
+                    player.move(duration=self.state_tick_duration)
                     moving_balls.extend(player.get_balls())
         else:
             for player in self.player_manager.get_players():
@@ -319,35 +251,40 @@ class Server:
         self.player_manager.reset()
         self.start()
 
-    def step(self, actions=None, save_video=False, save_path=''):
+    def record_frame_for_video(self):
+        if self.save_video:
+            screen_data_all, screen_data_players = self.render.get_tick_all_colorful(
+                food_balls=self.food_manager.get_balls(),
+                thorns_balls=self.thorns_manager.get_balls(),
+                spore_balls=self.spore_manager.get_balls(),
+                players=self.player_manager.get_players(),
+                player_num_per_team=self.player_num_per_team,
+                team_name_size=self.player_manager.get_teams_size())
+            self.screens_all.append(screen_data_all)
+            for player_name, screen_data_player in screen_data_players.items():
+                if player_name not in self.screens_partial:
+                    self.screens_partial[player_name] = []
+                self.screens_partial[player_name].append(screen_data_player)
+
+    def step(self, actions=None, **kwargs):
         if self.last_time >= self.match_time:
-            if save_video:
-                self.save_mp4(save_path=save_path)
+            if self.save_video:
+                self.save_mp4(save_path=self.save_path)
             self.stop()
             return True
         if not self._end_flag:
             for i in range(self.state_tick_per_action_tick):
                 if i == 0:
                     self.step_state_tick(actions)
-                    if save_video:
-                        screen_data_all, screen_data_players = self.render.get_tick_all_colorful(
-                            food_balls=self.food_manager.get_balls(),
-                            thorns_balls=self.thorns_manager.get_balls(),
-                            spore_balls=self.spore_manager.get_balls(),
-                            players=self.player_manager.get_players(),
-                            player_num_per_team=self.player_num_per_team,
-                            team_name_size=self.player_manager.get_teams_size())
-                        self.screens_all.append(screen_data_all)
-                        for player_name, screen_data_player in screen_data_players.items():
-                            if player_name not in self.screens_partial:
-                                self.screens_partial[player_name] = []
-                            self.screens_partial[player_name].append(screen_data_player)
+                    self.record_frame_for_video()
                 else:
                     self.step_state_tick()
+                    self.record_frame_for_video()
         return False
 
     def set_render(self, render):
         self.render = render
+        self.render.set_obs_settings(self.obs_settings)
 
     def obs(self, obs_type='all'):
         assert obs_type in ['all', 'single']
@@ -370,7 +307,7 @@ class Server:
     def save_mp4(self, save_path=''):
         # self.video_id = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         self.video_id = str(uuid.uuid1())
-        fps = self.action_tick_per_second
+        fps = self.state_tick_per_second
         # save all
         video_file = os.path.join(save_path, '{}-all.mp4'.format(self.video_id))
         out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (self.screens_all[0].shape[1], self.screens_all[0].shape[0]))

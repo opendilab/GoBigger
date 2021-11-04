@@ -42,3 +42,19 @@ If you want to play real-time game on your PC with only partial vision, you can 
 
 Your vision depends on all your balls' positions and their size.
 
+
+Single Players against Bot
+----------------------------------------
+
+If you want to play against a bot, you can launch a game with the following code:
+
+.. code-block:: bash
+
+    python -m gobigger.bin.play --vs-bot
+
+You can also add more bots in your game. Try to win the game with more bots!
+
+.. code-block:: bash
+
+    python -m gobigger.bin.play --vs-bot --team-num 4
+

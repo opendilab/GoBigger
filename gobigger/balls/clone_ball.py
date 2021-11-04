@@ -5,7 +5,7 @@ import copy
 from easydict import EasyDict
 from pygame.math import Vector2
 
-from gobigger.utils import format_vector, add_size, Border
+from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
 from .base_ball import BaseBall
 from .food_ball import FoodBall
 from .thorns_ball import ThornsBall
@@ -29,8 +29,8 @@ class CloneBall(BaseBall):
 
         cfg = BaseBall.default_config()
         cfg.update(dict(
-            acc_max=5, # Maximum acceleration
-            vel_max=10, # Maximum velocity
+            acc_max=50, # Maximum acceleration
+            vel_max=25, # Maximum velocity
             radius_min=2, # Minimum radius
             radius_max=100, # Maximum radius
             radius_init=2, # The initial radius of the player's ball
@@ -54,7 +54,7 @@ class CloneBall(BaseBall):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = CloneBall.default_config()
-        cfg.update(kwargs)
+        cfg = deep_merge_dicts(cfg, kwargs)
         super(CloneBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **cfg)
         self.vel_max = cfg.vel_max
         self.acc_max = cfg.acc_max
@@ -95,7 +95,7 @@ class CloneBall(BaseBall):
         self.last_given_acc = Vector2(0, 0) if last_given_acc is None else last_given_acc
 
     def cal_vel_max(self, radius):
-        return 320/(radius+12)-2
+        return self.vel_max*20/(radius+10)
 
     def move(self, given_acc=None, given_acc_center=None, duration=0.05):
         """
@@ -127,19 +127,19 @@ class CloneBall(BaseBall):
                 if given_acc_center is None: # Single ball
                     return
                 else: # Multiple balls
-                    self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+                    self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
                     acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-                    self.vel_max = self.cal_vel_max(self.radius)
-                    self.vel = format_vector(self.vel * 0.95 + (self.acc + acc_tmp) * duration, self.vel_max) # vel is multiplied by a number to prevent circling phenomenon
+                    self.vel_max_ball = self.cal_vel_max(self.radius)
+                    self.vel = format_vector(self.vel * 0.95 + (self.acc + acc_tmp) * duration, self.vel_max_ball) # vel is multiplied by a number to prevent circling phenomenon
                     self.position = self.position + self.vel * duration
         else: # normal status
             self.acc_stop = Vector2(0, 0)
             if given_acc_center is None:
                 given_acc_center = Vector2(0, 0)
-            self.acc = format_vector(self.acc + given_acc/math.sqrt(self.radius), self.acc_max)
+            self.acc = format_vector(given_acc*self.acc_max, self.acc_max)
             acc_tmp = format_vector(self.acc + given_acc_center/math.sqrt(self.radius), self.acc_max) # The acceleration towards the center of mass is handled separately
-            self.vel_max = self.cal_vel_max(self.radius)
-            self.vel = format_vector(self.vel + (self.acc + acc_tmp) * duration, self.vel_max)
+            self.vel_max_ball = self.cal_vel_max(self.radius)
+            self.vel = format_vector(self.vel + (self.acc + acc_tmp) * duration, self.vel_max_ball)
             if self.cooling_last:
                 self.vel_last += self.acc_last * duration
                 if self.age >= self.split_vel_zero_time:
@@ -151,7 +151,6 @@ class CloneBall(BaseBall):
         if self.vel.length() > 0 or self.vel_last.length() > 0:
             self.direction = (self.vel + self.vel_last).normalize()
         self.check_border()
-
 
     def eat(self, ball, clone_num=None):
         """
@@ -211,23 +210,25 @@ class CloneBall(BaseBall):
             balls.append(around_ball)
         return balls
 
-    def eject(self) -> list:
+    def eject(self, direction=None) -> list:
         '''
         Overview:
             When spit out spores, the spores spit out must be in the moving direction of the ball, and the position is tangent to the original ball after spitting out
         Returns:
             Return a list containing the spores spit out
         '''
+        if direction is None:
+            direction = copy.deepcopy(self.direction)
         if self.radius >= self.eject_radius_min:
             spore_radius = self.spore_settings.radius_min
             self.set_size(self.size - spore_radius**2)
-            direction_unit = self.direction.normalize()
+            direction_unit = direction.normalize()
             position = self.position + direction_unit * (self.radius + spore_radius)
             return SporeBall(name=uuid.uuid1(), position=position, border=self.border, direction=direction_unit, **self.spore_settings)
         else:
             return False
 
-    def split(self, clone_num) -> list:
+    def split(self, clone_num, direction=None) -> list:
         '''
         Overview:
             Active splitting, the two balls produced by splitting have the same volume, and their positions are tangent to the forward direction
@@ -236,11 +237,13 @@ class CloneBall(BaseBall):
         Returns:
             The return value is the new ball after the split
         '''
+        if direction is None:
+            direction = copy.deepcopy(self.direction)
         if self.radius >= self.split_radius_min and clone_num < self.part_num_max:
             split_size = self.size / 2
             self.set_size(split_size)
             clone_num += 1
-            direction_unit = self.direction.normalize()
+            direction_unit = direction.normalize()
             position = self.position + direction_unit * (self.radius * 2)
             vel_split = self.split_vel_init * direction_unit
             acc_split = - self.split_acc_init * direction_unit

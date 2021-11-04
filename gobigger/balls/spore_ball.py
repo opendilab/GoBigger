@@ -3,7 +3,7 @@ from easydict import EasyDict
 from pygame.math import Vector2
 import math
 
-from gobigger.utils import format_vector, add_size, Border
+from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
 from .base_ball import BaseBall
 
 
@@ -33,7 +33,7 @@ class SporeBall(BaseBall):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = SporeBall.default_config()
-        cfg.update(kwargs)
+        cfg = deep_merge_dicts(cfg, kwargs)
         super(SporeBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **cfg)
         self.vel_init = cfg.vel_init
         self.vel_zero_time = cfg.vel_zero_time
