@@ -145,11 +145,11 @@ class Server:
                     self.player_manager.add_balls(player.split(direction=direction))
                 if action_type == 2: # stop moving
                     player.stop()
-                if action_type == 0 or action_type == 1: # move on new direction
-                    player.move(direction=direction, duration=self.state_tick_duration)
-                    moving_balls.extend(player.get_balls())
                 elif action_type == 3 or action_type == 4: # move on old direction
                     player.move(duration=self.state_tick_duration)
+                    moving_balls.extend(player.get_balls())
+                else: # move on new direction
+                    player.move(direction=direction, duration=self.state_tick_duration)
                     moving_balls.extend(player.get_balls())
         else:
             for player in self.player_manager.get_players():

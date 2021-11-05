@@ -50,11 +50,8 @@ class BotAgent(BaseAgent):
             action_ret = self.actions_queue.get()
             return action_ret
 
-        if len(others_clone_balls) > 0:
-            if my_clone_balls[0]['radius'] > others_clone_balls[0]['radius']:
-                direction = (others_clone_balls[-1]['position'] - my_clone_balls[-1]['position']).normalize()
-            else:
-                direction = (my_clone_balls[0]['position'] - others_clone_balls[0]['position']).normalize()
+        if len(others_clone_balls) > 0 and my_clone_balls[-1]['radius'] < others_clone_balls[0]['radius']:
+            direction = (my_clone_balls[0]['position'] - others_clone_balls[0]['position']).normalize()
             action_type = -1
         else:
             min_distance, min_thorns_ball = self.process_thorns_balls(thorns_balls, my_clone_balls[0])
