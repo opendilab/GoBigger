@@ -40,7 +40,8 @@ Indices and tables
    community/faq
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
+   :caption: API Docs
 
    api_doc/agents
    api_doc/balls

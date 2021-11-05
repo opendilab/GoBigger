@@ -188,6 +188,20 @@ Your vision depends on all your balls’ positions and their size.
 
 <div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
 
+#### Single Players against bots
+
+If you want to play against a bot, you can launch a game with the following code:
+
+```bash
+python -m gobigger.bin.play --vs-bot
+```
+
+You can also add more bots in your game. Try to win the game with more bots!
+
+```bash
+python -m gobigger.bin.play --vs-bot --team-num 4
+```
+
 ## High-level Operations in GoBigger
 
 #### Eject towards the center
