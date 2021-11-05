@@ -17,23 +17,35 @@ Indices and tables
 
 .. toctree::
    :maxdepth: 2
+   :caption: Tutorial
 
    installation/index
+   tutorial/quick_start
+   tutorial/what_is_gobigger
+   tutorial/real_time_interaction_with_game
+   tutorial/space
 
 .. toctree::
    :maxdepth: 2
+   :caption: Advanced
 
-   tutorial/index
+   advanced/cfg_intro
+   advanced/custom_init
+   advanced/collision
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Commutity
+
+   community/faq
 
 .. toctree::
    :maxdepth: 1
 
-   api_doc/index
-
-.. toctree::
-   :maxdepth: 1
-
-   faq/index
-
-
-
+   api_doc/agents
+   api_doc/balls
+   api_doc/managers
+   api_doc/players
+   api_doc/render
+   api_doc/server
+   api_doc/utils

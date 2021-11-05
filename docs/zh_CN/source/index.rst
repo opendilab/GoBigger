@@ -20,10 +20,24 @@ GoBigger 提供了多种接口供用户方便快捷地与游戏环境进行交�
 
 .. toctree::
    :maxdepth: 2
+   :caption: 教程
 
    installation/index
+   tutorial/quick_start
+   tutorial/what_is_gobigger
+   tutorial/real_time_interaction_with_game
+   tutorial/space
 
 .. toctree::
    :maxdepth: 2
+   :caption: 进阶
 
-   tutorial/index
+   advanced/cfg_intro
+   advanced/custom_init
+   advanced/collision
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 社区
+
+   community/faq
