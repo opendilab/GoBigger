@@ -12,6 +12,7 @@ import time
 from gobigger.utils import Border
 from gobigger.server import Server
 from gobigger.render import RealtimeRender, RealtimePartialRender, EnvRender
+from gobigger.agents import BotAgent
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -214,14 +215,93 @@ def play_control_by_keyboard_partial():
         clock.tick(fps_set)
     render.close()
 
+def play_control_by_keyboard_vs_bot(team_num=2):
+    server = Server(dict(
+            team_num=team_num, 
+            player_num_per_team=1,
+            match_time=60*10,
+            save_video=True
+        ))
+    server.start()
+    render = RealtimeRender(server.map_width, server.map_height)
+    server.set_render(render)
+    human_team_name = '0'
+    human_team_player_name = []
+    bot_agents = []
+    for player in server.player_manager.get_players():
+        if player.team_name != human_team_name:
+            bot_agents.append(BotAgent(player.name))
+        else:
+            human_team_player_name.append(player.name)
+    fps_real = 0
+    t1 = time.time()
+    clock = pygame.time.Clock()
+    fps_set = server.state_tick_per_second
+    for i in range(100000):
+        obs = server.obs()
+        actions_bot = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
+        actions = {player_name: [None, None, -1] for player_name in human_team_player_name}
+        x, y = None, None
+        action_type = -1
+        # ================ control by keyboard ===============
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    x, y = 0, -1
+                    action_type = -1
+                elif event.key == pygame.K_DOWN:
+                    x, y = 0, 1
+                    action_type = -1
+                elif event.key == pygame.K_LEFT:
+                    x, y = -1, 0
+                    action_type = -1
+                elif event.key == pygame.K_RIGHT:
+                    x, y = 1, 0
+                    action_type = -1
+                elif event.key == pygame.K_q: # Spores
+                    x, y = None, None
+                    action_type = 0
+                elif event.key == pygame.K_w: # Splite
+                    x, y = None, None
+                    action_type = 1
+                elif event.key == pygame.K_e: # Stop moving
+                    x, y = None, None
+                    action_type = 2
+                elif event.key == pygame.K_r: # Cheating, adding weight
+                    x, y = None, None
+                    action_type = -1
+                    server.player_manager.get_players()[0].get_balls()[0].set_size(144)
+                actions = {player_name: [x, y, action_type] for player_name in human_team_player_name}
+        if server.last_time < server.match_time:
+            actions.update(actions_bot)
+            server.step_state_tick(actions=actions)
+            if actions is not None and x is not None and y is not None:
+                render.fill(server, direction=Vector2(x, y), fps=fps_real, last_time=server.last_time)
+            else:
+                render.fill(server, direction=None, fps=fps_real, last_time=server.last_time)
+            render.show()
+            if i % server.state_tick_per_second == 0:
+                t2 = time.time()
+                fps_real = server.state_tick_per_second/(t2-t1)
+                t1 = time.time()
+        else:
+            logging.debug('Game Over')
+            break
+        clock.tick(fps_set)
+    render.close()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--player-num', type=int, choices=[1,2], default=1)
     parser.add_argument('--vision-type', type=str, choices=['full', 'partial'], default='full')
+    parser.add_argument('--vs-bot', action='store_true', help='vs bot')
+    parser.add_argument('--team-num', type=int, default=2)
     args = parser.parse_args()
 
-    if args.player_num == 1 and args.vision_type == 'full':
+    if args.vs_bot:
+        play_control_by_keyboard_vs_bot(team_num=args.team_num)
+    elif args.player_num == 1 and args.vision_type == 'full':
         play_control_by_keyboard()
     elif args.player_num == 1 and args.vision_type == 'partial':
         play_control_by_keyboard_partial()

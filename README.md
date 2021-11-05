@@ -9,7 +9,7 @@
 
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
-GoBigger is not only a multiplayer team competitive game, but also a **multi-agent** decision intelligence environment. It is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
+GoBigger is a simple and efficient *agar-like* game engine and provides various interfaces for game AI development. The game is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
 <div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
 
@@ -187,6 +187,20 @@ python -m gobigger.bin.play --player-num 1 --vision-type partial
 Your vision depends on all your balls’ positions and their size.
 
 <div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
+
+#### Single Players against bots
+
+If you want to play against a bot, you can launch a game with the following code:
+
+```bash
+python -m gobigger.bin.play --vs-bot
+```
+
+You can also add more bots in your game. Try to win the game with more bots!
+
+```bash
+python -m gobigger.bin.play --vs-bot --team-num 4
+```
 
 ## High-level Operations in GoBigger
 

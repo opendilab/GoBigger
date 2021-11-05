@@ -15,11 +15,23 @@ In fact, a ball can only move, eject, split, and stop in our game, thus the acti
     * We will normalize this point to ensure that its length will not more than 1. 
 
 * action_type: Int
-    * -1 means no actions
-    * 0 means eject spore on your moving direction
-    * 1 means split into several balls
+    * -1 means no actions. It will remain speed in the last frame.
+    * 0 means eject spore on given direction, and move on given direction
+    * 1 means split into several balls, and move on given direction
     * 2 means stop and gather all your balls together
+    * 3 means eject but not change direction
+    * 4 means split but not change direction
 
+It is important for a ball to do some actions on other direction without changing moving direction. That is why we add action_type 3 and 4 in our action space. A simple demo is as following. The ball can eject and change direction at the same time with ``action_type=0``, and it can also eject on other direction and not change its moving direction with ``action_type=3``.
+
+.. only:: html
+
+    .. figure:: images/eject_and_move.gif
+      :width: 300
+      :align: center
+
+Send actions
+--------------
 
 If you have several players in your game, remember that server needs to know the relationship between the actions and the players. So you need to send actions in the following way:
 
@@ -62,9 +74,9 @@ Each time ``server.obs()`` is called, you will get your balls' observation.
             'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
             'overlap': {
                 'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'thorns': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'spore': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of food is not sure
+                'thorns': [{'position': position, 'radius': radius}, ...], # the length of thorns is not sure
+                'spore': [{'position': position, 'radius': radius}, ...], # the length of spore is not sure
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of clone is not sure
             }, # all balls' info in vision
             'team_name': team_name, # the team which this player belongs to 
         }
@@ -104,23 +116,78 @@ We define that ``feature_layers`` in ``player_state`` represents the feature of 
 * channel 14: the position of all thorns balls in vision.
 
 
-.. note::
-
-    ``overlap`` in ``player_state`` only includes balls in the player's owned vision. What's more, if a ball only show part of itself in the player's vision, we will return all this ball's info, such as radius and position, to be part of ``overlap``.
+``overlap`` in ``player_state`` only includes balls in the player's owned vision. What's more, if a ball only show part of itself in the player's vision, we will return all this ball's info, such as radius and position, to be part of ``overlap``.
 
 
-Observation Space - Without Feature Layers
+Observation Space - Customize
 ============================================
 
-In fact, when we get ``feature_layers`` and ``overlap`` in observation, it is clear that they contains similar info but different in the form of expression. That means, we can only get ``overlap`` and drop ``feature_layers`` in our observation, which will bring us less computation because it reduces the amount of rendering calculations. You can add ``use_spatial=False`` when your render inits as following:
+In addition to the observation space mentioned above, GoBigger also supports different kinds of observation space. Users can modify ``obs_settings`` in the input cfg of the server.
 
 .. code-block:: python
 
-    server = Server()
-    render = EnvRender(server.map_width, server.map_height, use_spatial=False) # drop feature_layers
-    server.set_render(render)
-    server.start()
+    server = Server(cfg=dict(
+        ...
+        obs_settings=dict(
+            with_spatial=True,
+            with_speed=False,
+            with_all_vision=False,
+        ),
+    ))
+
+Now we introduce the role of each value in ``obs_settings``.
+
+With Spatial Info
+-------------------
+
+In fact, when we get ``feature_layers`` and ``overlap`` in observation, it is clear that they contains similar info but different in the form of expression. That means, we can only get ``overlap`` and drop ``feature_layers`` in our observation, which will bring us less computation because it reduces the amount of rendering calculations. You can add ``with_spatial=False`` when your server initializes。
+
+With Speed Info
+-------------------
+
+We can get the speed information of the ball by calculating the relative position between frames for the same ball. In order to reduce the user's burden, GoBigger provides ``with_speed=True`` to help users directly get the speed information of all balls in observation. Once ``with_speed=True`` is specified, the ``overlap`` obtained by the user will add a ``speed`` key-value pair to the corresponding element to indicate the speed of the ball.
 
 .. note::
 
-    If you use ``use_spatial=False`` in your render, you will be unable to get the saved video because there will be no rendering in your environment simulation. 
+    Only ``spore``, ``thorn``, and ``clone`` in ``overlap`` will contain speed information.
+
+Get a full vision
+------------------
+
+The existence of a partial field of view may complicate training. Therefore, GoBigger provides a full vision interface. Get the information of the full vision by specifying ``with_all_vision=True``. Note that in this mode, since the field of view of different players is the same, in order to reduce the pressure of information transmission, we will only give the corresponding global field of view information in the information dictionary of the first player. For example, if there are 2 teams in a game, and there are 2 players in each team, the ``player_state`` obtained will be as follows:
+
+.. code-block:: python
+
+    {
+        '0': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...], 
+                'thorns': [{'position': position, 'radius': radius}, ...], 
+                'spore': [{'position': position, 'radius': radius}, ...], 
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+            }, 
+            'team_name': team_name, 
+        },
+        '1': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+        '2': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+        '3': {
+            'feature_layers': None,
+            'rectangle': None,
+            'overlap': None,
+            'team_name': team_name,
+        },
+    }
+
+Please note that the corresponding ``feature_layers`` and ``overlap`` in the information of other players will be set to ``None`` except for the player with the number ``'0'``.

@@ -102,7 +102,7 @@ class HumanPlayer(BasePlayer):
             ball.size_decay()
         return True
 
-    def eject(self):
+    def eject(self, direction=None):
         '''
         Overview:
             All clones controlled by the player perform the spore-spitting action
@@ -111,7 +111,7 @@ class HumanPlayer(BasePlayer):
         '''
         ret = []
         for ball in self.balls.values():
-            ret.append(ball.eject())
+            ret.append(ball.eject(direction=direction))
         return ret
 
     def get_keys_sort_by_balls(self):
@@ -126,14 +126,14 @@ class HumanPlayer(BasePlayer):
         backitems.sort(reverse=True) 
         return [ backitems[i][1] for i in range(0,len(backitems))] 
 
-    def split(self):
+    def split(self, direction=None):
         '''
         Overview:
             All avatars controlled by the player perform splits, from large to small
         '''
         balls_keys = self.get_keys_sort_by_balls()
         for k in balls_keys:
-            ret = self.balls[k].split(self.get_clone_num())
+            ret = self.balls[k].split(self.get_clone_num(), direction=direction)
             if ret and isinstance(ret, CloneBall):
                 self.add_balls(ret)
         return True
