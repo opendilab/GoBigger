@@ -15,7 +15,7 @@ In fact, a ball can only move, eject, split, and stop in our game, thus the acti
     * We will normalize this point to ensure that its length will not more than 1. 
 
 * action_type: Int
-    * -1 means no actions
+    * -1 means no actions. It will remain speed in the last frame.
     * 0 means eject spore on given direction, and move on given direction
     * 1 means split into several balls, and move on given direction
     * 2 means stop and gather all your balls together
@@ -29,6 +29,9 @@ It is important for a ball to do some actions on other direction without changin
     .. figure:: images/eject_and_move.gif
       :width: 300
       :align: center
+
+Send actions
+--------------
 
 If you have several players in your game, remember that server needs to know the relationship between the actions and the players. So you need to send actions in the following way:
 
@@ -118,6 +121,21 @@ We define that ``feature_layers`` in ``player_state`` represents the feature of 
 
 Observation Space - Customize
 ============================================
+
+In addition to the observation space mentioned above, GoBigger also supports different kinds of observation space. Users can modify ``obs_settings`` in the input cfg of the server.
+
+.. code-block:: python
+
+    server = Server(cfg=dict(
+        ...
+        obs_settings=dict(
+            with_spatial=True,
+            with_speed=False,
+            with_all_vision=False,
+        ),
+    ))
+
+Now we introduce the role of each value in ``obs_settings``.
 
 With Spatial Info
 -------------------
