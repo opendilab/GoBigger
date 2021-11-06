@@ -9,7 +9,7 @@ import cv2
 import pygame
 import pickle
 
-from gobigger.agents import BotAgent, LowAgent, MidAgent
+from gobigger.agents import BotAgent
 from gobigger.utils import Border
 from gobigger.server import Server
 from gobigger.render import RealtimeRender, RealtimePartialRender, EnvRender
