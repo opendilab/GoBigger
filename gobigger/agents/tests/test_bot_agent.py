@@ -8,8 +8,6 @@ import numpy as np
 import cv2
 import pygame
 
-import sys
-sys.path.append("C:\zhengjinliang\桌面\coding\game\pyqqdzz")
 from gobigger.agents import BotAgent
 from gobigger.utils import Border
 from gobigger.server import Server
@@ -96,8 +94,8 @@ class TestBotAgent:
         server.set_render(render)
         server.start()
         bot_agents = []
-        for player in server.player_manager.get_players():
-            bot_agents.append(BotAgent(player.name))
+        for index, player in enumerate(server.player_manager.get_players()):
+            bot_agents.append(BotAgent(player.name, level=index%3+1))
             logging.debug('players init: {}'.format(player.name))
         time_obs = 0
         time_step = 0

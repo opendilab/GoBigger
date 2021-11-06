@@ -8,29 +8,71 @@ from pygame.math import Vector2
 from .base_agent import BaseAgent
 
 
-level_para = {
-    1 : 30,  # all weight = 19000
-    2 : 20,  # all weight = 25000
-    3 : 15,  # all weight = 32000
-    4 : 10,  # all weight = 40000
-    5 : 5,   # all weight = 60000
-    6 : 1,   # all weight = 75000
-}
-
-
 class BotAgent(BaseAgent):
     '''
     Overview:
         A simple script bot
     '''
-    def __init__(self, name=None, level=1):
+    def __init__(self, name=None, level=3):
         self.name = name
         self.actions_queue = queue.Queue()
         self.last_clone_num = 1
         self.last_total_size = 0
-        self.noise_ratio = level_para[level]
+        self.level = level
 
     def step(self, obs):
+        if self.level == 1:
+            return self.step_level_1(obs)
+        if self.level == 2:
+            return self.step_level_2(obs)
+        if self.level == 3:
+            return self.step_level_3(obs)
+
+    def step_level_1(self, obs):
+        if self.actions_queue.qsize() > 0:
+            return self.actions_queue.get()
+        overlap = obs['overlap']
+        overlap = self.preprocess(overlap)
+        food_balls = overlap['food']
+        thorns_balls = overlap['thorns']
+        spore_balls = overlap['spore']
+        clone_balls = overlap['clone']
+
+        my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
+        min_distance, min_food_ball = self.process_food_balls(food_balls, my_clone_balls[0])
+        direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
+        action_type = -1
+        self.actions_queue.put([direction.x, direction.y, action_type])
+        action_ret = self.actions_queue.get()
+        return action_ret
+
+    def step_level_2(self, obs):
+        if self.actions_queue.qsize() > 0:
+            return self.actions_queue.get()
+        overlap = obs['overlap']
+        overlap = self.preprocess(overlap)
+        food_balls = overlap['food']
+        thorns_balls = overlap['thorns']
+        spore_balls = overlap['spore']
+        clone_balls = overlap['clone']
+
+        my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
+        min_distance, min_thorns_ball = self.process_thorns_balls(thorns_balls, my_clone_balls[0])
+        if min_thorns_ball is not None:
+            direction = (min_thorns_ball['position'] - my_clone_balls[0]['position']).normalize()
+        else:
+            direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
+        action_type = -1
+        self.actions_queue.put([direction.x, direction.y, action_type])
+        self.actions_queue.put([None, None, -1])
+        self.actions_queue.put([None, None, -1])
+        self.actions_queue.put([None, None, -1])
+        self.actions_queue.put([None, None, -1])
+        self.actions_queue.put([None, None, -1])
+        action_ret = self.actions_queue.get()
+        return action_ret
+
+    def step_level_3(self, obs):
         if self.actions_queue.qsize() > 0:
             return self.actions_queue.get()
         overlap = obs['overlap']
@@ -130,7 +172,6 @@ class BotAgent(BaseAgent):
                 new_overlap[k][index]['position'] = Vector2(*vv['position'])
         return new_overlap
     
-    def add_noise_to_direction(self, direction):
-        noise_ratio = self.noise_ratio
+    def add_noise_to_direction(self, direction, noise_ratio=0.1):
         direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, ((random.random() * 2 - 1)*noise_ratio)*direction.y)
         return direction
