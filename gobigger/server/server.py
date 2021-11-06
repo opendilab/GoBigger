@@ -86,6 +86,7 @@ class Server:
 
         self.custom_init = self.cfg.custom_init
         self.save_video = self.cfg.save_video
+        self.save_quality = self.cfg.save_quality
         self.save_path = self.cfg.save_path
         self.obs_settings = self.cfg.obs_settings
         
@@ -279,7 +280,8 @@ class Server:
                     self.record_frame_for_video()
                 else:
                     self.step_state_tick()
-                    self.record_frame_for_video()
+                    if self.save_quality == 'high':
+                        self.record_frame_for_video()
         return False
 
     def set_render(self, render):
@@ -307,7 +309,7 @@ class Server:
     def save_mp4(self, save_path=''):
         # self.video_id = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         self.video_id = str(uuid.uuid1())
-        fps = self.state_tick_per_second
+        fps = self.state_tick_per_second if self.save_quality == 'high' else self.action_tick_per_second
         # save all
         video_file = os.path.join(save_path, '{}-all.mp4'.format(self.video_id))
         out = cv2.VideoWriter(video_file, cv2.VideoWriter_fourcc(*'mp4v'), fps, (self.screens_all[0].shape[1], self.screens_all[0].shape[0]))

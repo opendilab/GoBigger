@@ -8,6 +8,7 @@ server_default_config = dict(
     action_tick_per_second=5, # frame
     collision_detection_type='precision',
     save_video=False,
+    save_quality='high', # ['high', 'low']
     save_path='',
     manager_settings=dict(
         # food setting

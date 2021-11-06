@@ -21,8 +21,9 @@ GoBigger 将可配置参数统一放在 ``gobigger/server/server_default_config.
 * ``match_time``: 单局游戏时长，默认为10分钟
 * ``state_tick_per_second``: 每秒的状态帧数。每个状态帧都会对所有球的状态进行更新。默认为40
 * ``action_tick_per_second``: 每秒的动作帧数。每个动作帧都会接收动作并在游戏中实现。默认为5
-* ``collision_detection_type``: 碰撞检测算法的种类。默认是precision
+* ``collision_detection_type``: 碰撞检测算法的种类。默认是'precision'
 * ``save_video``: 是否保存视频。默认为False
+* ``save_quality``: 保存的视频质量。默认为'high'，可以是'low'
 * ``save_path``: 保存视频路径。默认为空
 * ``manager_settings``
     * ``food_manager``

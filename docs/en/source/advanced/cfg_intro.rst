@@ -23,6 +23,7 @@ The configurable parameters will be described in detail below.
 * ``action_tick_per_second``: The number of action frames per second. Each action frame receives the action and implements it in the game. The default is 5
 * ``collision_detection_type``: the type of collision detection algorithm. The default is precision
 * ``save_video``: Whether to save the video. The default is False
+* ``save_quality``: The quality of the video. The default is 'high', could be 'low'
 * ``save_path``: The path to save the video. The default is empty
 * ``manager_settings``
     * ``food_manager``
