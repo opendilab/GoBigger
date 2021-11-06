@@ -112,7 +112,6 @@ def demo_bot():
     time_get_clip = 0
     time_cvt = 0
     time_overlap = 0
-    total_obs = []
     for i in range(100000):
         t1 = time.time()
         obs = server.obs()
@@ -127,13 +126,10 @@ def demo_bot():
         time_step += tmp_step
         logging.debug('{} {:.4f} obs: {:.3f} / {:.3f}, step: {:.3f} / {:.3f}'\
             .format(i, server.last_time, tmp_obs, time_obs/(i+1), tmp_step, time_step/(i+1)))
-        total_obs.append(obs)
         if finish_flag:
             logging.debug('Game Over')
             break
     server.close()
-    with open('obs.pkl', 'wb') as f:
-        pickle.dump(total_obs, f)
 
 
 if __name__ == '__main__':
