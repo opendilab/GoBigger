@@ -79,5 +79,5 @@ GoBigger 将可配置参数统一放在 ``gobigger/server/server_default_config.
     * ``clone``: 自定义的分身球列表，需提供位置、半径、玩家名称和队伍名称，默认为空
 * ``obs_settings``: 自定义obs
     * ``with_spatial``: 是否携带spatial信息，默认为True
-    * ``with_speed``: 食肉携带速度信息，默认为False
+    * ``with_speed``: 是否携带速度信息，默认为False
     * ``with_all_vision``: 是否全局视野，默认为False
