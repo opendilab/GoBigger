@@ -215,7 +215,7 @@ class EnvRender(BaseRender):
             for ball in player.get_balls():
                 pygame.draw.circle(screen, PLAYER_COLORS[int(ball.team_name)][0], ball.position, ball.radius)
                 font_size = int(ball.radius/1.6)
-                font = pygame.font.SysFont('arial', max(font_size, 4), True)
+                font = pygame.font.SysFont('arial', max(font_size, 8), True)
                 txt = font.render('{}'.format(chr(int(ball.owner)%player_num_per_team+65)), True, WHITE)
                 txt_rect = txt.get_rect(center=(ball.position.x, ball.position.y))
                 screen.blit(txt, txt_rect)
