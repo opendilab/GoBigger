@@ -39,8 +39,11 @@ class BotAgent(BaseAgent):
         clone_balls = overlap['clone']
 
         my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
-        min_distance, min_food_ball = self.process_food_balls(food_balls, my_clone_balls[0])
-        direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
+        min_distance, min_food_ball = self.process_food_balls(food_balls, my_clone_balls[0])        
+        if min_food_ball is not None:
+            direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
+        else:
+            direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
         action_type = -1
         self.actions_queue.put([direction.x, direction.y, action_type])
         action_ret = self.actions_queue.get()
