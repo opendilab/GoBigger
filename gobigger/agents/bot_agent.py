@@ -169,10 +169,31 @@ class BotAgent(BaseAgent):
     def preprocess(self, overlap):
         new_overlap = {}
         for k, v in overlap.items():
+            if k =='clone':
+                new_overlap[k] = []
+                for index, vv in enumerate(v):
+                    tmp={}
+                    tmp['position'] = Vector2(vv[0],vv[1])
+                    tmp['radius'] = vv[2]
+                    tmp['player'] = str(vv[-2])
+                    tmp['team'] = str(vv[-1])
+                    new_overlap[k].append(tmp)
+            else:
+                new_overlap[k] = []
+                for index, vv in enumerate(v):
+                    tmp={}
+                    tmp['position'] = Vector2(vv[0],vv[1])
+                    tmp['radius'] = vv[2]
+                    new_overlap[k].append(tmp)
+        return new_overlap
+
+    def preprocess_tuple2vector(self, overlap):
+        new_overlap = {}
+        for k, v in overlap.items():
             new_overlap[k] = []
             for index, vv in enumerate(v):
                 new_overlap[k].append(vv)
-                new_overlap[k][index]['position'] = Vector2(vv[0],vv[1])
+                new_overlap[k][index]['position'] = Vector2(*vv['position'])
         return new_overlap
     
     def add_noise_to_direction(self, direction, noise_ratio=0.1):
