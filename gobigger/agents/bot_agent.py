@@ -172,7 +172,7 @@ class BotAgent(BaseAgent):
             new_overlap[k] = []
             for index, vv in enumerate(v):
                 new_overlap[k].append(vv)
-                new_overlap[k][index]['position'] = Vector2(*vv['position'])
+                new_overlap[k][index]['position'] = Vector2(vv[0],vv[1])
         return new_overlap
     
     def add_noise_to_direction(self, direction, noise_ratio=0.1):
