@@ -22,6 +22,8 @@ def play_control_by_keyboard():
             team_num=1, 
             player_num_per_team=1,
             match_time=60*10,
+            state_tick_per_second=20, # frame
+            action_tick_per_second=5, # frame
         ))
     server.start()
     render = RealtimeRender(server.map_width, server.map_height)
@@ -85,6 +87,8 @@ def play_control_by_keyboard_multi_player():
             team_num=2,
             player_num_per_team=1, 
             match_time=60*10,
+            state_tick_per_second=20, # frame
+            action_tick_per_second=5, # frame
         ))
     server.start()
     render = RealtimeRender(server.map_width, server.map_height)
@@ -158,6 +162,8 @@ def play_control_by_keyboard_partial():
             team_num=1, 
             player_num_per_team=1, 
             match_time=60*10, 
+            state_tick_per_second=20, # frame
+            action_tick_per_second=5, # frame
         ))
     server.start()
     render = RealtimePartialRender(server.map_width, server.map_height)
@@ -220,7 +226,9 @@ def play_control_by_keyboard_vs_bot(team_num=2):
             team_num=team_num, 
             player_num_per_team=1,
             match_time=60*10,
-            save_video=True
+            save_video=True,
+            state_tick_per_second=20, # frame
+            action_tick_per_second=5, # frame
         ))
     server.start()
     render = RealtimeRender(server.map_width, server.map_height)

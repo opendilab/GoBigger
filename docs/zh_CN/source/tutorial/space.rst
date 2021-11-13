@@ -75,14 +75,18 @@
             'feature_layers': list(numpy.ndarray), # features of player
             'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
             'overlap': {
-                'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'thorns': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'spore': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of food is not sure
+                'food': [[position.x, position.y, radius], ...], 
+                'thorns': [[position.x, position.y, radius], ...],
+                'spore': [[position.x, position.y, radius], ...],
+                'clone': [[[position.x, position.y, radius, player_name, team_name], ...],     
             }, # all balls' info in vision
             'team_name': team_name, # the team which this player belongs to 
         }
     }
+
+``player_state`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。``overlap`` 是一个简单的字典，每个键值对代表了视野中的一种球的信息。``overlap`` 中包含了食物球，荆棘球，孢子球，分身球的结构化信息（位置和半径，如果是分身球则包含所属玩家名称和队伍名称）。具体来说，例如我们发现 ``food`` 字段的内容为 ``[[3.0, 4.0, 2], ..]``（简单起见这里只展示了列表中的第一个元素），那么其中的含义是玩家的视野中，坐标 ``(3.0, 4.0)`` 位置存在一个半径为 ``2`` 的食物球。
+
+请注意，每一种球的信息列表的长度是不确定的。例如，在当前帧视野中一共有20个食物球，那么当前 ``food`` 对应的列表长度为20。在下一帧，视野内的食物球如果变为25，则对应的列表长度将会变成25。 此外，如果某个球只有一部分出现在玩家视野中，GoBigger也会在 ``overlap`` 中给出该球的圆心和半径信息。
 
 GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能获得的 2D 空间信息。``feature_layers`` 由多个 channel 组成，每个 channel 给出了视野内某一种球的所有信息。比如，在某场比赛中，有 4 支队伍，每支队伍由 3 名玩家组成。因此，我们在游戏中获得的 ``feature_layers`` 将会是一个长度为 15 的 list。其中的每个元素含义如下：
 
@@ -117,9 +121,6 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
 * channel 14: 视野内荆棘球所处位置。
 
 
-``player_state`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。``overlap`` 是一个简单的字典，每个键值对代表了视野中的一种球的信息。``overlap`` 中包含了食物球，荆棘球，孢子球，分身球的结构化信息（位置和半径，如果是分身球则包含所属玩家名称和队伍名称）。请注意，每一种球的信息列表的长度是不确定的。例如，在当前帧视野中一共有20个食物球，那么当前 ``food`` 对应的列表长度为20。在下一帧，视野内的食物球如果变为25，则对应的列表长度将会变成25。 此外，如果某个球只有一部分出现在玩家视野中，GoBigger也会在 ``overlap`` 中给出该球的圆心和半径信息。
-
-
 状态空间 - 自定义
 ============================================
 
@@ -146,7 +147,23 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
 携带速度信息
 ------------------
 
-我们可以对同一个球通过计算帧间相对位置来获取到该球的运动速度信息。为了减轻用户的负担，GoBigger 提供了 ``with_speed=True`` 来帮助用户直接在 observation 中获取到所有球的速度信息。一旦指定了 ``with_speed=True``，用户获取到的 ``overlap`` 中将会在对应元素中添加 ``speed`` 键值对，来表示该球的运动速度。
+我们可以对同一个球通过计算帧间相对位置来获取到该球的运动速度信息。为了减轻用户的负担，GoBigger 提供了 ``with_speed=True`` 来帮助用户直接在 observation 中获取到所有球的速度信息。一旦指定了 ``with_speed=True``，用户获取到的 ``overlap`` 中将会在对应元素中添加 ``speed`` 信息，来表示该球的运动速度。速度是矢量，因此会存在 ``speed.x`` 和 ``speed.y``。例如，添加了速度信息之后的 ``player_state`` 将如下所示。 请注意列表中不同元素的顺序。
+
+.. code-block:: python
+
+    {
+        player_name: {
+            'feature_layers': list(numpy.ndarray), # features of player
+            'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
+            'overlap': {
+                'food': [[position.x, position.y, radius], ...], 
+                'thorns': [[position.x, position.y, radius, speed.x, speed.y], ...],
+                'spore': [[position.x, position.y, radius, speed.x, speed.y], ...],
+                'clone': [[[position.x, position.y, radius, speed.x, speed.y, player_name, team_name], ...],     
+            }, # all balls' info in vision
+            'team_name': team_name, # the team which this player belongs to 
+        }
+    }
 
 .. note::
 
