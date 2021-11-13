@@ -100,23 +100,66 @@ class EnvRender(BaseRender):
                     ret['clone'].append([ball.position.x, ball.position.y, ball.radius, int(player.name), int(player.team_name)])
         return ret
 
-    def get_overlap_dict(self, rectangle, food_balls, thorns_balls, spore_balls, players):
-            ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-            for ball in food_balls:
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+        ret = {}
+        food_count = 0
+        thorns_count = 0
+        spore_count = 0
+        clone_count = 0
+        food = 2500*[3*[None]]
+        thorns = 20*[3*[None]]
+        spore = 10000*[3*[None]]
+        clone = 100*[5*[None]]
+        # food overlap
+        food_radius = food_balls[0].radius
+        fr0 = rectangle[0] - food_radius
+        fr1 = rectangle[1] - food_radius
+        fr2 = rectangle[2] + food_radius
+        fr3 = rectangle[3] + food_radius
+        for ball in food_balls:
+            x = ball.position.x
+            y = ball.position.y
+            if x < fr0 or x > fr2 or y < fr1 or y > fr3:
+                continue
+            else:
+                food[food_count][0] = x
+                food[food_count][1] = y
+                food[food_count][2] = ball.radius
+                food_count += 1
+        food = food[:food_count]
+        ret['food'] = food
+        # thorns overlap
+        for ball in thorns_balls:
+            if ball.judge_in_rectangle(rectangle):
+                thorns[thorns_count][0] = ball.position.x
+                thorns[thorns_count][1] = ball.position.y
+                thorns[thorns_count][2] = ball.radius
+                thorns_count += 1
+        thorns = thorns[:thorns_count]
+        ret['thorns'] = thorns
+        # spore overlap
+        for ball in spore_balls:
+            if ball.judge_in_rectangle(rectangle):
+                spore[spore_count][0] = ball.position.x
+                spore[spore_count][1] = ball.position.y
+                spore[spore_count][2] = ball.radius
+                spore_count += 1
+        spore = spore[:spore_count]
+        ret['spore'] = spore
+        # clone overlap
+        for player in players:
+            for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
-            for ball in thorns_balls:
-                if ball.judge_in_rectangle(rectangle):
-                    ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius})
-            for ball in spore_balls:
-                if ball.judge_in_rectangle(rectangle):
-                    ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius})
-            for player in players:
-                for ball in player.get_balls():
-                    if ball.judge_in_rectangle(rectangle):
-                        ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 
-                                            'player': player.name, 'team': player.team_name})
-            return ret
+                    clone[clone_count][0] = ball.position.x
+                    clone[clone_count][1] = ball.position.y
+                    clone[clone_count][2] = ball.radius
+                    clone[clone_count][3] = player.name
+                    clone[clone_count][4] = player.team_name
+                    clone_count += 1
+        clone = clone[:clone_count]
+        ret['clone'] = clone
+
+        return ret
     
     def get_overlap_wo_rectangle(self, food_balls, thorns_balls, spore_balls, players):
         ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
@@ -131,20 +174,6 @@ class EnvRender(BaseRender):
                 ret['clone'].append([ball.position.x, ball.position.y, ball.radius, int(player.name), int(player.team_name)])
         return ret
 
-    def get_overlap_wo_rectangle_dict(self, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-        for ball in food_balls:
-            ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
-        for ball in thorns_balls:
-            ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius})
-        for ball in spore_balls:
-            ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius})
-        for player in players:
-            for ball in player.get_balls():
-                ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 
-                                     'player': player.name, 'team': player.team_name})
-        return ret
-
     def get_overlap_wo_rectangle_with_speed(self, food_balls, thorns_balls, spore_balls, players):
         ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
         for ball in food_balls:
@@ -156,20 +185,6 @@ class EnvRender(BaseRender):
         for player in players:
             for ball in player.get_balls():
                 ret['clone'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, int(player.name), int(player.team_name)])
-        return ret
-
-    def get_overlap_wo_rectangle_with_speed_dict(self, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-        for ball in food_balls:
-            ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
-        for ball in thorns_balls:
-            ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
-        for ball in spore_balls:
-            ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
-        for player in players:
-            for ball in player.get_balls():
-                ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel+ball.vel_last), 
-                                     'player': player.name, 'team': player.team_name})
         return ret
 
     def get_overlap_with_speed(self, rectangle, food_balls, thorns_balls, spore_balls, players):
@@ -188,22 +203,72 @@ class EnvRender(BaseRender):
                 if ball.judge_in_rectangle(rectangle):
                     ret['clone'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, int(player.name), int(player.team_name)])
         return ret
-    def get_overlap_with_speed_dict(self, rectangle, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+
+    def get_overlap_with_speed(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+        ret = {}
+        food_count = 0
+        thorns_count = 0
+        spore_count = 0
+        clone_count = 0
+        food = 2500*[3*[None]]
+        thorns = 20*[5*[None]]
+        spore = 10000*[5*[None]]
+        clone = 100*[7*[None]]
+        # food overlap
+        food_radius = food_balls[0].radius
+        fr0 = rectangle[0] - food_radius
+        fr1 = rectangle[1] - food_radius
+        fr2 = rectangle[2] + food_radius
+        fr3 = rectangle[3] + food_radius
         for ball in food_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['food'].append({'position': tuple(ball.position), 'radius': ball.radius})
+            x = ball.position.x
+            y = ball.position.y
+            if x < fr0 or x > fr2 or y < fr1 or y > fr3:
+                continue
+            else:
+                food[food_count][0] = x
+                food[food_count][1] = y
+                food[food_count][2] = ball.radius
+                food_count += 1
+        food = food[:food_count]
+        ret['food'] = food
+        # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
-                ret['thorns'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+                thorns[thorns_count][0] = ball.position.x
+                thorns[thorns_count][1] = ball.position.y
+                thorns[thorns_count][2] = ball.radius
+                thorns[thorns_count][3] = ball.vel.x
+                thorns[thorns_count][4] = ball.vel.y
+                thorns_count += 1
+        thorns = thorns[:thorns_count]
+        ret['thorns'] = thorns
+        # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                ret['spore'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel)})
+                spore[spore_count][0] = ball.position.x
+                spore[spore_count][1] = ball.position.y
+                spore[spore_count][2] = ball.radius
+                spore[spore_count][2] = ball.vel.x
+                spore[spore_count][2] = ball.vel.y
+                spore_count += 1
+        spore = spore[:spore_count]
+        ret['spore'] = spore
+        # clone overlap
         for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    ret['clone'].append({'position': tuple(ball.position), 'radius': ball.radius, 'speed': tuple(ball.vel+ball.vel_last), 
-                                         'player': player.name, 'team': player.team_name})
+                    clone[clone_count][0] = ball.position.x
+                    clone[clone_count][1] = ball.position.y
+                    clone[clone_count][2] = ball.radius
+                    clone[clone_count][3] = ball.vel.x+ball.vel_last.x
+                    clone[clone_count][4] = ball.vel.y+ball.vel_last.y
+                    clone[clone_count][5] = player.name
+                    clone[clone_count][6] = player.team_name
+                    clone_count += 1
+        clone = clone[:clone_count]
+        ret['clone'] = clone
+
         return ret
 
     def update_all(self, food_balls, thorns_balls, spore_balls, players):
