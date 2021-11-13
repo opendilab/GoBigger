@@ -106,10 +106,10 @@ class EnvRender(BaseRender):
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = [[None]*3 for _ in range(2500)]
-        thorns = [[None]*3 for _ in range(30)]
-        spore = [[None]*3 for _ in range(10000)]
-        clone = [[None]*5 for _ in range(100)]
+        food = 2500*[None]
+        thorns = 20*[None]
+        spore = 10000*[None]
+        clone = 100*[None]
         # food overlap
         food_radius = food_balls[0].radius
         fr0 = rectangle[0] - food_radius
@@ -122,27 +122,21 @@ class EnvRender(BaseRender):
             if x < fr0 or x > fr2 or y < fr1 or y > fr3:
                 continue
             else:
-                food[food_count][0] = x
-                food[food_count][1] = y
-                food[food_count][2] = ball.radius
+                food[food_count] = [x, y, ball.radius]
                 food_count += 1
         food = food[:food_count]
         ret['food'] = food
         # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
-                thorns[thorns_count][0] = ball.position.x
-                thorns[thorns_count][1] = ball.position.y
-                thorns[thorns_count][2] = ball.radius
+                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius]
                 thorns_count += 1
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                spore[spore_count][0] = ball.position.x
-                spore[spore_count][1] = ball.position.y
-                spore[spore_count][2] = ball.radius
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius]
                 spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
@@ -150,11 +144,7 @@ class EnvRender(BaseRender):
         for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    clone[clone_count][0] = ball.position.x
-                    clone[clone_count][1] = ball.position.y
-                    clone[clone_count][2] = ball.radius
-                    clone[clone_count][3] = player.name
-                    clone[clone_count][4] = player.team_name
+                    clone[clone_count] = [ball.position.x, ball.position.y, ball.radius, player.name, player.team_name]
                     clone_count += 1
         clone = clone[:clone_count]
         ret['clone'] = clone
@@ -210,10 +200,10 @@ class EnvRender(BaseRender):
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = [[None]*3 for _ in range(2500)]
-        thorns = [[None]*5 for _ in range(30)]
-        spore = [[None]*5 for _ in range(10000)]
-        clone = [[None]*7 for _ in range(100)]
+        food = 2500*[3*[None]]
+        thorns = 20*[5*[None]]
+        spore = 10000*[5*[None]]
+        clone = 100*[7*[None]]
         # food overlap
         food_radius = food_balls[0].radius
         fr0 = rectangle[0] - food_radius
