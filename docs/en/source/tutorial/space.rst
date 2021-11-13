@@ -73,15 +73,16 @@ Each time ``server.obs()`` is called, you will get your balls' observation.
             'feature_layers': list(numpy.ndarray), # features of player
             'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
             'overlap': {
-                'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-                'thorns': [{'position': position, 'radius': radius}, ...], # the length of thorns is not sure
-                'spore': [{'position': position, 'radius': radius}, ...], # the length of spore is not sure
-                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of clone is not sure
+                'food': [[position.x, position.y, radius], ...], 
+                'thorns': [[position.x, position.y, radius], ...],
+                'spore': [[position.x, position.y, radius], ...],
+                'clone': [[[position.x, position.y, radius, player_name, team_name], ...], 
             }, # all balls' info in vision
             'team_name': team_name, # the team which this player belongs to 
         }
     }
 
+The ``overlap`` in ``player_state`` represents the structured information of the ball appearing in the current player's field of vision. ``overlap`` is a simple dictionary, each key-value pair represents the information of a kind of ball in the field of view. ``overlap`` contains the structured information of food ball, thorn ball, spore ball, clone ball (only position and radius, if it is a clone ball, it contains the player name and team name). Specifically, for example, we found that the content of the ``food`` field is ``[[3.0, 4.0, 2], ..]`` (for simplicity, only the first element in the list is shown here), then the meaning is that there is a food ball with a radius of ``2`` at the coordinate ``(3.0, 4.0)`` in the player's field of vision.
 
 We define that ``feature_layers`` in ``player_state`` represents the feature of this player. ``feature_layers`` has several channels, and each channel gives the info of food balls, or spore balls, or thorns balls, or player balls in its vision. For example, in a game we have 4 teams and 3 players for each team, then we get ``feature_layers`` as a list, and the length of this list should be 15. Here we show the meanning of each channel in the list:
 
@@ -116,8 +117,6 @@ We define that ``feature_layers`` in ``player_state`` represents the feature of 
 * channel 14: the position of all thorns balls in vision.
 
 
-``overlap`` in ``player_state`` only includes balls in the player's owned vision. What's more, if a ball only show part of itself in the player's vision, we will return all this ball's info, such as radius and position, to be part of ``overlap``.
-
 
 Observation Space - Customize
 ============================================
@@ -145,7 +144,23 @@ In fact, when we get ``feature_layers`` and ``overlap`` in observation, it is cl
 With Speed Info
 -------------------
 
-We can get the speed information of the ball by calculating the relative position between frames for the same ball. In order to reduce the user's burden, GoBigger provides ``with_speed=True`` to help users directly get the speed information of all balls in observation. Once ``with_speed=True`` is specified, the ``overlap`` obtained by the user will add a ``speed`` key-value pair to the corresponding element to indicate the speed of the ball.
+We can get the speed information of the ball by calculating the relative position between frames for the same ball. In order to reduce the user's burden, GoBigger provides ``with_speed=True`` to help users directly get the speed information of all balls in observation. Once ``with_speed=True`` is specified, the ``overlap`` obtained by the user will add ``speed`` info to the corresponding element to indicate the speed of the ball. For example, the ``player_state`` will look like the following. Please pay attention to the order of different elements in the list.
+
+.. code-block:: python
+
+    {
+        player_name: {
+            'feature_layers': list(numpy.ndarray), # features of player
+            'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
+            'overlap': {
+                'food': [[position.x, position.y, radius], ...], 
+                'thorns': [[position.x, position.y, radius, speed.x, speed.y], ...],
+                'spore': [[position.x, position.y, radius, speed.x, speed.y], ...],
+                'clone': [[[position.x, position.y, radius, speed.x, speed.y, player_name, team_name], ...],     
+            }, # all balls' info in vision
+            'team_name': team_name, # the team which this player belongs to 
+        }
+    }
 
 .. note::
 
@@ -163,10 +178,10 @@ The existence of a partial field of view may complicate training. Therefore, GoB
             'feature_layers': list(numpy.ndarray),
             'rectangle': None,
             'overlap': {
-                'food': [{'position': position, 'radius': radius}, ...], 
-                'thorns': [{'position': position, 'radius': radius}, ...], 
-                'spore': [{'position': position, 'radius': radius}, ...], 
-                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+                'food': [[position.x, position.y, radius], ...], 
+                'thorns': [[position.x, position.y, radius], ...],
+                'spore': [[position.x, position.y, radius], ...],
+                'clone': [[[position.x, position.y, radius, player_name, team_name], ...],   
             }, 
             'team_name': team_name, 
         },
