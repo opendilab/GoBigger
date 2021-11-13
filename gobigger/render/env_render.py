@@ -106,10 +106,10 @@ class EnvRender(BaseRender):
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = 2500*[3*[None]]
-        thorns = 20*[3*[None]]
-        spore = 10000*[3*[None]]
-        clone = 100*[5*[None]]
+        food = [[None]*3 for _ in range(2500)]
+        thorns = [[None]*3 for _ in range(30)]
+        spore = [[None]*3 for _ in range(10000)]
+        clone = [[None]*3 for _ in range(100)]
         # food overlap
         food_radius = food_balls[0].radius
         fr0 = rectangle[0] - food_radius
