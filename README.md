@@ -9,6 +9,10 @@
 
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
+## Ongoing
+
+* 2021.11.13 We are holding a [competition](https://github.com/opendilab/GoBigger-Challenge-2021) —— Go-Bigger: Multi-Agent Decision Intelligence Environment. Come and make your agents in the game!
+
 GoBigger is a simple and efficient *agar-like* game engine and provides various interfaces for game AI development. The game is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
 <div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
