@@ -24,7 +24,7 @@ def demo_bot():
         map_width=1000, 
         map_height=1000, 
         match_time=60*10, 
-        state_tick_per_second=20, # frame
+        state_tick_per_second=10, # frame
         action_tick_per_second=5, 
         collision_detection_type='precision',
         save_video=True,

@@ -50,14 +50,13 @@ class PrecisionCollisionDetection(BaseCollisionDetection) :
         Precision Approximation Algorithm
         Divide the map into several rows according to the accuracy that has been set, dynamically maintain the row information in each frame, and search by row
     '''
-    def __init__(self, border: Border, precision : int = 1000) -> None:
+    def __init__(self, border: Border, precision : int = 50) -> None:
         '''
         Parameter:
             precision <int>: the precision of dividing rows
         '''
         super(PrecisionCollisionDetection, self).__init__(border = border)
         self.precision = precision
-        self.row_vector = [[] for j in range(self.precision)]
 
     def get_row(self, x) -> int:
         '''
@@ -66,39 +65,18 @@ class PrecisionCollisionDetection(BaseCollisionDetection) :
         Parameter:
             node <BaseBall>: The ball need to get its row coordinates
         '''
-        x = max(0, x - self.border.minx)
-        x = min(x, self.border.maxx - self.border.minx)
-        row_height = self.border.height / self.precision
-        row_id = int (x // row_height)
-        row_id = max(0, row_id)
-        row_id = min(row_id, self.precision - 1)
-        return row_id
+        return int((x - self.border.minx) / self.border.height * self.precision)
 
-
-    def dichotomous_jump(self, value, row_id) -> int:
-        '''
-        Overview:
-            Dichotomous algorithm
-        Parameter:
-            value <double> : Threshold
-            row_id <int> : The id of the row being operated on
-        '''
-        pos = -1
-        l = 0
-        r = len(self.row_vector[row_id]) - 1
-        while l <= r:
-            mid = int((l + r) // 2)
-            if value <= self.row_vector[row_id][mid].position.y:
-                r = mid - 1
-                pos = mid
-            else:
-                l = mid + 1
-        return pos
 
     def solve(self, query_list: list, gallery_list: list):
         '''
         Overview:
-            First, you need to sort the balls in each row according to the ordinate. For the balls in query_list, first abstract the boundary of the ball into a rectangle, then traverse each row in the rectangle, and find the first ball covered by the query through dichotomy in each row, and then Enumerate the balls in sequence until the ordinate exceeds the boundary of the query rectangle
+            First, you need to sort the balls in each row according to the ordinate. 
+            For the balls in query_list, first abstract the boundary of the ball into 
+            a rectangle, then traverse each row in the rectangle, and find the first 
+            ball covered by the query through dichotomy in each row, and then Enumerate 
+            the balls in sequence until the ordinate exceeds the boundary of the query 
+            rectangle.
         Parameters:
             query_list <List[BaseBall]>: List of balls that need to be queried for collision
             gallery_list <List[BaseBall]>: List of all balls
@@ -110,12 +88,14 @@ class PrecisionCollisionDetection(BaseCollisionDetection) :
                     List of balls that collided with the query corresponding to the subscript
         '''
 
-        for i in range(self.precision): 
-            self.row_vector[i].clear()
-        for node in gallery_list: 
-            self.row_vector[self.get_row(node.position.x)].append(node)
-        for i in range(self.precision):
-            self.row_vector[i].sort(key = lambda base_ball: base_ball.position.y)
+        vec = {}
+        for id, node in enumerate(gallery_list): 
+            row_id = self.get_row(node.position.x)
+            if  row_id not in vec:
+                vec[row_id] = []
+            vec[row_id].append((id, node.position.y))
+        for val in vec.values():
+            val.sort(key = lambda x: x[1])
         results = {}
         for id, query in enumerate(query_list):
             results[id] = []
@@ -124,13 +104,16 @@ class PrecisionCollisionDetection(BaseCollisionDetection) :
             top = self.get_row(query.position.x - query.radius)
             bottom = self.get_row(query.position.x + query.radius)
             for i in range(top, bottom + 1):
-                start_pos = self.dichotomous_jump(left, i)
-                if start_pos >= 0:
-                    for j in range(start_pos, len(self.row_vector[i])):
-                        if self.row_vector[i][j].position.y > right: break
-                        is_covered = query.judge_cover(self.row_vector[i][j])
-                        if is_covered: 
-                            results[id].append(self.row_vector[i][j])
+                if i not in vec: continue
+                l = len(vec[i])
+                start_pos = 0
+                for j in range(15, -1, -1):
+                    if start_pos+(2**j) < l and vec[i][start_pos+(2**j)][1] < left:
+                        start_pos += 2**j
+                for j in range(start_pos, l):
+                    if vec[i][j][1] > right: break
+                    if query.judge_cover(gallery_list[vec[i][j][0]]):
+                        results[id].append(gallery_list[vec[i][j][0]])
         return results
 
 
