@@ -216,31 +216,21 @@ class EnvRender(BaseRender):
             if x < fr0 or x > fr2 or y < fr1 or y > fr3:
                 continue
             else:
-                food[food_count][0] = x
-                food[food_count][1] = y
-                food[food_count][2] = ball.radius
+                food[food_count] = [x, y, ball.radius]
                 food_count += 1
         food = food[:food_count]
         ret['food'] = food
         # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
-                thorns[thorns_count][0] = ball.position.x
-                thorns[thorns_count][1] = ball.position.y
-                thorns[thorns_count][2] = ball.radius
-                thorns[thorns_count][3] = ball.vel.x
-                thorns[thorns_count][4] = ball.vel.y
+                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y]
                 thorns_count += 1
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                spore[spore_count][0] = ball.position.x
-                spore[spore_count][1] = ball.position.y
-                spore[spore_count][2] = ball.radius
-                spore[spore_count][2] = ball.vel.x
-                spore[spore_count][2] = ball.vel.y
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y]
                 spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
@@ -248,13 +238,7 @@ class EnvRender(BaseRender):
         for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    clone[clone_count][0] = ball.position.x
-                    clone[clone_count][1] = ball.position.y
-                    clone[clone_count][2] = ball.radius
-                    clone[clone_count][3] = ball.vel.x+ball.vel_last.x
-                    clone[clone_count][4] = ball.vel.y+ball.vel_last.y
-                    clone[clone_count][5] = player.name
-                    clone[clone_count][6] = player.team_name
+                    clone[clone_count][6] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, player.name, player.team_name]
                     clone_count += 1
         clone = clone[:clone_count]
         ret['clone'] = clone
