@@ -175,8 +175,8 @@ class BotAgent(BaseAgent):
                     tmp={}
                     tmp['position'] = Vector2(vv[0],vv[1])
                     tmp['radius'] = vv[2]
-                    tmp['player'] = str(vv[-2])
-                    tmp['team'] = str(vv[-1])
+                    tmp['player'] = str(int(vv[-2]))
+                    tmp['team'] = str(int(vv[-1]))
                     new_overlap[k].append(tmp)
             else:
                 new_overlap[k] = []
