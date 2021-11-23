@@ -58,7 +58,7 @@ class FoodManager(BaseManager):
                 self.balls[ball.name] = ball
         else:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg['position']), size=ball_cfg['radius']**2)
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
                 self.balls[ball.name] = ball
 
     def step(self, duration):

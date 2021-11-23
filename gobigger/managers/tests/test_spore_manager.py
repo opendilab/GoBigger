@@ -59,8 +59,3 @@ class TestSporeManager:
         balls = spore_manager.get_balls()
         spore_manager.reset()
         assert len(spore_manager.balls) == 0
-
-    def test_init_balls_with_custom(self):
-        custom_init = [{'position': (100, 100), 'radius': 2}]
-        spore_manager = self.get_manager()
-        spore_manager.init_balls(custom_init)

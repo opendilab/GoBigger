@@ -11,18 +11,9 @@ We consider that the game will mainly be divided into two situations: early deve
 How to customize
 ======================
 
-The user can customize the opening game scene by setting the initialization ``config`` passed to the ``server``. The relevant details of the ``custom_init`` field can be used to set the relevant details of the food ball, thorns ball, spore ball and the player's clone ball. The following is a simple configuration example:
+The user can customize the opening game scene by setting the initialization ``config`` passed to the ``server``. The relevant details of the ``custom_init`` field can be used to set the relevant details of the food ball, thorns ball, spore ball and the player's clone ball. 
 
-.. code-block:: python
-
-    custom_init=dict(
-        food=[{'position': [100, 100],'radius': 2}],
-        thorns=[{'position': [200, 200],'radius': 15}],
-        spore=[{'position': [300, 300],'radius': 3}],
-        clone=[{'position': [400, 400],'radius': 12,'player': '0','team': '0'}],
-    ),
-
-As shown above, for the food ball, thorns ball, and spore ball, we have opened the position and radius setting interface. For the player's clone ball, in addition to the position and radius, the user also needs to specify the name of the player and team to which the ball belongs. Note that the naming of player names and team names needs to conform to game habits. For example, in a game consisting of 4 teams and 3 players in each team, if you want to customize the opening design, the name of the player should be selected. The value range is the str type from 0 to 11, and the value range of the team name is the str type from 0 to 3. If the relevant player is not set, it will be randomly born on the map with the smallest radius.
+For the food ball, thorns ball, and spore ball, we have opened the position and radius setting interface. For the player's clone ball, in addition to the position and radius, the user also needs to specify the name of the player and team to which the ball belongs. Note that the naming of player names and team names needs to conform to game habits. For example, in a game consisting of 4 teams and 3 players in each team, if you want to customize the opening design, the name of the player should be selected. The value range is the str type from 0 to 11, and the value range of the team name is the str type from 0 to 3. If the relevant player is not set, it will be randomly born on the map with the smallest radius.
 
 In addition, after setting the opening, the game will continue to iterate according to the parameters in the configuration table. For example, if the player sets only 100 food balls at the beginning (far lower than the initial number of food balls set in the configuration table), then the number of food balls will increase according to the rules after the start.
 
@@ -54,3 +45,26 @@ As shown above. To use the function of reloading the game, we need to set ``save
     load_bin_frame_num = 300,
 
 Then when the user calls ``server.reset()``, we will load the first 300 frames in the file information of the first round and stop the game at the end of the 300 frames. At this point, the user can continue to ``step`` or ``obs`` on this basis.
+
+Jump to a frame
+======================
+
+When using the method of overloading the game, it will inevitably require multiple steps. If the number of rounds continues to accumulate, the number of steps will also increase, and the time it takes to initialize will also become longer and longer. Therefore, we provide a method to quickly jump to a certain frame to avoid the above problems. For the convenience of description, we define the problem as follows: After the 300th step in the first round, we reported some problems with this frame according to the data, so we want to freeze this frame so that the frame can be reproduced. now.
+
+To solve this problem, first, in the 301st step, we pass in the ``save_frame_full_path`` parameter and set the value to the file save path (must be the file path, including the file name). As follows.
+
+.. code-block:: python
+
+    server.step(actions=actions, save_frame_full_path='./frame_test.pkl')
+
+Then after the end of this step, we can find the corresponding saved file, that is, the information of all units in this frame. In order to reproduce the frame, we added a new field in the initialization ``config`` of the incoming ``server``:
+
+.. code-block:: python
+
+    jump_to_frame_file ='',
+
+This field needs the path (including the file name) of the saved file we just got. If it is set to ``''``, it means that no jump will be performed. Otherwise, the initial state of ``server`` will be set to the state of the corresponding frame.
+
+.. note::
+
+    After enabling this parameter, the custom function set additionally will be overwritten.

@@ -152,8 +152,3 @@ class TestPlayerManager:
         assert len(player_names_with_team[0]) == cfg.player_num_per_team
         player_manager.reset()
         assert len(player_manager.players) == 0
-
-    def test_init_balls_custom(self):
-        custom_init = [{'position': (100, 100), 'radius': 10, 'player': '0', 'team': '0'}]
-        player_manager = self.get_manager()
-        player_manager.init_balls(custom_init)
