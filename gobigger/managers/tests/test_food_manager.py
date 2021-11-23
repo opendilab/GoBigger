@@ -72,7 +72,7 @@ class TestFoodManager:
         assert food_manager.add_balls(to_add_list)
 
     def test_init_balls_custom(self):
-        custom_init = [{'position': (100, 100), 'radius': 2}]
+        custom_init = [[100, 100, 2]]
         food_manager = self.get_manager()
         food_manager.init_balls(custom_init)
     

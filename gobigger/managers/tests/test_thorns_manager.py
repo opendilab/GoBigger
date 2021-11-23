@@ -69,8 +69,3 @@ class TestThornsManager:
         balls = thorns_manager.get_balls()
         thorns_manager.add_balls(balls)
         thorns_manager.remove_balls(balls)
-
-    def test_init_balls_with_custom(self):
-        custom_init = [{'position': (100, 100), 'radius': 2}]
-        thorns_manager = self.get_manager()
-        thorns_manager.init_balls(custom_init)
