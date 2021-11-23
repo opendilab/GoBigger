@@ -42,15 +42,31 @@ class PlayerManager(BaseManager):
                     self.players[player_name] = player
                     init_dict[team_name][player_name] = False
             for ball_cfg in custom_init:
-                position = Vector2(*ball_cfg['position'])
-                radius = ball_cfg['radius']
-                player_name = ball_cfg['player']
-                team_name = ball_cfg['team']
-                self.players[player_name].add_balls(CloneBall(
-                            team_name=team_name, name=uuid.uuid1(), position=position, border=self.border, 
-                            size=radius**2, vel=Vector2(0,0), acc=Vector2(0,0),
-                            vel_last=Vector2(0,0), acc_last=Vector2(0,0), last_given_acc=Vector2(0,0),
-                            stop_flag=True, owner=player_name, spore_settings=self.spore_settings))
+                # [position.x, position.y, radius, player_name, team_name, 
+                #  vel.x, vel.y, acc.x, acc.y, vel_last.x,
+                #  vel_last.y, acc_last.x, acc_last.y, direction.x, direction.y,
+                #  last_given_acc.x, last_given_acc.y, age, cooling_last, stop_flag,
+                #  stop_time, acc_stop.x, acc_stop.y]
+                position = Vector2(*ball_cfg[0:2])
+                radius = ball_cfg[2]
+                player_name = ball_cfg[3]
+                team_name = ball_cfg[4]
+                ball = CloneBall(team_name=team_name, name=uuid.uuid1(), position=position, border=self.border, 
+                                 size=radius**2, vel=Vector2(0,0), acc=Vector2(0,0),
+                                 vel_last=Vector2(0,0), acc_last=Vector2(0,0), last_given_acc=Vector2(0,0),
+                                 stop_flag=True, owner=player_name, spore_settings=self.spore_settings)
+                ball.vel = Vector2(*ball_cfg[5:7])
+                ball.acc = Vector2(*ball_cfg[7:9])
+                ball.vel_last = Vector2(*ball_cfg[9:11])
+                ball.acc_last = Vector2(*ball_cfg[11:13])
+                ball.direction = Vector2(*ball_cfg[13:15])
+                ball.last_given_acc = Vector2(*ball_cfg[15:17])
+                ball.age = ball_cfg[17]
+                ball.cooling_last = ball_cfg[18]
+                ball.stop_flag = ball_cfg[19]
+                ball.stop_time = ball_cfg[20]
+                ball.acc_stop = Vector2(*ball_cfg[21:23])
+                self.players[player_name].add_balls(ball)
                 init_dict[team_name][player_name] = True
             for team_name, team in init_dict.items():
                 for player_name, player_init_flag in team.items():

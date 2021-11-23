@@ -54,3 +54,26 @@ As shown above. To use the function of reloading the game, we need to set ``save
     load_bin_frame_num = 300,
 
 Then when the user calls ``server.reset()``, we will load the first 300 frames in the file information of the first round and stop the game at the end of the 300 frames. At this point, the user can continue to ``step`` or ``obs`` on this basis.
+
+Jump to a frame
+======================
+
+When using the method of overloading the game, it will inevitably require multiple steps. If the number of rounds continues to accumulate, the number of steps will also increase, and the time it takes to initialize will also become longer and longer. Therefore, we provide a method to quickly jump to a certain frame to avoid the above problems. For the convenience of description, we define the problem as follows: After the 300th step in the first round, we reported some problems with this frame according to the data, so we want to freeze this frame so that the frame can be reproduced. now.
+
+To solve this problem, first, in the 301st step, we pass in the ``save_frame_full_path`` parameter and set the value to the file save path (must be the file path, including the file name). As follows.
+
+.. code-block:: python
+
+    server.step(actions=actions, save_frame_full_path='./frame_test.pkl')
+
+Then after the end of this step, we can find the corresponding saved file, that is, the information of all units in this frame. In order to reproduce the frame, we added a new field in the initialization ``config`` of the incoming ``server``:
+
+.. code-block:: python
+
+    jump_to_frame_file ='',
+
+This field needs the path (including the file name) of the saved file we just got. If it is set to ``''``, it means that no jump will be performed. Otherwise, the initial state of ``server`` will be set to the state of the corresponding frame.
+
+.. note::
+
+    After enabling this parameter, the custom function set additionally will be overwritten.

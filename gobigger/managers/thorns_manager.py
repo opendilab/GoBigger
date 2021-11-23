@@ -52,13 +52,19 @@ class ThornsManager(BaseManager):
         return ThornsBall(name=name, position=position, border=self.border, size=size, **self.ball_settings)
 
     def init_balls(self, custom_init=None):
+        # [position.x, position.y, radius, vel.x, vel.y, acc.x, acc.y, 
+        #  move_time, moving]
         if custom_init is None:
             for _ in range(self.cfg.num_init):
                 ball = self.spawn_ball()
                 self.balls[ball.name] = ball
         else:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg['position']), size=ball_cfg['radius']**2)
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
+                ball.vel = Vector2(*ball_cfg[3:5])
+                ball.acc = Vector2(*ball_cfg[5:7])
+                ball.move_time = ball_cfg[7]
+                ball.moving = ball_cfg[8]
                 self.balls[ball.name] = ball
 
     def step(self, duration):

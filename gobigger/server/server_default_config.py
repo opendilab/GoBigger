@@ -14,6 +14,7 @@ server_default_config = dict(
     load_bin=False,
     load_bin_path='',
     load_bin_frame_num = 'all',
+    jump_to_frame_file = '',
     manager_settings=dict(
         # food setting
         food_manager=dict(

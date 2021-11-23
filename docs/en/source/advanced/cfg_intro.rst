@@ -25,6 +25,11 @@ The configurable parameters will be described in detail below.
 * ``save_video``: Whether to save the video. The default is False
 * ``save_quality``: The quality of the video. The default is 'high', could be 'low'
 * ``save_path``: The path to save the video. The default is empty
+* ``save_bin``: Do you need to save the action sequence
+* ``load_bin``: whether to load the action sequence
+* ``load_bin_path``: The path to load the action sequence file
+* ``load_bin_frame_num``: Load the action sequence to the first few frames
+* ``jump_to_frame_file``: The path of the frame information file that needs to be jumped
 * ``manager_settings``
     * ``food_manager``
         * ``num_init``: The number of food balls initialized in the map, the default is 2000

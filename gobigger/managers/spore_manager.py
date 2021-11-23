@@ -45,9 +45,16 @@ class SporeManager(BaseManager):
         return SporeBall(name=name, position=position, border=self.border, direction=Vector2(1,0), vel_init=0)
     
     def init_balls(self, custom_init=None):
+        # [position.x, position.y, radius, direction.x, direction.y, vel.x, vel.y, acc.x, acc.y, 
+        #  move_time, moving]
         if custom_init is not None:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg['position']), size=ball_cfg['radius']**2)
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
+                ball.direction = Vector2(*ball_cfg[3:5])
+                ball.vel = Vector2(*ball_cfg[5:7])
+                ball.acc = Vector2(*ball_cfg[7:9])
+                ball.move_time = ball_cfg[9]
+                ball.moving = ball_cfg[10]
                 self.balls[ball.name] = ball
 
     def step(self, duration):

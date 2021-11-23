@@ -87,6 +87,7 @@ class Server:
         self.state_tick_per_action_tick = self.state_tick_per_second // self.action_tick_per_second
 
         self.custom_init = self.cfg.custom_init
+        self.jump_to_frame_file = self.cfg.jump_to_frame_file
         self.save_video = self.cfg.save_video
         self.save_quality = self.cfg.save_quality
         self.save_path = self.cfg.save_path
@@ -118,15 +119,16 @@ class Server:
             Initialize all balls. If self.custom_init is set, initialize all balls based on it.
         '''
         # check custom_init
-        custom_init_food = self.custom_init.food if self.custom_init.food else None
-        custom_init_thorns = self.custom_init.thorns if self.custom_init.thorns else None
-        custom_init_spore = self.custom_init.spore if self.custom_init.spore else None
-        custom_init_clone = self.custom_init.clone if self.custom_init.clone else None
+        self.custom_init_food = self.custom_init.food if self.custom_init.food else None
+        self.custom_init_thorns = self.custom_init.thorns if self.custom_init.thorns else None
+        self.custom_init_spore = self.custom_init.spore if self.custom_init.spore else None
+        self.custom_init_clone = self.custom_init.clone if self.custom_init.clone else None
+        self.load_frame_info()
         # init
-        self.food_manager.init_balls(custom_init=custom_init_food) # init food
-        self.thorns_manager.init_balls(custom_init=custom_init_thorns) # init thorns
-        self.spore_manager.init_balls(custom_init=custom_init_spore) # init spore
-        self.player_manager.init_balls(custom_init=custom_init_clone) # init player
+        self.food_manager.init_balls(custom_init=self.custom_init_food) # init food
+        self.thorns_manager.init_balls(custom_init=self.custom_init_thorns) # init thorns
+        self.spore_manager.init_balls(custom_init=self.custom_init_spore) # init spore
+        self.player_manager.init_balls(custom_init=self.custom_init_clone) # init player
 
     def step_state_tick(self, actions=None):
         moving_balls = [] # Record all balls in motion
@@ -278,7 +280,8 @@ class Server:
                     self.screens_partial[player_name] = []
                 self.screens_partial[player_name].append(screen_data_player)
 
-    def step(self, actions=None, **kwargs):
+    def step(self, actions=None, save_frame_full_path='', **kwargs):
+        self.save_frame_info(save_frame_full_path=save_frame_full_path)
         if self.last_time >= self.match_time:
             if self.save_video:
                 self.save_mp4(save_path=self.save_path)
@@ -359,6 +362,41 @@ class Server:
                 self.load_bin_frame_num = len(self.actions_record_last)
             for action in self.actions_record_last[:self.load_bin_frame_num]:
                 self.step(action)
+
+    def save_frame_info(self, save_frame_full_path):
+        if save_frame_full_path != '':
+            frame_info = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
+            # food
+            for ball in self.food_manager.get_balls():
+                frame_info['food'].append([ball.position.x, ball.position.y, ball.radius])
+            # thorns
+            for ball in self.thorns_manager.get_balls():
+                frame_info['thorns'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y,
+                                           ball.acc.x, ball.acc.y, ball.move_time, ball.moving])
+            # spore
+            for ball in self.spore_manager.get_balls():
+                frame_info['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.direction.x, 
+                                           ball.direction.y, ball.vel.x, ball.vel.y,
+                                           ball.acc.x, ball.acc.y, ball.move_time, ball.moving])
+            # clone
+            for ball in self.player_manager.get_balls():
+                frame_info['clone'].append([ball.position.x, ball.position.y, ball.radius, ball.owner, 
+                                           ball.team_name, ball.vel.x, ball.vel.y, ball.acc.x, ball.acc.y, 
+                                           ball.vel_last.x, ball.vel_last.y, ball.acc_last.x, ball.acc_last.y, 
+                                           ball.direction.x, ball.direction.y, ball.last_given_acc.x, 
+                                           ball.last_given_acc.y, ball.age, ball.cooling_last, ball.stop_flag,
+                                           ball.stop_time, ball.acc_stop.x, ball.acc_stop.y])
+            with open(save_frame_full_path, 'wb') as f:
+                pickle.dump(frame_info, f)
+
+    def load_frame_info(self):
+        if self.jump_to_frame_file:
+            with open(self.jump_to_frame_file, 'rb') as f:
+                data = pickle.load(f)
+            self.custom_init_food = data['food']
+            self.custom_init_thorns = data['thorns']
+            self.custom_init_spore = data['spore']
+            self.custom_init_clone = data['clone']
 
     def get_player_names(self):
         return self.player_manager.get_player_names()

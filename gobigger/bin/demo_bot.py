@@ -33,6 +33,7 @@ def demo_bot():
         save_bin=False, # save bin to go-explore
         load_bin=False,
         load_bin_path='',
+        jump_to_frame_file='',
         manager_settings=dict(
             # food setting
             food_manager=dict(

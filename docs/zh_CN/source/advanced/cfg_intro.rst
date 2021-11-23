@@ -25,6 +25,11 @@ GoBigger 将可配置参数统一放在 ``gobigger/server/server_default_config.
 * ``save_video``: 是否保存视频。默认为False
 * ``save_quality``: 保存的视频质量。默认为'high'，可以是'low'
 * ``save_path``: 保存视频路径。默认为空
+* ``save_bin``: 是否需要保存动作序列
+* ``load_bin``: 是否需要加载动作序列
+* ``load_bin_path``: 加载动作序列文件的路径
+* ``load_bin_frame_num``: 加载动作序列到第几帧
+* ``jump_to_frame_file``: 需要跳跃的帧信息文件路径
 * ``manager_settings``
     * ``food_manager``
         * ``num_init``: 地图中初始化的食物球数量，默认为2000
