@@ -238,7 +238,7 @@ class EnvRender(BaseRender):
         for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    clone[clone_count][6] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, player.name, player.team_name]
+                    clone[clone_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, player.name, player.team_name]
                     clone_count += 1
         clone = clone[:clone_count]
         ret['clone'] = clone
