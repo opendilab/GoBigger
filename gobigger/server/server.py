@@ -4,9 +4,11 @@ import uuid
 import logging
 import cv2
 import os
+import sys
 import time
 import numpy as np
 import copy
+import pickle
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
@@ -88,12 +90,17 @@ class Server:
         self.save_video = self.cfg.save_video
         self.save_quality = self.cfg.save_quality
         self.save_path = self.cfg.save_path
+        self.save_bin = self.cfg.save_bin
+        self.load_bin = self.cfg.load_bin
+        self.load_bin_path = self.cfg.load_bin_path
+        self.load_bin_frame_num = self.cfg.load_bin_frame_num
         self.obs_settings = self.cfg.obs_settings
         
         self.border = Border(0, 0, self.map_width, self.map_height)
         self.last_time = 0
         self.screens_all = []
         self.screens_partial = {}
+        self.actions_record = []
 
         self.food_manager = FoodManager(self.cfg.manager_settings.food_manager, border=self.border)
         self.thorns_manager = ThornsManager(self.cfg.manager_settings.thorns_manager, border=self.border)
@@ -246,11 +253,15 @@ class Server:
         self.last_time = 0
         self.screens_all = []
         self.screens_partial = {}
+        self.actions_record = []
+        self.seed()
+        self.load_record()
         self.food_manager.reset()
         self.thorns_manager.reset()
         self.spore_manager.reset()
         self.player_manager.reset()
         self.start()
+        self.resume_actions()
 
     def record_frame_for_video(self):
         if self.save_video:
@@ -271,9 +282,12 @@ class Server:
         if self.last_time >= self.match_time:
             if self.save_video:
                 self.save_mp4(save_path=self.save_path)
+            if self.save_bin:
+                self.save_record(save_path=self.save_path)
             self.stop()
             return True
         if not self._end_flag:
+            self.actions_record.append(actions)
             for i in range(self.state_tick_per_action_tick):
                 if i == 0:
                     self.step_state_tick(actions)
@@ -326,6 +340,26 @@ class Server:
             out.release()
             cv2.destroyAllWindows()
 
+    def save_record(self, save_path=''):
+        data = {'seed': self._seed, 'actions': self.actions_record}
+        with open(os.path.join(save_path, '{}.pkl'.format(str(uuid.uuid1()))), 'wb') as f:
+            pickle.dump(data, f)
+
+    def load_record(self):
+        if self.load_bin and os.path.isfile(self.load_bin_path):
+            with open(self.load_bin_path, 'rb') as f:
+                data = pickle.load(f)
+            seed = data['seed']
+            self.actions_record_last = data['actions']
+            self.seed(seed=seed)
+
+    def resume_actions(self):
+        if self.load_bin and os.path.isfile(self.load_bin_path):
+            if self.load_bin_frame_num == 'all':
+                self.load_bin_frame_num = len(self.actions_record_last)
+            for action in self.actions_record_last[:self.load_bin_frame_num]:
+                self.step(action)
+
     def get_player_names(self):
         return self.player_manager.get_player_names()
 
@@ -340,7 +374,9 @@ class Server:
         if hasattr(self, 'render'):
             self.render.close()
 
-    def seed(self, seed):
-        self._seed = seed
-        np.random.seed(self._seed)
+    def seed(self, seed=None):
+        if seed is None:
+            self._seed = random.randrange(sys.maxsize)
+        else:
+            self._seed = seed
         random.seed(self._seed)

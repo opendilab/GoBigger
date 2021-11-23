@@ -10,6 +10,10 @@ server_default_config = dict(
     save_video=False,
     save_quality='high', # ['high', 'low']
     save_path='',
+    save_bin=False, # save bin to go-explore
+    load_bin=False,
+    load_bin_path='',
+    load_bin_frame_num = 'all',
     manager_settings=dict(
         # food setting
         food_manager=dict(
@@ -19,7 +23,7 @@ server_default_config = dict(
             refresh_time=2, # Time interval (seconds) for refreshing food in the map
             refresh_num=30, # The number of refreshed foods in the map each time
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                radius_min=2, 
+                radius_min=2,
                 radius_max=2,
             ),
         ),

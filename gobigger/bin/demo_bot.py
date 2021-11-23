@@ -23,13 +23,16 @@ def demo_bot():
         player_num_per_team=3, 
         map_width=1000, 
         map_height=1000, 
-        match_time=60*10, 
+        match_time=60*10,
         state_tick_per_second=10, # frame
         action_tick_per_second=5, 
         collision_detection_type='precision',
         save_video=True,
         save_quality='low', # ['high', 'low']
         save_path='',
+        save_bin=False, # save bin to go-explore
+        load_bin=False,
+        load_bin_path='',
         manager_settings=dict(
             # food setting
             food_manager=dict(
@@ -99,7 +102,7 @@ def demo_bot():
     ))
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
-    server.start()
+    server.reset()
     bot_agents = []
     for player in server.player_manager.get_players():
         #bot_agents.append(LowAgent(player.name))
