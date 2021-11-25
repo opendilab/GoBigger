@@ -31,6 +31,5 @@ setup(
         'pytest>=5.0.0',
         'opencv-python',
         'numpy>=1.10',
-        'matplotlib',
     ]
 )

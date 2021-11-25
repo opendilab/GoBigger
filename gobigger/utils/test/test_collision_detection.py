@@ -1,5 +1,4 @@
 import os
-import matplotlib.pyplot as plt
 import logging
 import pytest
 import uuid
