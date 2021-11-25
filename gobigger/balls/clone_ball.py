@@ -88,7 +88,10 @@ class CloneBall(BaseBall):
         else:
             self.cooling_last = False
         if not hasattr(self, 'direction'):
-            self.direction = copy.deepcopy((self.vel + self.vel_last + Vector2(0.00001, 0.00001)).normalize())
+            if (self.vel + self.vel_last).length() != 0:
+                self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
+            else:
+                self.direction = Vector2(random.random(), random.random()).normalize()
 
         self.check_border()
         self.stop_flag = stop_flag
@@ -150,6 +153,10 @@ class CloneBall(BaseBall):
 
         if self.vel.length() > 0 or self.vel_last.length() > 0:
             self.direction = (self.vel + self.vel_last).normalize()
+        if (self.vel + self.vel_last).length() != 0:
+                self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
+            else:
+                self.direction = Vector2(random.random(), random.random()).normalize()
         self.check_border()
 
     def eat(self, ball, clone_num=None):
@@ -304,7 +311,7 @@ class CloneBall(BaseBall):
         self.stop_time = 0
         self.acc_stop = - 1 / self.stop_zero_time * (self.vel + self.vel_last)
         self.acc = Vector2(0, 0)
-        self.direction = direction if direction is not None else Vector2(0.000001, 0.000001)
+        self.direction = direction if direction is not None else Vector2(random.random(), random.random())
         self.last_given_acc = Vector2(0, 0)
         return True
 
