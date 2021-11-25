@@ -151,12 +151,10 @@ class CloneBall(BaseBall):
                     self.cooling_last = False
             self.position = self.position + (self.vel + self.vel_last) * duration
 
-        if self.vel.length() > 0 or self.vel_last.length() > 0:
-            self.direction = (self.vel + self.vel_last).normalize()
         if (self.vel + self.vel_last).length() != 0:
-                self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
-            else:
-                self.direction = Vector2(random.random(), random.random()).normalize()
+            self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
+        else:
+            self.direction = Vector2(random.random(), random.random()).normalize()
         self.check_border()
 
     def eat(self, ball, clone_num=None):
