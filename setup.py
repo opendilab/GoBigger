@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='gobigger',
-    version='0.1.2',
+    version='0.1.3',
     description='Go-Bigger: Multi-Agent Decision Intelligence Environment',
     author='OpenDILab',
     license='Apache License, Version 2.0',
