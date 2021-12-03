@@ -98,6 +98,11 @@ class CloneBall(BaseBall):
         self.stop_flag = stop_flag
         self.last_given_acc = Vector2(0, 0) if last_given_acc is None else last_given_acc
 
+        if not hasattr(self, 'stop_time'):
+            self.stop_time = 0
+        if not hasattr(self, 'acc_stop'):
+            self.acc_stop = Vector2(0, 0)
+
     def cal_vel_max(self, radius):
         return self.vel_max*20/(radius+10)
 
