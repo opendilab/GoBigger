@@ -206,6 +206,22 @@ You can also add more bots in your game. Try to win the game with more bots!
 python -m gobigger.bin.play --vs-bot --team-num 4
 ```
 
+#### bots test with Visualization
+
+If you want to test agent without human player, you can launch a game with the following code:
+
+```bash
+python -m gobigger.bin.play --bot-only --player-num 3 --team-num 1
+```
+
+You can also test your custom agent with `--agent-class` argument:
+
+```bash
+python -m gobigger.bin.play --bot-only --player-num 3 --team-num 4 --agent-class submit.bot_submission.BotSubmission
+```
+
+Beware your agent class should implement `__init__(self, team_name, player_names)` `get_actions(self, obs) -> action` method.
+
 ## High-level Operations in GoBigger
 
 #### Eject towards the center

@@ -299,15 +299,83 @@ def play_control_by_keyboard_vs_bot(team_num=2):
     render.close()
 
 
+def play_by_bot(team_num, player_num, agent_class):
+
+    class TeamAgent:
+        def __init__(self, team_name, player_names):
+            self.agents = {}
+            self.team_name = team_name
+            self.player_names = player_names
+            for player_name in self.player_names:
+                self.agents[player_name] = BotAgent(name=player_name)
+
+        def get_actions(self, obs):
+            global_state, player_states = obs
+            actions = {}
+            for player_name, agent in self.agents.items():
+                action = agent.step(player_states[player_name])
+                actions[player_name] = action
+            return actions
+
+    server = Server(dict(
+        team_num=team_num,
+        player_num_per_team=player_num,  # 每个队伍的玩家数量
+        match_time=60 * 10,  # 每场比赛的持续时间
+        save_video=False,
+        state_tick_per_second=20, # frame
+        action_tick_per_second=5, # frame
+    ))
+    render = RealtimeRender(server.map_width, server.map_height)
+    server.set_render(render)
+    server.start()
+    agents = []
+    team_player_names = server.get_team_names()
+    team_names = list(team_player_names.keys())
+    for index in range(server.team_num):
+        try:
+            if agent_class == '':
+                p = TeamAgent
+            else:
+                from django.utils.module_loading import import_string
+                p = import_string(agent_class)
+            agents.append(p(team_name=team_names[index],
+                                         player_names=team_player_names[team_names[index]]))
+        except Exception as e:
+            print('load bot class failed.')
+            exit()
+
+    for i in range(60 * 10 * server.action_tick_per_second + 1):
+        obs = server.obs()
+        render.show()
+        event = pygame.event.poll()
+        render.fill(server, direction=None, fps=60, last_time=server.last_time)
+        global_state, player_states = obs
+        actions = {}
+        for agent in agents:
+            agent_obs = [global_state, {
+                player_name: player_states[player_name] for player_name in agent.player_names
+            }]
+            actions.update(agent.get_actions(agent_obs))
+        finish_flag = server.step(actions=actions)
+        if finish_flag:
+            logging.debug('Game Over!')
+            break
+    server.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--player-num', type=int, choices=[1,2], default=1)
+    parser.add_argument('--player-num', type=int, choices=[1,2,3], default=1)
     parser.add_argument('--vision-type', type=str, choices=['full', 'partial'], default='full')
     parser.add_argument('--vs-bot', action='store_true', help='vs bot')
+    parser.add_argument('--bot-only', action='store_true', help='bot only')
     parser.add_argument('--team-num', type=int, default=2)
+    parser.add_argument('--agent-class', type=str, default='', help='agent class, like \'GoBigger-Challenge-2021.submit.bot_submission.BotSubmission\'')
     args = parser.parse_args()
 
-    if args.vs_bot:
+    if args.bot_only:
+        play_by_bot(team_num=args.team_num, player_num=args.player_num, agent_class=args.agent_class)
+    elif args.vs_bot:
         play_control_by_keyboard_vs_bot(team_num=args.team_num)
     elif args.player_num == 1 and args.vision_type == 'full':
         play_control_by_keyboard()
