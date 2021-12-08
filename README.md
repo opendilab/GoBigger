@@ -217,7 +217,7 @@ python -m gobigger.bin.play --bot-only --player-num 3 --team-num 1
 You can also test your custom agent with `--agent-class` argument:
 
 ```bash
-python -m gobigger.bin.play --bot-only --player-num 3 --team-num 4 --agent-class submit.bot_submission.BotSubmission
+python -m gobigger.bin.play --bot-only --player-num 3 --team-num 4 --agent-class submit.bot_submission:BotSubmission
 ```
 
 Beware your agent class should implement `__init__(self, team_name, player_names)` `get_actions(self, obs) -> action` method.

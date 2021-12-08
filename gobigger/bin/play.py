@@ -336,8 +336,10 @@ def play_by_bot(team_num, player_num, agent_class):
             if agent_class == '':
                 p = TeamAgent
             else:
-                from django.utils.module_loading import import_string
-                p = import_string(agent_class)
+                from importlib import import_module
+                class_path, class_name = agent_class.split(':')
+                p = import_module(class_path)
+                p = getattr(p, class_name)
             agents.append(p(team_name=team_names[index],
                                          player_names=team_player_names[team_names[index]]))
         except Exception as e:
@@ -370,7 +372,8 @@ if __name__ == '__main__':
     parser.add_argument('--vs-bot', action='store_true', help='vs bot')
     parser.add_argument('--bot-only', action='store_true', help='bot only')
     parser.add_argument('--team-num', type=int, default=2)
-    parser.add_argument('--agent-class', type=str, default='', help='agent class, like \'GoBigger-Challenge-2021.submit.bot_submission.BotSubmission\'')
+    parser.add_argument('--agent-class', type=str, default='', help='agent class, like \''
+                                                                    'submit.bot_submission:BotSubmission\'')
     args = parser.parse_args()
 
     if args.bot_only:
