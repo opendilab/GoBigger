@@ -122,7 +122,7 @@ def demo_bot():
         t2 = time.time()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
         t3 = time.time()
-        finish_flag = server.step(actions=actions, save_frame_full_path="{}.pkl".format(i))
+        finish_flag = server.step(actions=actions)
         t4 = time.time()
         tmp_obs = t2-t1
         tmp_step = t4-t3
