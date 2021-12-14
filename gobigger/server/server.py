@@ -145,7 +145,11 @@ class Server:
                 if direction_x is None or direction_y is None:
                     direction = None
                 else:
-                    direction = Vector2(direction_x, direction_y).normalize()
+                    direction = Vector2(direction_x, direction_y)
+                    if direction.length() == 0:
+                        direction = None
+                    else:
+                        direction = direction.normalize()
                 if action_type == 0 or action_type == 3: # eject
                     tmp_spore_balls = player.eject(direction=direction)
                     for tmp_spore_ball in tmp_spore_balls:
