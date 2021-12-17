@@ -17,6 +17,26 @@ GoBigger is a simple and efficient *agar-like* game engine and provides various 
 
 <div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
 
+### Other OpenDILab Projects
+
+- Decision AI Engine
+  - [DI-engine](https://github.com/opendilab/DI-engine)
+- Traditional academic environments and benchmarks
+  - [DI-zoo](https://github.com/opendilab/DI-engine#environment-versatility)
+- Real world decision AI applications
+  - [DI-star](https://github.com/opendilab/DI-star): Decision AI in StarCraftII
+  - [DI-drive](https://github.com/opendilab/DI-drive): Auto-driving platform
+- General nested data lib
+  - [treevalue](https://github.com/opendilab/treevalue): Tree-nested data structure
+  - [DI-treetensor](https://github.com/opendilab/DI-treetensor): Tree-nested PyTorch tensor Lib
+- Docs and Tutorials
+  - [DI-engine-docs](https://github.com/opendilab/DI-engine-docs)
+- System Support Components
+
+  - [DI-orchestrator](https://github.com/opendilab/DI-orchestrator): RL Kubernetes Custom Resource and Operator Lib
+  - [DI-hpc](https://github.com/opendilab/DI-hpc): RL HPC OP Lib
+  - [DI-store](https://github.com/opendilab/DI-store): RL Object Store
+
 ## Introduction
 
 GoBigger allows users to interact with the multi-agent environment easily within the basic rules. Through the given interface, users can simply get the observation in game and apply their operations for their agents.
@@ -243,5 +263,4 @@ For more details, please refer to [GoBigger Doc](https://gobigger.readthedocs.io
 ## License
 
 GoBigger released under the Apache 2.0 license.
-
 
