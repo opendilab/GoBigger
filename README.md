@@ -37,6 +37,7 @@ cpp | 0.573 | 0.985 | 1.558
 * boost >= 1.6.7
 * pybind11 >= 2.0.0 
 * python ~= 3.6.8
+* gcc ~= 7.3.0 or support c++11
 
 #### Install
 
