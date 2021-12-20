@@ -1,35 +1,51 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+import sys
 
-from setuptools import setup
+from pybind11 import get_cmake_dir
+# Available at setup time due to pyproject.toml
+from pybind11.setup_helpers import Pybind11Extension, build_ext
+from setuptools import setup, find_packages
 
+__version__ = "0.0.1"
+
+# The main interface is through Pybind11Extension.
+# * You can add cxx_std=11/14/17, and then build_ext can be removed.
+# * You can set include_pybind11=false to add the include directory yourself,
+#   say from a submodule.
+#
+# Note:
+#   Sort input source files if you glob sources to ensure bit-for-bit
+#   reproducible builds (https://github.com/pybind/python_example/pull/53)
+
+ext_modules = [
+    Pybind11Extension(
+        "_cgobigger",
+        ["_cgobigger/bind.cpp"],
+        # Example: passing in the version to the compiled code
+        include_dirs = ['_cgobigger/'],
+    ),
+]
 
 setup(
-    name='gobigger',
-    version='0.1.3',
-    description='Go-Bigger: Multi-Agent Decision Intelligence Environment',
-    author='OpenDILab',
-    license='Apache License, Version 2.0',
-    keywords='Go-Bigger DI',
+    name="cgobigger",
+    version=__version__,
+    author="zhangming",
+    author_email="zhangming@sensetime.com",
+    url="https://github.com/opendilab/gobigger",
+    description="GoBigger based on c++",
+    long_description="",
+    ext_modules=ext_modules,
+    extras_require={"test": "pytest"},
+    # Currently, build_ext only provides an optional "highest supported C++
+    # level" feature, but in the future it may provide more features.
+    cmdclass={"build_ext": build_ext},
+    zip_safe=False,
+    python_requires=">=3.6",
     packages=[
-        'gobigger',
-        'gobigger.agents',
-        'gobigger.balls',
-        'gobigger.server',
-        'gobigger.utils',
-        'gobigger.managers',
-        'gobigger.players',
-        'gobigger.render',
-        'gobigger.envs',
-        'gobigger.bin',
-    ],
-    install_requires=[
-        'easydict',
-        'gym>=0.15.3',  # pypy incompatible
-        'pygame>=2.0.0',
-        'pytest>=5.0.0',
-        'opencv-python',
-        'numpy>=1.10, <= 1.19',
+        'cgobigger',
+        'cgobigger.server',
+        'cgobigger.utils',
+        'cgobigger.agents',
+        'cgobigger.bin',
+        'cgobigger.render',
     ]
 )
