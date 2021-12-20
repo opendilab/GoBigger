@@ -4,9 +4,8 @@ import cv2
 from pygame.math import Vector2
 
 from .base_render import BaseRender
-from cgobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, BLACK, WHITE
-from cgobigger.utils import FOOD_COLOR_GRAYSCALE, THORNS_COLOR_GRAYSCALE, SPORE_COLOR_GRAYSCALE, PLAYER_COLORS_GRAYSCALE, BACKGROUND_GRAYSCALE
-from cgobigger.utils import to_aliased_circle
+from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, BLACK, WHITE
+from gobigger.utils import to_aliased_circle
 
 
 class EnvRender(BaseRender):

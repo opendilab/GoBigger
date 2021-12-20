@@ -2,9 +2,9 @@ import logging
 import time
 import datetime
 
-from cgobigger.agents import BotAgent
-from cgobigger.server import Server
-from cgobigger.render import EnvRender
+from gobigger.agents import BotAgent
+from gobigger.server import Server
+from gobigger.render import EnvRender
 
 logging.basicConfig(level=logging.DEBUG)
 

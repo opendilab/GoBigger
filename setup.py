@@ -26,7 +26,7 @@ ext_modules = [
 ]
 
 setup(
-    name="cgobigger",
+    name="gobigger",
     version=__version__,
     author="zhangming",
     author_email="zhangming@sensetime.com",
@@ -41,11 +41,11 @@ setup(
     zip_safe=False,
     python_requires=">=3.6",
     packages=[
-        'cgobigger',
-        'cgobigger.server',
-        'cgobigger.utils',
-        'cgobigger.agents',
-        'cgobigger.bin',
-        'cgobigger.render',
+        'gobigger',
+        'gobigger.server',
+        'gobigger.utils',
+        'gobigger.agents',
+        'gobigger.bin',
+        'gobigger.render',
     ]
 )

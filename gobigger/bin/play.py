@@ -4,9 +4,9 @@ import pygame
 import argparse
 import time
 
-from cgobigger.server import Server
-from cgobigger.render import RealtimeRender, RealtimePartialRender
-from cgobigger.agents import BotAgent
+from gobigger.server import Server
+from gobigger.render import RealtimeRender, RealtimePartialRender
+from gobigger.agents import BotAgent
 
 logging.basicConfig(level=logging.DEBUG)
 

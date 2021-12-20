@@ -1,7 +1,7 @@
 import pygame
 
 from .env_render import EnvRender
-from cgobigger.utils import BACKGROUND, RED
+from gobigger.utils import BACKGROUND, RED
 
 
 class RealtimeRender(EnvRender):
