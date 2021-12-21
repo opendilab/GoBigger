@@ -38,7 +38,7 @@ jobs:
       - name: Install depedendencies
         run: |
           pwd
-          ls $$BOOST_ROOT
+          ls $BOOST_ROOT
           pip install pytest-cov
           pip install pybind11
           export LD_LIBRARY_PATH=$BOOST_ROOT:$LD_LIBRARY_PATH
