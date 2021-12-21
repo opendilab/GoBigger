@@ -25,7 +25,7 @@ obs_settings=dict(
 
 In our testing machine(AMD EPYC 7742 64-Core Processor), we get the following testing results:
 
-version | step(ms) | obs(ms) | total
+version | step(ms) | obs(ms) | total(ms)
 ---|---|---|---
 python | 9.966 | 4.608 | 14.574
 cpp | 0.573 | 0.985 | 1.558
