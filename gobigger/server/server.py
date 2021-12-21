@@ -126,6 +126,9 @@ class Server:
         else:
             return global_state, obs, obs_raw
 
+    def start(self):
+        self.server.start()
+
     def reset(self):
         self.server.reset()
 
