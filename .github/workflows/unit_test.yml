@@ -20,9 +20,25 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install boost
+        uses: MarkusJx/install-boost@v2.0.0
+        id: install-boost
+        with:
+          # REQUIRED: Specify the required boost version
+          # A list of supported versions can be found here:
+          # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
+          boost_version: 1.73.0
+#          # OPTIONAL: Specify a platform version
+#          platform_version: 20.04
+#          # OPTIONAL: Specify a custom install location
+#          boost_install_dir: /home/runner/some_directory
+
+          # NOTE: If a boost version matching all requirements cannot be found,
+          # this build step will fail
       - name: Install depedendencies
         run: |
           pip install pytest-cov
+          pip install pybind11
           python setup.py install
       - name: Generate coverage report
         run: |
