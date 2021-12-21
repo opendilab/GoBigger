@@ -89,6 +89,14 @@ class Server:
         self.server.step_state_tick(actions)
 
     def obs(self, with_raw=False):
+        """
+        Get the raw obs from CServer
+        :param with_raw: use in render, to get raw obs to render all balls.
+        :return:
+            global_state: a dict, including border, total time, last time, leaderboard
+            player_states: a dict, including all players' states
+            obs_raw: return when with_raw is True, including raw info of the obs
+        """
         obs_raw = self.server.obs_partial_array()
         row_num, col_num = obs_raw.shape
 
@@ -108,9 +116,9 @@ class Server:
 
         ball_obs_raw = obs_raw[:, :5]
         food_end, thorns_end, spore_end, clone_end = obs_raw[:4, 5]
-        obs = {str(i): {'overlap': {}, 'team_name': str(i//self.player_num_per_team),
-                        'rectangle': [int(obs_raw[i*4+4][5]), int(obs_raw[i*4+5][5]),
-                                      int(obs_raw[i*4+6][5]), int(obs_raw[i*4+7][5])]}
+        player_states = {str(i): {'overlap': {}, 'team_name': str(i//self.player_num_per_team),
+                         'rectangle': [int(obs_raw[i*4+4][5]), int(obs_raw[i*4+5][5]),
+                                       int(obs_raw[i*4+6][5]), int(obs_raw[i*4+7][5])]}
                for i in range(self.player_num_per_team * self.team_num)}
         last_end = 0
         for key_name, end in zip(['food', 'thorns', 'spore', 'clone'],
@@ -118,13 +126,13 @@ class Server:
             target_ball_obs_raw = ball_obs_raw[last_end:end, :5]
             for i in range(6, col_num):
                 obs_player = np.compress((obs_raw[last_end:end, i]>0), target_ball_obs_raw, axis=0)
-                obs[str(i-6)]['overlap'].update({key_name: obs_player})
+                player_states[str(i-6)]['overlap'].update({key_name: obs_player})
             last_end = end
         self.record_frame_for_video(obs_raw)
         if not with_raw:
-            return global_state, obs
+            return global_state, player_states
         else:
-            return global_state, obs, obs_raw
+            return global_state, player_states, obs_raw
 
     def start(self):
         self.server.start()
