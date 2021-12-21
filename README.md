@@ -30,6 +30,15 @@ version | step(ms) | obs(ms) | total
 python | 9.966 | 4.608 | 14.574
 cpp | 0.573 | 0.985 | 1.558
 
+
+### What is not supported compared to the python version
+
+* Spatial info in obs
+* Custom opening 
+* Config in manager module
+
+We are working on these issues and they will be solved in the next version.
+
 ### Installation
 
 #### Prerequisites
@@ -57,5 +66,6 @@ python -u cgobigger/bin/demo_bot.py
 ```
 
 It will print some log and finally save videos.
+
 
 
