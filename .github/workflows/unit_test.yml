@@ -41,7 +41,7 @@ jobs:
           pip install pybind11
           export CPLUS_INCLUDE_PATH=./boost/boost/include:CPLUS_INCLUDE_PATH
           export LD_LIBRARY_PATH=./boost/boost/lib:$LD_LIBRARY_PATH
-          python setup.py install
+          pip install .
       - name: Generate coverage report
         run: |
           pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v
