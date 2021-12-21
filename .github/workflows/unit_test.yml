@@ -31,14 +31,15 @@ jobs:
 #          # OPTIONAL: Specify a platform version
 #          platform_version: 20.04
           # OPTIONAL: Specify a custom install location
-#          boost_install_dir: /home/runner/work/GoBigger
+          boost_install_dir: /home/runner/work/GoBigger/GoBigger/_cgobigger
 
           # NOTE: If a boost version matching all requirements cannot be found,
           # this build step will fail
       - name: Install depedendencies
         run: |
           pwd
-          ls $BOOST_ROOT
+          echo $BOOST_ROOT
+          tree $BOOST_ROOT
           pip install pytest-cov
           pip install pybind11
           export LD_LIBRARY_PATH=$BOOST_ROOT:$LD_LIBRARY_PATH
