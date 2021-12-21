@@ -23,7 +23,7 @@ jobs:
       - name: Install depedendencies
         run: |
           pip install pytest-cov
-          pip install -e .
+          python setup.py install
       - name: Generate coverage report
         run: |
           pytest ./gobigger --cov=./ --cov-report=xml --cov-report=term-missing --durations=0 -v

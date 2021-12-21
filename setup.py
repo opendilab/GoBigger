@@ -1,9 +1,5 @@
-import sys
-
-from pybind11 import get_cmake_dir
-# Available at setup time due to pyproject.toml
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-from setuptools import setup, find_packages
+from setuptools import setup
 
 __version__ = "0.0.1"
 
@@ -30,7 +26,7 @@ setup(
     version=__version__,
     author="zhangming",
     author_email="zhangming@sensetime.com",
-    url="https://github.com/opendilab/gobigger",
+    url="https://github.com/opendilab/GoBigger",
     description="GoBigger based on c++",
     long_description="",
     ext_modules=ext_modules,
@@ -47,5 +43,14 @@ setup(
         'gobigger.agents',
         'gobigger.bin',
         'gobigger.render',
+    ],
+    install_requires=[
+        'easydict',
+        'gym>=0.15.3',  # pypy incompatible
+        'pygame>=2.0.0',
+        'pytest>=5.0.0',
+        'opencv-python',
+        'numpy>=1.10, <= 1.19',
+        'pybind11>=2.6.0',
     ]
 )
