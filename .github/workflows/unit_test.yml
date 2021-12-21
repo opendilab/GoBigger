@@ -30,8 +30,8 @@ jobs:
           boost_version: 1.73.0
 #          # OPTIONAL: Specify a platform version
 #          platform_version: 20.04
-#          # OPTIONAL: Specify a custom install location
-#          boost_install_dir: /home/runner/some_directory
+          # OPTIONAL: Specify a custom install location
+          boost_install_dir: /home/runner/work/GoBigger/GoBigger/_cgobigger/
 
           # NOTE: If a boost version matching all requirements cannot be found,
           # this build step will fail
