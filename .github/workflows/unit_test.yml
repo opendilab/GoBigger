@@ -31,7 +31,7 @@ jobs:
 #          # OPTIONAL: Specify a platform version
 #          platform_version: 20.04
           # OPTIONAL: Specify a custom install location
-          boost_install_dir: /home/runner/work/GoBigger/GoBigger/_cgobigger/
+#          boost_install_dir: /home/runner/work/GoBigger
 
           # NOTE: If a boost version matching all requirements cannot be found,
           # this build step will fail
@@ -39,6 +39,7 @@ jobs:
         run: |
           pip install pytest-cov
           pip install pybind11
+          export LD_LIBRARY_PATH=$BOOST_ROOT:$LD_LIBRARY_PATH
           python setup.py install
       - name: Generate coverage report
         run: |
