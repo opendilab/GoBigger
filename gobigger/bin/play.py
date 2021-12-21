@@ -174,6 +174,7 @@ def play_control_by_keyboard_partial():
     for i in range(100000):
         actions = None
         x, y = None, None
+        action_type = -1
         # ================ control by keyboard ===============
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
