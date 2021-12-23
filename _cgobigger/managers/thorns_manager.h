@@ -66,10 +66,11 @@ public:
                                      this->default_thorns_manager.default_thorns_ball);
         this->balls.insert(make_pair(ball.name, ball));
     }
-    void spawn_ball_custom(Vector2 &position, float size) {
+    string spawn_ball_custom(Vector2 &position, float size) {
         ThornsBall ball = ThornsBall(position, this->border, size,
                                  this->default_thorns_manager.default_thorns_ball);
         this->balls.insert(make_pair(ball.name, ball));
+        return ball.name;
     }
     void refresh() {
         int todo_num = min(this->refresh_num, this->num_max - (int)this->balls.size());
@@ -86,7 +87,13 @@ public:
         for (auto item: custom_init) {
             Vector2 position_tmp = Vector2(item[0], item[1]);
             float radius_tmp = item[2];
-            this->spawn_ball_custom(position_tmp, pow(radius_tmp, 2));
+            string ball_name = this->spawn_ball_custom(position_tmp, pow(radius_tmp, 2));
+            this->balls[ball_name].vel.x = item[3];
+            this->balls[ball_name].vel.y = item[4];
+            this->balls[ball_name].acc.x = item[5];
+            this->balls[ball_name].acc.y = item[6];
+            this->balls[ball_name].move_time = item[7];
+            this->balls[ball_name].moving = item[8]>0 ? true : false;
         }
     }
     void remove_ball(string &name) {

@@ -33,7 +33,7 @@ public:
         this->check_border();
     }
     FoodBall(Vector2 position, Border* border, float size, const DefaultFoodBall default_food_ball) :
-        BaseBall(border, size, default_food_ball.radius_min, default_food_ball.radius_max) {
+        BaseBall(position, border, size, default_food_ball.radius_min, default_food_ball.radius_max) {
         this->ball_type = 1; // food ball type id 1
         this->check_border();
     }

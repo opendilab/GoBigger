@@ -66,6 +66,8 @@ public:
         FoodBall ball = FoodBall(position, this->border, size,
                                  this->default_food_manager.default_food_ball);
         this->balls.insert(make_pair(ball.name, ball));
+        cout << ", find " << this->balls[ball.name].position.x << " " << this->balls[ball.name].position.y
+             << " " << this->balls[ball.name].radius << endl;
     }
     void refresh() {
         int todo_num = min(this->refresh_num, this->num_max - (int)this->balls.size());
@@ -80,6 +82,7 @@ public:
     }
     void init_balls_custom(vector<vector<float>> &custom_init) {
         for (auto item: custom_init) {
+            cout << "get " << item[0] << " " << item[1] << " " << item[2];
             Vector2 position_tmp = Vector2(item[0], item[1]);
             float radius_tmp = item[2];
             this->spawn_ball_custom(position_tmp, pow(radius_tmp, 2));

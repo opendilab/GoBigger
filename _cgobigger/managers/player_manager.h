@@ -330,6 +330,49 @@ public:
             }
         }
     }
+    void init_balls_custom(vector<vector<float>> &custom_init) {
+        for (int i = 0; i < this->team_num; i++) {
+            string team_name = to_string(i);
+            this->team_names.push_back(team_name);
+            for (int j = 0; j < this->player_num_per_team; j++) {
+                string player_name = to_string(i * this->player_num_per_team + j);
+                this->player_names.push_back(player_name);
+                HumanPlayer player = HumanPlayer(team_name, player_name, this->border,
+                                                 this->default_player_manager.default_clone_ball,
+                                                 this->default_spore_ball);
+                this->players.insert(make_pair(player_name, player));
+            }
+        }
+        for (auto item: custom_init) {
+            Vector2 position_tmp = Vector2(item[0], item[1]);
+            float radius_tmp = item[2];
+            float size_tmp = pow(radius_tmp, 2);
+            string player_name_tmp = to_string((int)item[3]);
+            string team_name_tmp = to_string((int)item[4]);
+            Vector2 vel_tmp = Vector2(item[5], item[6]);
+            Vector2 acc_tmp = Vector2(item[7], item[8]);
+            Vector2 vel_last_tmp = Vector2(item[9], item[10]);
+            Vector2 acc_last_tmp = Vector2(item[11], item[12]);
+            Vector2 direction_tmp = Vector2(item[13], item[14]);
+            Vector2 last_given_acc_tmp = Vector2(item[15], item[16]);
+            float age_tmp = item[17];
+            bool cooling_last_tmp =item[18]>0 ? true : false;
+            bool stop_flag_tmp =item[19]>0 ? true : false;
+            float stop_time_tmp = item[20];
+            Vector2 acc_stop_tmp = Vector2(item[21], item[22]);
+            CloneBall ball = CloneBall(generate_uuid(), team_name_tmp, player_name_tmp, position_tmp,
+                                       this->border, size_tmp, vel_tmp, acc_tmp,
+                                       vel_last_tmp, acc_last_tmp, last_given_acc_tmp, stop_flag_tmp,
+                                       this->default_player_manager.default_clone_ball,
+                                       this->default_spore_ball);
+            ball.direction = direction_tmp;
+            ball.age = age_tmp;
+            ball.cooling_last = cooling_last_tmp;
+            ball.stop_time = stop_time_tmp;
+            ball.acc_stop = acc_stop_tmp;
+            this->players[player_name_tmp].balls.insert(make_pair(ball.name, ball));
+        }
+    }
     void get_balls(vector<BaseBall*>& cloneballs) {
         this->iter = this->players.begin();
         while (this->iter != this->players.end()) {

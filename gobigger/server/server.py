@@ -62,6 +62,7 @@ class Server:
         self.save_video = self.cfg.save_video
         self.save_quality = self.cfg.save_quality
         self.save_path = self.cfg.save_path
+        self.jump_to_frame_file = self.cfg.jump_to_frame_file
         self.state_tick_per_action_tick = self.state_tick_per_second // self.action_tick_per_second
 
         self.screens_all = []
@@ -158,7 +159,7 @@ class Server:
         self.server.start()
 
     def reset(self):
-        self.server.reset()
+        self.server.reset(self.jump_to_frame_file)
 
     def set_render(self, render):
         self.render = render
@@ -213,6 +214,10 @@ class Server:
     def save_frame_info(self, save_frame_full_path=''):
         if save_frame_full_path != '':
             self.server.save_frame_info(save_frame_full_path)
+
+    def load_frame_info(self, jump_to_frame_file):
+        if jump_to_frame_file:
+            self.server.load_frame_info(jump_to_frame_file)
 
     def get_player_names(self):
         return self.server.get_player_names()

@@ -62,11 +62,12 @@ public:
         ball.moving = moving;
         this->balls.insert(make_pair(ball.name, ball));
     }
-    void spawn_ball_custom(Vector2 &position, float size) {
+    string spawn_ball_custom(Vector2 &position, float size) {
         string name = generate_uuid();
         SporeBall ball = SporeBall(name, position, this->border, size,
                                  this->default_spore_manager.default_spore_ball);
         this->balls.insert(make_pair(ball.name, ball));
+        return ball.name;
     }
     void init_balls() { }
     void init_balls_custom(vector<vector<float>> &custom_init) {
@@ -77,9 +78,9 @@ public:
             Vector2 vel_tmp = Vector2(item[5], item[6]);
             Vector2 acc_tmp = Vector2(item[7], item[8]);
             float move_time_tmp = item[9];
-            bool moving_tmp = item[10];
+            bool moving_tmp = item[10]>0 ? true : false;
             this->spawn_ball_full(position_tmp, pow(radius_tmp, 2), direction_tmp, vel_tmp,
-                                    acc_tmp, move_time_tmp, moving_tmp);
+                                  acc_tmp, move_time_tmp, moving_tmp);
         }
     }
     void remove_ball(string &name) {

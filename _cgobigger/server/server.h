@@ -115,6 +115,14 @@ public:
         this->spore_manager.init_balls();
         this->player_manager.init_balls();
     }
+    void spawn_balls(string &jump_to_frame_file) {
+        map<string, vector<vector<float>>> balls = read_frame(jump_to_frame_file);
+        this->food_manager.init_balls_custom(balls["food"]);
+        this->spore_manager.init_balls_custom(balls["spore"]);
+        this->thorns_manager.init_balls_custom(balls["thorns"]);
+        this->player_manager.init_balls_custom(balls["clone"]);
+    }
+
     void step_state_tick(map<string, vector<float>> actions) {
         vector<BaseBall*> moving_balls;
         vector<BaseBall*> total_balls;
@@ -279,16 +287,20 @@ public:
         moving_balls.clear();
         total_balls.clear();
     }
-    void start() {
-        this->spawn_balls();
+    void start(string &jump_to_frame_file) {
+        if (jump_to_frame_file.empty()) {
+            this->spawn_balls();
+        } else {
+            this->spawn_balls(jump_to_frame_file);
+        }
     }
-    void reset() {
+    void reset(string &jump_to_frame_file) {
         this->last_time = 0.0f;
         this->food_manager.reset();
         this->thorns_manager.reset();
         this->spore_manager.reset();
         this->player_manager.reset();
-        this->start();
+        this->start(jump_to_frame_file);
     }
     void close() {}
     bool step(map<string, vector<float>> actions) {

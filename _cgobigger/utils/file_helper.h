@@ -107,7 +107,6 @@ void save_frame(map<string, vector<vector<float>>> balls, string &file_name) {
             } else if (iter->first == "clone") {
                 output << 4 << " ";
             }
-            cout << "size = " << iter->second[i].size() << endl;
             for (int j = 0; j < iter->second[i].size(); j++) {
                 output << iter->second[i][j] << " ";
             }
