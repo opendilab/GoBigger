@@ -103,6 +103,25 @@ public:
         this->refresh_time_count = 0.0f;
         this->balls.clear();
     }
+    vector<vector<float>> get_frame_info() {
+        vector<vector<float>> frame_info(this->balls.size(), vector<float>(9, 0.0f));
+        map<string, ThornsBall>::iterator iter = this->balls.begin();
+        int index = 0;
+        while (iter != this->balls.end()) {
+            frame_info[index][0] = iter->second.position.x;
+            frame_info[index][1] = iter->second.position.y;
+            frame_info[index][2] = iter->second.radius;
+            frame_info[index][3] = iter->second.vel.x;
+            frame_info[index][4] = iter->second.vel.y;
+            frame_info[index][5] = iter->second.acc.x;
+            frame_info[index][6] = iter->second.acc.y;
+            frame_info[index][7] = iter->second.move_time;
+            frame_info[index][8] = iter->second.moving ? 1.0f : 0.0f;
+            iter++;
+            index++;
+        }
+        return frame_info;
+    }
     int num_init;
     int num_min;
     int num_max;

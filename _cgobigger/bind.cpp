@@ -59,6 +59,7 @@ PYBIND11_MODULE(_cgobigger, m) {
         .def("close", &Server::close)
         .def("get_player_names", &Server::get_player_names)
         .def("get_team_names", &Server::get_team_names)
+        .def("save_frame_info", &Server::save_frame_info)
         .def("obs_partial_array", &Server::obs_partial_array)
         .def("obs_full_array", &Server::obs_full_array)
         .def_readwrite("last_time", &Server::last_time);

@@ -68,4 +68,10 @@ python -u cgobigger/bin/demo_bot.py
 It will print some log and finally save videos.
 
 
+### Go-Explore
+
+You can use go-explore as [here](https://gobigger.readthedocs.io/zh_CN/latest/advanced/custom_init.html#id5). 
+Please notice that the saved file in cpp version is different from that in python version.
+
+
 

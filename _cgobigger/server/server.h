@@ -19,6 +19,7 @@
 #include "utils/structures.h"
 #include "utils/utils.h"
 #include "utils/collision_detection.h"
+#include "utils/file_helper.h"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -413,6 +414,18 @@ public:
     vector<string> get_team_names() {
         vector<string>* ret = this->player_manager.get_team_names();
         return *ret;
+    }
+    void save_frame_info(string &save_frame_full_path) {
+        map<string, vector<vector<float>>> balls;
+        vector<vector<float>> food_frame_info = this->food_manager.get_frame_info();
+        vector<vector<float>> thorns_frame_info = this->thorns_manager.get_frame_info();
+        vector<vector<float>> spore_frame_info = this->spore_manager.get_frame_info();
+        vector<vector<float>> clone_frame_info = this->player_manager.get_frame_info();
+        balls.insert(make_pair("food", food_frame_info));
+        balls.insert(make_pair("thorns", thorns_frame_info));
+        balls.insert(make_pair("spore", spore_frame_info));
+        balls.insert(make_pair("clone", clone_frame_info));
+        save_frame(balls, save_frame_full_path);
     }
     int team_num;
     int player_num_per_team;

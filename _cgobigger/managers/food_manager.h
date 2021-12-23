@@ -99,6 +99,19 @@ public:
         this->refresh_time_count = 0.0f;
         this->balls.clear();
     }
+    vector<vector<float>> get_frame_info() {
+        vector<vector<float>> frame_info(this->balls.size(), vector<float>(3, 0.0f));
+        map<string, FoodBall>::iterator iter = this->balls.begin();
+        int index = 0;
+        while (iter != this->balls.end()) {
+            frame_info[index][0] = iter->second.position.x;
+            frame_info[index][1] = iter->second.position.y;
+            frame_info[index][2] = iter->second.radius;
+            iter++;
+            index++;
+        }
+        return frame_info;
+    }
     int num_init;
     int num_min;
     int num_max;

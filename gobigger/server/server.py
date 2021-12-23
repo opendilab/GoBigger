@@ -1,10 +1,8 @@
 import os
-import time
 import uuid
 import cv2
 
 import numpy as np
-import random
 import copy
 from easydict import EasyDict
 import logging
@@ -14,6 +12,21 @@ from _cgobigger import OutputBall, DefaultServer
 
 from gobigger.utils import deep_merge_dicts
 from .server_default_config import server_default_config
+
+
+def transfer_cfg_to_cserver_config(cfg):
+    default_server = DefaultServer()
+    default_server.team_num = cfg.team_num
+    default_server.player_num_per_team = cfg.player_num_per_team
+    default_server.map_width = cfg.map_width
+    default_server.map_height = cfg.map_height
+    default_server.match_time = cfg.match_time
+    default_server.state_tick_per_second = cfg.state_tick_per_second
+    default_server.action_tick_per_second = cfg.action_tick_per_second
+    if 'seed' in cfg and cfg.seed:
+        default_server.seed = cfg.seed
+    return default_server
+
 
 class Server:
 
@@ -72,7 +85,8 @@ class Server:
                 actions[str(i*self.player_num_per_team+j)] = [0.0, 0.0, -1]
         return actions
 
-    def step(self, actions):
+    def step(self, actions, save_frame_full_path='', **kwargs):
+        self.save_frame_info(save_frame_full_path)
         actions = self.format_actions(actions)
         if self.get_last_time() >= self.match_time:
             if self.save_video:
@@ -88,18 +102,7 @@ class Server:
     def step_state_tick(self, actions):
         self.server.step_state_tick(actions)
 
-    def obs(self, with_raw=False):
-        """
-        Get the raw obs from CServer
-        :param with_raw: use in render, to get raw obs to render all balls.
-        :return:
-            global_state: a dict, including border, total time, last time, leaderboard
-            player_states: a dict, including all players' states
-            obs_raw: return when with_raw is True, including raw info of the obs
-        """
-        obs_raw = self.server.obs_partial_array()
-        row_num, col_num = obs_raw.shape
-
+    def get_global_state(self, obs_raw):
         player_sizes = obs_raw[self.player_num_per_team * self.team_num * 4 + 4:
                                self.player_num_per_team * self.team_num * 5 + 4, 5]
         team_name_size = {str(i): 0 for i in range(self.team_num)}
@@ -113,13 +116,16 @@ class Server:
                 str(i): team_name_size[str(i)] for i in range(self.team_num)
             }
         }
+        return global_state
 
+    def get_player_states(self, obs_raw):
+        row_num, col_num = obs_raw.shape
         ball_obs_raw = obs_raw[:, :5]
         food_end, thorns_end, spore_end, clone_end = obs_raw[:4, 5]
         player_states = {str(i): {'overlap': {}, 'team_name': str(i//self.player_num_per_team),
-                         'rectangle': [int(obs_raw[i*4+4][5]), int(obs_raw[i*4+5][5]),
-                                       int(obs_raw[i*4+6][5]), int(obs_raw[i*4+7][5])]}
-               for i in range(self.player_num_per_team * self.team_num)}
+                                  'rectangle': [int(obs_raw[i*4+4][5]), int(obs_raw[i*4+5][5]),
+                                                int(obs_raw[i*4+6][5]), int(obs_raw[i*4+7][5])]}
+                         for i in range(self.player_num_per_team * self.team_num)}
         last_end = 0
         for key_name, end in zip(['food', 'thorns', 'spore', 'clone'],
                                  [int(food_end), int(thorns_end), int(spore_end), int(clone_end)]):
@@ -128,6 +134,20 @@ class Server:
                 obs_player = np.compress((obs_raw[last_end:end, i]>0), target_ball_obs_raw, axis=0)
                 player_states[str(i-6)]['overlap'].update({key_name: obs_player})
             last_end = end
+        return player_states
+
+    def obs(self, with_raw=False):
+        """
+        Get the raw obs from CServer
+        :param with_raw: use in render, to get raw obs to render all balls.
+        :return:
+            global_state: a dict, including border, total time, last time, leaderboard
+            player_states: a dict, including all players' states
+            obs_raw: return when with_raw is True, including raw info of the obs
+        """
+        obs_raw = self.server.obs_partial_array()
+        global_state = self.get_global_state(obs_raw)
+        player_states = self.get_player_states(obs_raw)
         self.record_frame_for_video(obs_raw)
         if not with_raw:
             return global_state, player_states
@@ -189,6 +209,10 @@ class Server:
                 out.write(screen)
             out.release()
             cv2.destroyAllWindows()
+
+    def save_frame_info(self, save_frame_full_path=''):
+        if save_frame_full_path != '':
+            self.server.save_frame_info(save_frame_full_path)
 
     def get_player_names(self):
         return self.server.get_player_names()

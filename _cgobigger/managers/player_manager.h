@@ -408,7 +408,45 @@ public:
         this->team_names.clear();
         this->player_names.clear();
     }
-
+    vector<vector<float>> get_frame_info() {
+        vector<BaseBall*> cloneballs;
+        this->get_balls(cloneballs);
+        vector<vector<float>> frame_info(cloneballs.size(), vector<float>(23, 0.0f));
+        this->iter = this->players.begin();
+        int index = 0;
+        while (this->iter != this->players.end()) {
+            map<string, CloneBall>::iterator ball_iter = this->iter->second.balls.begin();
+            while (ball_iter != this->iter->second.balls.end()) {
+                frame_info[index][0] = ball_iter->second.position.x;
+                frame_info[index][1] = ball_iter->second.position.y;
+                frame_info[index][2] = ball_iter->second.radius;
+                frame_info[index][3] = (float)(stoi(ball_iter->second.owner));
+                frame_info[index][4] = (float)(stoi(ball_iter->second.team_name));
+                frame_info[index][5] = ball_iter->second.vel.x;
+                frame_info[index][6] = ball_iter->second.vel.y;
+                frame_info[index][7] = ball_iter->second.acc.x;
+                frame_info[index][8] = ball_iter->second.acc.y;
+                frame_info[index][9] = ball_iter->second.vel_last.x;
+                frame_info[index][10] = ball_iter->second.vel_last.y;
+                frame_info[index][11] = ball_iter->second.acc_last.x;
+                frame_info[index][12] = ball_iter->second.acc_last.y;
+                frame_info[index][13] = ball_iter->second.direction.x;
+                frame_info[index][14] = ball_iter->second.direction.y;
+                frame_info[index][15] = ball_iter->second.last_given_acc.x;
+                frame_info[index][16] = ball_iter->second.last_given_acc.y;
+                frame_info[index][17] = ball_iter->second.age;
+                frame_info[index][18] = ball_iter->second.cooling_last ? 1.0f : 0.0f;
+                frame_info[index][19] = ball_iter->second.stop_flag ? 1.0f : 0.0f;
+                frame_info[index][20] = ball_iter->second.stop_time;
+                frame_info[index][21] = ball_iter->second.acc_stop.x;
+                frame_info[index][22] = ball_iter->second.acc_stop.y;
+                ball_iter++;
+                index++;
+            }
+            this->iter++;
+        }
+        return frame_info;
+    }
     DefaultPlayerManager default_player_manager;
     int team_num;
     int player_num_per_team;

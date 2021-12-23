@@ -56,10 +56,10 @@ class TestServer:
             logging.debug(global_state)
 
     def test_multiprocessing(self):
-        '''
+        """
         Overview:
             Test the server in a multi-process environment
-        '''
+        """
         server_num = 2
         servers = []
         for i in range(server_num):
@@ -95,3 +95,13 @@ class TestServer:
         for p in ps:
             p.join()
 
+    def test_save_frame_info(self):
+        server = Server()
+        server.reset()
+        print(dir(server.server))
+        print(server.get_player_names())
+        for i in range(10):
+            actions = {player_name: [random.uniform(-1, 1), random.uniform(-1, 1), -1] \
+                       for player_name in server.get_player_names()}
+            server.step(actions=actions, save_frame_full_path="./{}.pkl".format(i))
+        server.close()
