@@ -97,7 +97,7 @@ class TestServer:
 
     def test_save_frame_info(self):
         server = Server(cfg=dict(
-            jump_to_frame_file="./9.pkl"
+            # jump_to_frame_file="./9.pkl"
         ))
         server.reset()
         for i in range(10):
@@ -105,8 +105,3 @@ class TestServer:
                        for player_name in server.get_player_names()}
             server.step(actions=actions, save_frame_full_path="./new-{}.pkl".format(i))
         server.close()
-
-
-if __name__ == '__main__':
-    a = TestServer()
-    a.test_save_frame_info()
