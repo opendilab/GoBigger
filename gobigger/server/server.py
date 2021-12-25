@@ -227,8 +227,8 @@ class Server:
         for i in range(self.team_num):
             ret.append([])
             for j in range(self.player_num_per_team):
-                ret[-1].append(i*self.player_num_per_team+j)
-        return ret
+                ret[-1].append(str(i*self.player_num_per_team+j))
+        return retß
 
     def get_team_names(self):
         return self.server.get_team_names()
