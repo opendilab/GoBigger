@@ -61,10 +61,11 @@ class ThornsManager(BaseManager):
         else:
             for ball_cfg in custom_init:
                 ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
-                ball.vel = Vector2(*ball_cfg[3:5])
-                ball.acc = Vector2(*ball_cfg[5:7])
-                ball.move_time = ball_cfg[7]
-                ball.moving = ball_cfg[8]
+                if len(ball_cfg) > 3:
+                    ball.vel = Vector2(*ball_cfg[3:5])
+                    ball.acc = Vector2(*ball_cfg[5:7])
+                    ball.move_time = ball_cfg[7]
+                    ball.moving = ball_cfg[8]
                 self.balls[ball.name] = ball
 
     def step(self, duration):

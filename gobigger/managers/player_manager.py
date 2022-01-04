@@ -54,18 +54,19 @@ class PlayerManager(BaseManager):
                 ball = CloneBall(team_name=team_name, name=uuid.uuid1(), position=position, border=self.border, 
                                  size=radius**2, vel=Vector2(0,0), acc=Vector2(0,0),
                                  vel_last=Vector2(0,0), acc_last=Vector2(0,0), last_given_acc=Vector2(0,0),
-                                 stop_flag=True, owner=player_name, spore_settings=self.spore_settings)
-                ball.vel = Vector2(*ball_cfg[5:7])
-                ball.acc = Vector2(*ball_cfg[7:9])
-                ball.vel_last = Vector2(*ball_cfg[9:11])
-                ball.acc_last = Vector2(*ball_cfg[11:13])
-                ball.direction = Vector2(*ball_cfg[13:15])
-                ball.last_given_acc = Vector2(*ball_cfg[15:17])
-                ball.age = ball_cfg[17]
-                ball.cooling_last = ball_cfg[18]
-                ball.stop_flag = ball_cfg[19]
-                ball.stop_time = ball_cfg[20]
-                ball.acc_stop = Vector2(*ball_cfg[21:23])
+                                 stop_flag=True, owner=player_name, spore_settings=self.spore_settings, **self.cfg.ball_settings)
+                if len(ball_cfg) > 5:
+                    ball.vel = Vector2(*ball_cfg[5:7])
+                    ball.acc = Vector2(*ball_cfg[7:9])
+                    ball.vel_last = Vector2(*ball_cfg[9:11])
+                    ball.acc_last = Vector2(*ball_cfg[11:13])
+                    ball.direction = Vector2(*ball_cfg[13:15])
+                    ball.last_given_acc = Vector2(*ball_cfg[15:17])
+                    ball.age = ball_cfg[17]
+                    ball.cooling_last = ball_cfg[18]
+                    ball.stop_flag = ball_cfg[19]
+                    ball.stop_time = ball_cfg[20]
+                    ball.acc_stop = Vector2(*ball_cfg[21:23])
                 self.players[player_name].add_balls(ball)
                 init_dict[team_name][player_name] = True
             for team_name, team in init_dict.items():
