@@ -156,7 +156,7 @@ class Server:
             return global_state, player_states, obs_raw
 
     def start(self):
-        self.server.start()
+        self.server.start(self.jump_to_frame_file)
 
     def reset(self):
         self.server.reset(self.jump_to_frame_file)
