@@ -260,7 +260,6 @@ class Server:
         self.screens_all = []
         self.screens_partial = {}
         self.actions_record = []
-        self.seed()
         self.load_record()
         self.food_manager.reset()
         self.thorns_manager.reset()

@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def play_by_config(config_name):
-    config_module = importlib.import_module('gobigger.hyper.configs.{}_config'.format(config_name))
+    config_module = importlib.import_module('gobigger.hyper.configs.config_{}'.format(config_name))
     config = config_module.server_default_config
     server = Server(config)
     server.reset()

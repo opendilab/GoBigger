@@ -1,3 +1,4 @@
+# 侧涨
 server_default_config = dict(
     team_num=2, 
     player_num_per_team=2, 
@@ -79,8 +80,8 @@ server_default_config = dict(
         food=[], # only position and radius
         thorns=[[300, 300, 16]], # only position and radius
         spore=[], # only position and radius
-        clone=[[100, 100, 16, '0', '0'], [130, 130, 10, '1', '0'], 
-               [160, 115, 12, '2', '1'], [300, 300, 3, '3', '1']],
+        clone=[[80, 100, 16, '0', '0'], [130, 100, 10, '1', '0'], 
+               [130, 115, 12, '2', '1'], [300, 300, 3, '3', '1']],
     ),
     obs_settings=dict(
         with_spatial=True,
