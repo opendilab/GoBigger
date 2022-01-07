@@ -13,8 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def launch():
-    # seed = int(time.time())
-    seed = 1641532781
+    seed = int(time.time())
     server = Server(dict(seed=seed))
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
@@ -22,10 +21,11 @@ def launch():
     bot_agents = []
     for player_name in server.get_player_names():
         bot_agents.append(BotAgent(player_name, level=3))
+    logging.info(seed)
     for i in range(100000):
         obs = server.obs()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
-        logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
+        # logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
         finish_flag = server.step(actions=actions)
         if finish_flag:
             logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
@@ -34,5 +34,5 @@ def launch():
 
 
 if __name__ == '__main__':
-    # while True:
-    launch()
+    while True:
+        launch()
