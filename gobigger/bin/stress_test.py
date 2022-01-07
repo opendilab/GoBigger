@@ -1,5 +1,6 @@
 import os
 import time
+import pickle
 import logging
 
 from gobigger.agents import BotAgent
@@ -12,7 +13,7 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 logging.basicConfig(level=logging.INFO)
 
 
-def launch():
+def launch(replay_dir='replays'):
     seed = int(time.time())
     server = Server(dict(seed=seed))
     render = EnvRender(server.map_width, server.map_height)
@@ -22,17 +23,27 @@ def launch():
     for player_name in server.get_player_names():
         bot_agents.append(BotAgent(player_name, level=3))
     logging.info(seed)
+    data_simple = {'seed': seed, 'actions': []}
     for i in range(100000):
         obs = server.obs()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
+        data_simple['actions'].append(actions)
         # logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
-        finish_flag = server.step(actions=actions)
-        if finish_flag:
-            logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
-            break
+        try:
+            finish_flag = server.step(actions=actions)
+            if finish_flag:
+                logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
+                break
+        except Exception as e:
+            replay_path = os.path.join(replay_dir, str(seed)+'.replay')
+            with open(replay_path, "wb") as f:
+                pickle.dump(data_simple, f)
     server.close()
 
 
 if __name__ == '__main__':
+    replay_dir = 'replays'
+    if not os.path.isdir(replay_dir):
+        os.mkdir(replay_dir)
     while True:
-        launch()
+        launch(replay_dir)
