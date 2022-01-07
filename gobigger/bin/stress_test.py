@@ -1,4 +1,5 @@
 import os
+import time
 import logging
 
 from gobigger.agents import BotAgent
@@ -12,7 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 
 def launch():
-    server = Server()
+    seed = int(time.time())
+    server = Server(dict(seed=seed))
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
     server.reset()
@@ -22,7 +24,7 @@ def launch():
     for i in range(100000):
         obs = server.obs()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
-        logging.info('{} {} {} {}'.format(i, server.get_last_time(), actions, obs[0]['leaderboard']))
+        logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
         finish_flag = server.step(actions=actions)
         if finish_flag:
             logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
