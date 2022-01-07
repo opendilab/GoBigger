@@ -10,4 +10,4 @@ include_directories(/Users/zm/anaconda2/envs/torch041-py36/include/python3.6m)
 
 link_directories("/usr/local/opt/boost@1.74/lib/")
 
-add_executable(test utils/file_helper_test.cpp)
+add_executable(test server/server_test.cpp)

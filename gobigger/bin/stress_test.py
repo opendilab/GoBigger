@@ -41,14 +41,32 @@ def launch(replay_dir='replays'):
     server.close()
 
 
-# def relaunch(replay_path):
+def relaunch(replay_path):
+    lines = open(replay_path, 'r').readlines()
+    seed = int(lines[0].strip())
+    actions_all = [eval(line.strip().split(' ', 1)[-1]) for line in lines[1:]]
+    server = Server(dict(seed=seed))
+    render = EnvRender(server.map_width, server.map_height)
+    server.set_render(render)
+    server.reset()
+    for i in range(100000):
+        obs = server.obs()
+        actions = actions_all[i]
+        logging.info('{} {} {}'.format(i, server.get_last_time(), obs[0]['leaderboard']))
+        finish_flag = server.step(actions=actions)
+        # import pdb;pdb.set_trace()
+        if finish_flag:
+            logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
+            break
+    server.close()
 
 
 if __name__ == '__main__':
-    replay_dir = 'replays'
-    if not os.path.isdir(replay_dir):
-        os.mkdir(replay_dir)
-    while True:
-        launch(replay_dir)
+    # replay_dir = 'replays'
+    # if not os.path.isdir(replay_dir):
+    #     os.mkdir(replay_dir)
+    # while True:
+    #     launch(replay_dir)
 
+    relaunch(replay_path='replays/1641535363.replay')
 

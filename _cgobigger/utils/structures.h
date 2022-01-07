@@ -82,11 +82,12 @@ public:
         this->seed = time(0);
         e.seed(this->seed);
     }
-    Border(float minx, float miny, float maxx, float maxy, time_t seed) : 
+    Border(float minx, float miny, float maxx, float maxy, int seed) :
         minx(minx), miny(miny), maxx(maxx), maxy(maxy), seed(seed) { 
         this->width = maxx - minx;
         this->height = maxy - miny;
         e.seed(this->seed);
+        cout << this->seed << endl;
     }
     float getMinx() { return this->minx; }
     float getMiny() { return this->maxx; }

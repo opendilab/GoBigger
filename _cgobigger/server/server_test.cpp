@@ -7,7 +7,8 @@
 void test_server() {
     DefaultServer default_server;
     Server server = Server(default_server);
-    server.reset();
+    string j = "";
+    server.reset(j);
     map<string, vector<float>> actions;
     default_random_engine e = default_random_engine();
     e.seed(time(0));
@@ -39,7 +40,8 @@ void test_server_obs() {
     default_server.default_thorns_manager.default_thorns_ball.radius_max = 5;
     default_server.seed = 1638783661;
     Server server = Server(default_server);
-    server.reset();
+    string j = "";
+    server.reset(j);
     default_random_engine e = default_random_engine();
 //    time_t my_seed = time(0);
     time_t my_seed = 1638786904;
@@ -129,7 +131,8 @@ void test_out() {
     default_server.team_num = 1;
     default_server.player_num_per_team = 1;
     Server server = Server(default_server);
-    server.reset();
+    string j = "";
+    server.reset(j);
     default_random_engine e = default_random_engine();
     e.seed(time(0));
     for (int i = 0; i < 10; i++ ) {

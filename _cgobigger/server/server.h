@@ -47,7 +47,7 @@ struct DefaultServer {
     int action_tick_per_second = 5;
     int load_bin_frame_num = -1; // -1 means all
     string jump_to_frame_file = "";
-    time_t seed = time(0);
+    int seed = (int)(time(0));
     DefaultFoodManager default_food_manager;
     DefaultThornsManager default_thorns_manager;
     DefaultSporeManager default_spore_manager;
@@ -95,7 +95,7 @@ public:
         this->default_player_manager = this->default_server.default_player_manager;
         this->default_obs_setting = this->default_server.default_obs_setting;
 
-        // basic kwrags
+        // basic kwargs
         this->border = Border(0.0f, 0.0f, this->map_width, this->map_height, this->seed);
         this->last_time = 0.0f;
 
@@ -446,7 +446,7 @@ public:
     float match_time;
     int state_tick_per_second;
     int action_tick_per_second;
-    time_t seed;
+    int seed;
     string save_path;
     bool save_bin;
     bool load_bin;
