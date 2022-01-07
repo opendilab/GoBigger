@@ -13,7 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 
 def launch():
-    seed = int(time.time())
+    # seed = int(time.time())
+    seed = 1641532781
     server = Server(dict(seed=seed))
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
