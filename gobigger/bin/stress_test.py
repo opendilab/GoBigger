@@ -1,10 +1,14 @@
+import os
 import logging
 
 from gobigger.agents import BotAgent
 from gobigger.server import Server
 from gobigger.render import EnvRender
 
-logging.basicConfig(level=logging.DEBUG)
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
+
+logging.basicConfig(level=logging.INFO)
 
 
 def launch():
@@ -20,7 +24,7 @@ def launch():
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
         finish_flag = server.step(actions=actions)
         if finish_flag:
-            logging.debug('Game Over, {}'.format(obs[0]['leaderboard']))
+            logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
             break
     server.close()
 
