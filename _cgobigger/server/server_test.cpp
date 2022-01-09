@@ -1,4 +1,5 @@
 #include <string>
+#include <queue>
 #include "server.h"
 #include "balls/thornsball.h"
 #include "balls/cloneball.h"
@@ -83,7 +84,7 @@ void test_server_obs() {
         }
         server.step(actions);
 //        map<string, map<string, vector<vector<float>>>> obs = server.obs_default();
-        auto result = server.obs_partial_array();
+//        auto result = server.obs_partial_array();
     }
 }
 
@@ -158,13 +159,208 @@ void test_out() {
     }
 }
 
+bool compare_func (BaseBall* a, BaseBall* b) {
+    return (a->radius < b->radius);
+}
+
+class BotAgent {
+public:
+    BotAgent() {}
+    BotAgent(string &name) : name(name) {}
+    vector<float> step(vector<BaseBall*> &obs_food_balls,
+                       vector<BaseBall*> &obs_thorns_balls,
+                       vector<BaseBall*> &obs_spore_balls,
+                       vector<BaseBall*> &obs_clone_balls) {
+        vector<BaseBall*> my_clone_balls;
+        vector<BaseBall*> other_clone_balls;
+        for (auto ball : obs_clone_balls) {
+            if (ball->get_owner() == this->name) {
+                my_clone_balls.push_back(ball);
+            } else {
+                other_clone_balls.push_back(ball);
+            }
+        }
+        sort(my_clone_balls.begin(), my_clone_balls.end(), compare_func);
+        sort(other_clone_balls.begin(), other_clone_balls.end(), compare_func);
+
+        if (my_clone_balls.size() >= 9.0f && my_clone_balls[4]->radius > 14.0f) {
+            this->actions_queue.push({0.0f, 0.0f, 2.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, -1.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            this->actions_queue.push({0.0f, 0.0f, 0.0f});
+            vector<float> ret = this->actions_queue.front();
+            this->actions_queue.pop();
+            return ret;
+        }
+        Vector2 direction;
+        float action_type = -1.0f;
+        if (other_clone_balls.size() >= 9 && my_clone_balls[0]->radius < other_clone_balls[0]->radius) {
+            direction = my_clone_balls[0]->position - other_clone_balls[0]->position;
+            direction = direction.normalize();
+        } else {
+            float min_thorns_distance = 10000.0f;
+            bool min_thorns_ball_flag = false;
+            BaseBall* min_thorns_ball;
+            vector<BaseBall*> other_thorns_balls;
+            for (auto ball : obs_thorns_balls) {
+                if (ball->radius < my_clone_balls[0]->radius) {
+                    float distance_tmp = (ball->position - my_clone_balls[0]->position).length();
+                    if (distance_tmp < min_thorns_distance) {
+                        min_thorns_distance = distance_tmp;
+                        min_thorns_ball = ball;
+                        min_thorns_ball_flag = true;
+                    }
+                }
+            }
+            if (min_thorns_ball_flag) {
+                direction = (min_thorns_ball->position - my_clone_balls[0]->position).normalize();
+            } else {
+                float min_food_distance = 10000.0f;
+                bool min_food_ball_flag = false;
+                BaseBall* min_food_ball;
+                for (auto ball : obs_food_balls) {
+                    if (ball->radius < my_clone_balls[0]->radius) {
+                        float distance_tmp = (ball->position - my_clone_balls[0]->position).length();
+                        if (distance_tmp < min_food_distance) {
+                            min_food_distance = distance_tmp;
+                            min_food_ball = ball;
+                            min_food_ball_flag = true;
+                        }
+                    }
+                }
+                if (min_food_ball_flag) {
+                    direction = (min_food_ball->position - my_clone_balls[0]->position).normalize();
+                } else {
+                    direction = my_clone_balls[0]->position.normalize() * (-1.0f);
+                }
+            }
+            float action_random = this->e() * 1.0f;
+            if (action_random < 0.02f) {
+                action_type = 1.0f;
+            } else if (action_random < 0.04f && action_random > 0.02f) {
+                action_type = 2.0f;
+            }
+        }
+        direction = Vector2(((e() * 2.0f - 1.0f) * 0.1f) * direction.x,
+                            ((e() * 2.0f - 1.0f) * 0.1f) * direction.y);
+        this->actions_queue.push({direction.x, direction.y, action_type});
+        vector<float> ret = this->actions_queue.front();
+        this->actions_queue.pop();
+        return ret;
+    }
+    queue<vector<float>> actions_queue;
+    string name;
+    default_random_engine e;
+
+};
+
+
+void test_server_new() {
+    DefaultServer default_server;
+//    default_server.team_num = 1;
+//    default_server.player_num_per_team = 1;
+//    default_server.seed = 1638783661;
+    Server server = Server(default_server);
+    string j = "";
+    server.reset(j);
+    vector<string> player_names = server.get_player_names();
+    map<string, BotAgent> agents;
+    for (auto player_name : player_names) {
+        agents.insert(make_pair(player_name, BotAgent(player_name)));
+    }
+    default_random_engine e = default_random_engine();
+    e.seed(time(0));
+    for (int i = 0; i < 100000; i++ ) {
+        vector<BaseBall*> obs_food_balls;
+        vector<BaseBall*> obs_thorns_balls;
+        vector<BaseBall*> obs_spore_balls;
+        vector<BaseBall*> obs_clone_balls;
+        server.food_manager.get_balls(obs_food_balls);
+        server.thorns_manager.get_balls(obs_thorns_balls);
+        server.spore_manager.get_balls(obs_spore_balls);
+        server.player_manager.get_balls(obs_clone_balls);
+
+        vector<HumanPlayer*> players;
+        server.player_manager.get_players(players);
+        map<string, vector<float>> actions;
+        for (auto player : players) {
+            vector<BaseBall*> obs_food_balls_tmp;
+            vector<BaseBall*> obs_thorns_balls_tmp;
+            vector<BaseBall*> obs_spore_balls_tmp;
+            vector<BaseBall*> obs_clone_balls_tmp;
+
+            vector<float> rectangle = player->get_rectangle(server.map_width, server.map_height,
+                                                            server.default_obs_setting.scale_up_ratio,
+                                                            server.default_obs_setting.vision_x_min,
+                                                            server.default_obs_setting.vision_y_min);
+            float fr0 = rectangle[0] - server.default_food_manager.default_food_ball.radius_min;
+            float fr1 = rectangle[1] - server.default_food_manager.default_food_ball.radius_min;
+            float fr2 = rectangle[2] + server.default_food_manager.default_food_ball.radius_min;
+            float fr3 = rectangle[3] + server.default_food_manager.default_food_ball.radius_min;
+            for (auto ball: obs_food_balls) {
+                if (ball->position.x > fr0 && ball->position.x < fr2
+                    && ball->position.y > fr1 && ball->position.y < fr3) {
+                    obs_food_balls_tmp.push_back(ball);
+                }
+            }
+            for (auto ball: obs_thorns_balls) {
+                if (ball->judge_in_rectangle(rectangle)) {
+                    obs_thorns_balls_tmp.push_back(ball);
+                }
+            }
+            for (auto ball: obs_spore_balls) {
+                if (ball->judge_in_rectangle(rectangle)) {
+                    obs_spore_balls_tmp.push_back(ball);
+                }
+            }
+            for (auto ball: obs_clone_balls) {
+                if (ball->judge_in_rectangle(rectangle)) {
+                    obs_clone_balls_tmp.push_back(ball);
+                }
+            }
+            vector<float> action = agents[player->name].step(obs_food_balls_tmp,
+                                               obs_thorns_balls_tmp,
+                                               obs_spore_balls_tmp,
+                                               obs_clone_balls_tmp);
+            actions.insert(make_pair(player->name, action));
+        }
+        if (server.step(actions)) {
+
+            for (auto player : players) {
+                cout << player->team_name << " "
+                     << player->name << " "
+                     << player->get_total_size() << " ";
+            }
+            cout << endl;
+            break;
+        }
+    }
+}
+
 
 int main(int argc, char* argv[]) {
 //    test_server();
-    test_server_obs();
+//    test_server_obs();
 //    test_eat_thornsball();
 //    test_out();
 //    test_time1();
+    int count = 0;
+    while (true) {
+        count++;
+        cout << count << " ";
+        test_server_new();
+    }
     return 0;
 }
 

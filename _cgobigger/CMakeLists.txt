@@ -8,6 +8,9 @@ include_directories(/Users/zm/anaconda2/envs/torch041-py36/include/)
 #include_directories(/Users/zm/anaconda2/envs/torch041-py36/lib/python3.6/site-packages/pybind11/include)
 include_directories(/Users/zm/anaconda2/envs/torch041-py36/include/python3.6m)
 
-link_directories("/usr/local/opt/boost@1.74/lib/")
+link_directories(/usr/local/opt/boost@1.74/lib/)
+link_directories(/Users/zm/anaconda2/envs/torch041-py36/lib)
+
+link_libraries(python)
 
 add_executable(test server/server_test.cpp)

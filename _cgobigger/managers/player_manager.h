@@ -404,6 +404,13 @@ public:
         this->players[player_name].balls.erase(ball_name);
     }
     void step() {
+        vector<BaseBall*> total_balls;
+        this->get_balls(total_balls);
+        for (auto ball : total_balls) {
+            if (ball->is_remove) {
+                this->players[ball->get_owner()].balls.erase(ball->get_name());
+            }
+        }
         this->iter = this->players.begin();
         while (this->iter != this->players.end()) {
             if (this->iter->second.get_clone_num() == 0) {

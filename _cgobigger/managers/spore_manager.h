@@ -28,7 +28,7 @@ public:
     }
     void get_balls(vector<BaseBall*>& sporeballs) {
         map<string, SporeBall>::iterator iter = this->balls.begin();
-        while (iter != balls.end()) {
+        while (iter != this->balls.end()) {
             sporeballs.push_back(&(iter->second));
             iter++;
         }
@@ -86,7 +86,15 @@ public:
     void remove_ball(string &name) {
         this->balls.erase(name);
     }
-    void step(float duration) { }
+    void step(float duration) {
+        vector<BaseBall*> total_balls;
+        this->get_balls(total_balls);
+        for (auto ball : total_balls) {
+            if (ball->is_remove) {
+                this->balls.erase(ball->get_name());
+            }
+        }
+    }
     void reset() {
         this->balls.clear();
     }

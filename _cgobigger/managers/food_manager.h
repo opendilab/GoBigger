@@ -92,6 +92,13 @@ public:
         this->balls.erase(name);
     }
     void step(float duration) {
+        vector<BaseBall*> total_balls;
+        this->get_balls(total_balls);
+        for (auto ball : total_balls) {
+            if (ball->is_remove) {
+                this->balls.erase(ball->get_name());
+            }
+        }
         this->refresh_time_count += duration;
         if (this->refresh_time_count >= this->refresh_time) {
             this->refresh();

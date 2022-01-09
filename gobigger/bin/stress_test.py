@@ -2,6 +2,7 @@ import os
 import time
 import pickle
 import logging
+from uuid import uuid1
 
 from gobigger.agents import BotAgent
 from gobigger.server import Server
@@ -24,16 +25,11 @@ def launch(replay_dir='replays'):
         bot_agents.append(BotAgent(player_name, level=3))
     logging.info(seed)
     data_simple = {'seed': seed, 'actions': []}
-    replay_path = os.path.join(replay_dir, str(seed)+'.replay')
-    f = open(replay_path, 'w')
-    f.write(str(seed) + '\n')
     for i in range(100000):
         obs = server.obs()
         actions = {bot_agent.name: bot_agent.step(obs[1][bot_agent.name]) for bot_agent in bot_agents}
         data_simple['actions'].append(actions)
         # logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
-        f.write('{} {}\n'.format(i, actions))
-        f.flush()
         finish_flag = server.step(actions=actions)
         if finish_flag:
             logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
@@ -42,6 +38,10 @@ def launch(replay_dir='replays'):
 
 
 def relaunch(replay_path):
+    data_hard = {
+        'observations': [],
+        'actions': []
+    }
     lines = open(replay_path, 'r').readlines()
     seed = int(lines[0].strip())
     actions_all = [eval(line.strip().split(' ', 1)[-1]) for line in lines[1:]]
@@ -49,24 +49,29 @@ def relaunch(replay_path):
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
     server.reset()
-    for i in range(100000):
+    for i in range(500):
         obs = server.obs()
         actions = actions_all[i]
         logging.info('{} {} {}'.format(i, server.get_last_time(), obs[0]['leaderboard']))
+        data_hard['observations'].append(obs)
+        data_hard['actions'].append(actions)
         finish_flag = server.step(actions=actions)
-        # import pdb;pdb.set_trace()
         if finish_flag:
             logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
             break
     server.close()
+    file_name = str(uuid1()) + "-" + str(seed)
+    data_path = os.path.join('replays', file_name+'.data2')
+    with open(data_path, "wb") as f:
+        pickle.dump(data_hard, f)
 
 
 if __name__ == '__main__':
-    # replay_dir = 'replays'
-    # if not os.path.isdir(replay_dir):
-    #     os.mkdir(replay_dir)
-    # while True:
-    #     launch(replay_dir)
+    replay_dir = 'replays'
+    if not os.path.isdir(replay_dir):
+        os.mkdir(replay_dir)
+    while True:
+        launch(replay_dir)
 
-    relaunch(replay_path='replays/1641535363.replay')
+    # relaunch(replay_path='replays/1641535363.replay')
 

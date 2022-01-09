@@ -64,4 +64,3 @@ PYBIND11_MODULE(_cgobigger, m) {
         .def("obs_full_array", &Server::obs_full_array)
         .def_readwrite("last_time", &Server::last_time);
 }
-

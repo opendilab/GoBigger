@@ -144,3 +144,4 @@ cython_debug/
 vcs.xml
 .DS_Store
 replays/
+*.ipynb

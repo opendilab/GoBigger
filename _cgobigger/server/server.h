@@ -200,24 +200,24 @@ public:
                                 if (moving_ball_pt->team_name != target_ball_pt->team_name) {
                                     if (moving_ball_pt->size > target_ball_pt->size) {
                                         moving_ball_pt->eat_normal(target_ball_pt);
-                                        this->player_manager.remove_ball(target_ball_pt->owner, target_ball_pt->name);
+//                                        this->player_manager.remove_ball(target_ball_pt->owner, target_ball_pt->name);
                                         target_ball->is_remove = true;
                                     } else {
                                         target_ball_pt->eat_normal(moving_ball_pt);
-                                        this->player_manager.remove_ball(moving_ball_pt->owner, moving_ball_pt->name);
+//                                        this->player_manager.remove_ball(moving_ball_pt->owner, moving_ball_pt->name);
                                         moving_balls[i]->is_remove = true;
                                     }
                                 } else if (moving_ball_pt->owner != target_ball_pt->owner) {
                                     if (moving_ball_pt->size > target_ball_pt->size) {
                                         if (this->player_manager.get_clone_num(target_ball_pt->owner) > 1) {
                                             moving_ball_pt->eat_normal(target_ball_pt);
-                                            this->player_manager.remove_ball(target_ball_pt->owner, target_ball_pt->name);
+//                                            this->player_manager.remove_ball(target_ball_pt->owner, target_ball_pt->name);
                                             target_ball->is_remove = true;
                                         }
                                     } else {
                                         if (this->player_manager.get_clone_num(moving_ball_pt->owner) > 1) {
                                             target_ball_pt->eat_normal(moving_ball_pt);
-                                            this->player_manager.remove_ball(moving_ball_pt->owner, moving_ball_pt->name);
+//                                            this->player_manager.remove_ball(moving_ball_pt->owner, moving_ball_pt->name);
                                             moving_balls[i]->is_remove = true;
                                         }
                                     }
@@ -225,19 +225,19 @@ public:
                             } else if (target_ball->ball_type == 1) { // foodball
                                 FoodBall* target_ball_pt = &(this->food_manager.balls[target_ball->get_name()]);
                                 moving_ball_pt->eat_normal(target_ball_pt);
-                                this->food_manager.remove_ball(target_ball_pt->name);
+//                                this->food_manager.remove_ball(target_ball_pt->name);
                                 target_ball->is_remove = true;
                             } else if (target_ball->ball_type == 3) { // sporeball
                                 SporeBall* target_ball_pt = &(this->spore_manager.balls[target_ball->get_name()]);
                                 moving_ball_pt->eat_normal(target_ball_pt);
-                                this->spore_manager.remove_ball(target_ball_pt->name);
+//                                this->spore_manager.remove_ball(target_ball_pt->name);
                                 target_ball->is_remove = true;
                             } else if (target_ball->ball_type == 2) { // thornsball
                                 ThornsBall* target_ball_pt = &(this->thorns_manager.balls[target_ball->get_name()]);
                                 if (moving_ball_pt->size > target_ball_pt->size) {
                                     vector<CloneBall> clone_balls_on_thorns = moving_ball_pt->eat_thorns(target_ball_pt,
                                                          this->player_manager.get_clone_num(moving_ball_pt->owner));
-                                    this->thorns_manager.remove_ball(target_ball_pt->name);
+//                                    this->thorns_manager.remove_ball(target_ball_pt->name);
                                     target_ball->is_remove = true;
                                     this->player_manager.add_balls(clone_balls_on_thorns);
                                 }
@@ -250,14 +250,14 @@ public:
                                 if (moving_ball_pt->size < target_ball_pt->size) {
                                     vector<CloneBall> clone_balls_on_thorns = target_ball_pt->eat_thorns(moving_ball_pt,
                                                 this->player_manager.get_clone_num(target_ball_pt->owner));
-                                    this->thorns_manager.remove_ball(moving_ball_pt->name);
+//                                    this->thorns_manager.remove_ball(moving_ball_pt->name);
                                     moving_balls[i]->is_remove = true;
                                     this->player_manager.add_balls(clone_balls_on_thorns);
                                 }
                             } else if (target_ball->ball_type == 3) { // sporeball
                                 SporeBall* target_ball_pt = &(this->spore_manager.balls[target_ball->get_name()]);
                                 moving_ball_pt->eat(target_ball_pt);
-                                this->spore_manager.remove_ball(target_ball_pt->name);
+//                                this->spore_manager.remove_ball(target_ball_pt->name);
                                 target_ball->is_remove = true;
                             }
                         } else if (moving_balls[i]->ball_type == 3) { // sporeball
@@ -266,12 +266,12 @@ public:
                                 CloneBall* target_ball_pt = &(this->player_manager.players[target_ball->owner]
                                                             .balls[target_ball->name]);
                                 target_ball_pt->eat_normal(moving_ball_pt);
-                                this->spore_manager.remove_ball(moving_ball_pt->name);
+//                                this->spore_manager.remove_ball(moving_ball_pt->name);
                                 moving_balls[i]->is_remove = true;
                             } else if (target_ball->ball_type == 2) { // thornsball
                                 ThornsBall* target_ball_pt = &(this->thorns_manager.balls[target_ball->name]);
                                 target_ball_pt->eat(moving_ball_pt);
-                                this->spore_manager.remove_ball(moving_ball_pt->name);
+//                                this->spore_manager.remove_ball(moving_ball_pt->name);
                                 moving_balls[i]->is_remove = true;
                             }
                         }
@@ -365,8 +365,8 @@ public:
             int player_index = stoi(player->name);
             float fr0 = rectangle[0] - this->default_food_manager.default_food_ball.radius_min;
             float fr1 = rectangle[1] - this->default_food_manager.default_food_ball.radius_min;
-            float fr2 = rectangle[2] - this->default_food_manager.default_food_ball.radius_min;
-            float fr3 = rectangle[3] - this->default_food_manager.default_food_ball.radius_min;
+            float fr2 = rectangle[2] + this->default_food_manager.default_food_ball.radius_min;
+            float fr3 = rectangle[3] + this->default_food_manager.default_food_ball.radius_min;
             for (int i = 0; i < food_end; i++) {
                 if (balls[i]->position.x > fr0 && balls[i]->position.x < fr2
                     && balls[i]->position.y > fr1 && balls[i]->position.y < fr3) {

@@ -1,4 +1,5 @@
 #include "file_helper.h"
+#include <random>
 
 
 void test_save_frame() {
@@ -40,9 +41,24 @@ void test_read_frame() {
 }
 
 
+void test_random() {
+    ofstream output("/Users/zm/Desktop/st/1988/GoBigger-cpp/replays/2.txt");
+    default_random_engine e1 = default_random_engine();
+    e1.seed(1641535363);
+    float width = 1000.0f;
+    float height = 1000.0f;
+    for (int i = 0; i < 1000000; i++) {
+        float x = e1() * 1.0f / e1.max() * width + 0.0f;
+        output << x << endl;
+    }
+    output.close();
+}
+
+
 int main(int argc, char* argv[]) {
 //    test_save_frame();
-    test_read_frame();
+//    test_read_frame();
+    test_random();
     return 0;
 
 }
