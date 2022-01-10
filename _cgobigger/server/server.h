@@ -192,11 +192,21 @@ public:
                 for (auto target_ball : (*collisions_dict)[i]) {
                     if ((!(moving_balls[i]->is_remove)) && (!(target_ball->is_remove))) {
                         if (moving_balls[i]->ball_type == 4) { // cloneball
-                            CloneBall* moving_ball_pt = &(this->player_manager.players[moving_balls[i]->get_owner()]
-                                                     .balls[moving_balls[i]->get_name()]);
+                            CloneBall* moving_ball_pt;
+                            if (this->player_manager.players.find(moving_balls[i]->get_owner()) != this->player_manager.players.end()) {
+                                moving_ball_pt = &(this->player_manager.players[moving_balls[i]->get_owner()]
+                                        .balls[moving_balls[i]->get_name()]);
+                            } else {
+                                break;
+                            }
                             if (target_ball->ball_type == 4) { // cloneball
-                                CloneBall* target_ball_pt = &(this->player_manager.players[target_ball->get_owner()]
-                                        .balls[target_ball->get_name()]);
+                                CloneBall* target_ball_pt;
+                                if (this->player_manager.players.find(target_ball->get_owner()) != this->player_manager.players.end()) {
+                                    target_ball_pt = &(this->player_manager.players[target_ball->get_owner()]
+                                            .balls[target_ball->get_name()]);
+                                } else {
+                                    break;
+                                }
                                 if (moving_ball_pt->team_name != target_ball_pt->team_name) {
                                     if (moving_ball_pt->size > target_ball_pt->size) {
                                         moving_ball_pt->eat_normal(target_ball_pt);
@@ -245,8 +255,13 @@ public:
                         } else if (moving_balls[i]->ball_type == 2) { // thornsball
                             ThornsBall* moving_ball_pt = &(this->thorns_manager.balls[moving_balls[i]->get_name()]);
                             if (target_ball->ball_type == 4) {
-                                CloneBall* target_ball_pt = &(this->player_manager.players[target_ball->get_owner()]
-                                                            .balls[target_ball->get_name()]);
+                                CloneBall* target_ball_pt;
+                                if (this->player_manager.players.find(target_ball->get_owner()) != this->player_manager.players.end()) {
+                                    target_ball_pt = &(this->player_manager.players[target_ball->get_owner()]
+                                            .balls[target_ball->get_name()]);
+                                } else {
+                                    break;
+                                }
                                 if (moving_ball_pt->size < target_ball_pt->size) {
                                     vector<CloneBall> clone_balls_on_thorns = target_ball_pt->eat_thorns(moving_ball_pt,
                                                 this->player_manager.get_clone_num(target_ball_pt->owner));
@@ -263,8 +278,13 @@ public:
                         } else if (moving_balls[i]->ball_type == 3) { // sporeball
                             SporeBall* moving_ball_pt = &(this->spore_manager.balls[moving_balls[i]->get_name()]);
                             if (target_ball->ball_type == 4) { // cloneball
-                                CloneBall* target_ball_pt = &(this->player_manager.players[target_ball->owner]
-                                                            .balls[target_ball->name]);
+                                CloneBall* target_ball_pt;
+                                if (this->player_manager.players.find(target_ball->get_owner()) != this->player_manager.players.end()) {
+                                    target_ball_pt = &(this->player_manager.players[target_ball->owner]
+                                            .balls[target_ball->name]);
+                                } else {
+                                    break;
+                                }
                                 target_ball_pt->eat_normal(moving_ball_pt);
 //                                this->spore_manager.remove_ball(moving_ball_pt->name);
                                 moving_balls[i]->is_remove = true;

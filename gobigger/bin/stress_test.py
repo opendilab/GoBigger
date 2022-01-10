@@ -14,6 +14,8 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 logging.basicConfig(level=logging.INFO)
 
 
+count = 0
+
 def launch(replay_dir='replays'):
     seed = int(time.time())
     server = Server(dict(seed=seed))
@@ -32,7 +34,7 @@ def launch(replay_dir='replays'):
         # logging.info('{} {} {} {} {}'.format(seed, i, server.get_last_time(), actions, obs[0]['leaderboard']))
         finish_flag = server.step(actions=actions)
         if finish_flag:
-            logging.info('Game Over, {}'.format(obs[0]['leaderboard']))
+            logging.info('{} Game Over, {}'.format(count, obs[0]['leaderboard']))
             break
     server.close()
 
@@ -68,9 +70,10 @@ def relaunch(replay_path):
 
 if __name__ == '__main__':
     replay_dir = 'replays'
-    if not os.path.isdir(replay_dir):
-        os.mkdir(replay_dir)
+    # if not os.path.isdir(replay_dir):
+    #     os.mkdir(replay_dir)
     while True:
+        count += 1
         launch(replay_dir)
 
     # relaunch(replay_path='replays/1641535363.replay')
