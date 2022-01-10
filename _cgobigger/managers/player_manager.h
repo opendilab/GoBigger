@@ -404,15 +404,18 @@ public:
         this->players[player_name].balls.erase(ball_name);
     }
     void step() {
-        vector<BaseBall*> total_balls;
-        this->get_balls(total_balls);
-        for (auto ball : total_balls) {
-            if (ball->is_remove) {
-                this->players[ball->get_owner()].balls.erase(ball->get_name());
-            }
-        }
         this->iter = this->players.begin();
         while (this->iter != this->players.end()) {
+            map<string, CloneBall>::iterator iter_ball = this->iter->second.balls.begin();
+//            cout << "clone " << this->iter->second.name << " from " << this->iter->second.balls.size();
+            while (iter_ball != this->iter->second.balls.end()) {
+                if (iter_ball->second.is_remove) {
+                    iter_ball = this->iter->second.balls.erase(iter_ball);
+                } else {
+                    iter_ball++;
+                }
+            }
+//            cout << " to " << this->iter->second.balls.size() << endl;
             if (this->iter->second.get_clone_num() == 0) {
                 this->iter->second.respawn();
             }

@@ -183,7 +183,7 @@ public:
         sort(my_clone_balls.begin(), my_clone_balls.end(), compare_func);
         sort(other_clone_balls.begin(), other_clone_balls.end(), compare_func);
 
-        if (my_clone_balls.size() >= 9.0f && my_clone_balls[4]->radius > 14.0f) {
+        if (my_clone_balls.size() >= 9 && my_clone_balls[4]->radius > 14.0f) {
             this->actions_queue.push({0.0f, 0.0f, 2.0f});
             this->actions_queue.push({0.0f, 0.0f, -1.0f});
             this->actions_queue.push({0.0f, 0.0f, -1.0f});
@@ -205,7 +205,7 @@ public:
         }
         Vector2 direction;
         float action_type = -1.0f;
-        if (other_clone_balls.size() >= 9 && my_clone_balls[0]->radius < other_clone_balls[0]->radius) {
+        if (other_clone_balls.size() > 0 && my_clone_balls[0]->radius < other_clone_balls[0]->radius) {
             direction = my_clone_balls[0]->position - other_clone_balls[0]->position;
             direction = direction.normalize();
         } else {
@@ -282,6 +282,7 @@ void test_server_new() {
     default_random_engine e = default_random_engine();
     e.seed(time(0));
     for (int i = 0; i < 100000; i++ ) {
+//        cout << i << endl;
         vector<BaseBall*> obs_food_balls;
         vector<BaseBall*> obs_thorns_balls;
         vector<BaseBall*> obs_spore_balls;
@@ -356,6 +357,7 @@ int main(int argc, char* argv[]) {
 //    test_out();
 //    test_time1();
     int count = 0;
+    cout << "start" << endl;
     while (true) {
         count++;
         cout << count << " ";

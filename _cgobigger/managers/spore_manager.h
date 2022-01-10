@@ -87,13 +87,16 @@ public:
         this->balls.erase(name);
     }
     void step(float duration) {
-        vector<BaseBall*> total_balls;
-        this->get_balls(total_balls);
-        for (auto ball : total_balls) {
-            if (ball->is_remove) {
-                this->balls.erase(ball->get_name());
+        map<string, SporeBall>::iterator iter_ball = this->balls.begin();
+//        cout << "spore from " << this->balls.size();
+        while (iter_ball != this->balls.end()) {
+            if (iter_ball->second.is_remove) {
+                iter_ball = this->balls.erase(iter_ball);
+            } else {
+                iter_ball++;
             }
         }
+//        cout << " to " << this->balls.size() << endl;
     }
     void reset() {
         this->balls.clear();
