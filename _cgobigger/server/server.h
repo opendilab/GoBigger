@@ -21,10 +21,10 @@
 #include "utils/collision_detection.h"
 #include "utils/file_helper.h"
 
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
-
-namespace py = pybind11;
+//#include <pybind11/pybind11.h>
+//#include <pybind11/numpy.h>
+//
+//namespace py = pybind11;
 using namespace std;
 
 
@@ -336,109 +336,109 @@ public:
         }
         return false;
     }
-    py::array_t<float> obs_partial_array() {
-        vector<BaseBall*> balls;
-        this->food_manager.get_balls(balls);
-        int food_end = balls.size();
-        this->thorns_manager.get_balls(balls);
-        int thorns_end = balls.size();
-        this->spore_manager.get_balls(balls);
-        int spore_end = balls.size();
-        this->player_manager.get_balls(balls);
-        int clone_end = balls.size();
-
-        int player_start_index = 6;
-        py::array_t<float, py::array::c_style> arr({clone_end, player_start_index + this->team_num * this->player_num_per_team});
-        auto ra = arr.mutable_unchecked();
-
-        for (int i = 0; i < clone_end; i++) {
-            ra(i, 0) = balls[i]->position.x;
-            ra(i, 1) = balls[i]->position.y;
-            ra(i, 2) = balls[i]->radius;
-            if (balls[i]->ball_type == 4) {
-                ra(i, 3) = stof(balls[i]->get_owner());
-                ra(i, 4) = stof(balls[i]->get_team_name());
-            } else {
-                ra(i, 3) = 0.0f;
-                ra(i, 4) = 0.0f;
-            }
-        }
-        ra(0, 5) = food_end;
-        ra(1, 5) = thorns_end;
-        ra(2, 5) = spore_end;
-        ra(3, 5) = clone_end;
-        int rect_start_index = 4;
-        int size_start_index = rect_start_index + 4 * this->player_num_per_team * this->team_num;
-        vector<HumanPlayer*> players;
-        this->player_manager.get_players(players);
-        for (auto player : players) {
-            vector<float> rectangle = player->get_rectangle(this->map_width, this->map_height,
-                                                            this->default_obs_setting.scale_up_ratio,
-                                                            this->default_obs_setting.vision_x_min,
-                                                            this->default_obs_setting.vision_y_min);
-            ra(rect_start_index, 5) = rectangle[0];
-            ra(rect_start_index+1, 5) = rectangle[1];
-            ra(rect_start_index+2, 5) = rectangle[2];
-            ra(rect_start_index+3, 5) = rectangle[3];
-            rect_start_index = rect_start_index + 4;
-            ra(size_start_index + stoi(player->name), 5) = player->get_total_size();
-            int player_index = stoi(player->name);
-            float fr0 = rectangle[0] - this->default_food_manager.default_food_ball.radius_min;
-            float fr1 = rectangle[1] - this->default_food_manager.default_food_ball.radius_min;
-            float fr2 = rectangle[2] + this->default_food_manager.default_food_ball.radius_min;
-            float fr3 = rectangle[3] + this->default_food_manager.default_food_ball.radius_min;
-            for (int i = 0; i < food_end; i++) {
-                if (balls[i]->position.x > fr0 && balls[i]->position.x < fr2
-                    && balls[i]->position.y > fr1 && balls[i]->position.y < fr3) {
-                    ra(i, player_index + player_start_index) = 1.0f;
-                } else {
-                    ra(i, player_index + player_start_index) = 0.0f;
-                }
-            }
-            for (int i = food_end; i < thorns_end; i++) {
-                if (balls[i]->judge_in_rectangle(rectangle)) {
-                    ra(i, player_index + player_start_index) = 1.0f;
-                } else {
-                    ra(i, player_index + player_start_index) = 0.0f;
-                }
-            }
-            for (int i = thorns_end; i < spore_end; i++) {
-                if (balls[i]->judge_in_rectangle(rectangle)) {
-                    ra(i, player_index + player_start_index) = 1.0f;
-                } else {
-                    ra(i, player_index + player_start_index) = 0.0f;
-                }
-            }
-            for (int i = spore_end; i < clone_end; i++) {
-                if (balls[i]->judge_in_rectangle(rectangle)) {
-                    ra(i, player_index + player_start_index) = 1.0f;
-                } else {
-                    ra(i, player_index + player_start_index) = 0.0f;
-                }
-            }
-        }
-        return arr;
-    }
-    py::array obs_full_array() {
-        vector<BaseBall*> balls;
-        this->food_manager.get_balls(balls);
-        this->thorns_manager.get_balls(balls);
-        this->spore_manager.get_balls(balls);
-        this->player_manager.get_balls(balls);
-        vector<float> ret (balls.size()*5, 0);
-        int i = 0;
-        for (auto ball : balls) {
-            ret[i*5] = ball->position.x;
-            ret[i*5+1] = ball->position.y;
-            ret[i*5+2] = ball->radius;
-            if (ball->ball_type == 4) {
-                ret[i*5+3] = stof(ball->get_owner());
-                ret[i*5+4] = stof(ball->get_team_name());
-            }
-            i++;
-        }
-        return py::array(ret.size(), ret.data());
-    }
+//    py::array_t<float> obs_partial_array() {
+//        vector<BaseBall*> balls;
+//        this->food_manager.get_balls(balls);
+//        int food_end = balls.size();
+//        this->thorns_manager.get_balls(balls);
+//        int thorns_end = balls.size();
+//        this->spore_manager.get_balls(balls);
+//        int spore_end = balls.size();
+//        this->player_manager.get_balls(balls);
+//        int clone_end = balls.size();
+//
+//        int player_start_index = 6;
+//        py::array_t<float, py::array::c_style> arr({clone_end, player_start_index + this->team_num * this->player_num_per_team});
+//        auto ra = arr.mutable_unchecked();
+//
+//        for (int i = 0; i < clone_end; i++) {
+//            ra(i, 0) = balls[i]->position.x;
+//            ra(i, 1) = balls[i]->position.y;
+//            ra(i, 2) = balls[i]->radius;
+//            if (balls[i]->ball_type == 4) {
+//                ra(i, 3) = stof(balls[i]->get_owner());
+//                ra(i, 4) = stof(balls[i]->get_team_name());
+//            } else {
+//                ra(i, 3) = 0.0f;
+//                ra(i, 4) = 0.0f;
+//            }
+//        }
+//        ra(0, 5) = food_end;
+//        ra(1, 5) = thorns_end;
+//        ra(2, 5) = spore_end;
+//        ra(3, 5) = clone_end;
+//        int rect_start_index = 4;
+//        int size_start_index = rect_start_index + 4 * this->player_num_per_team * this->team_num;
+//        vector<HumanPlayer*> players;
+//        this->player_manager.get_players(players);
+//        for (auto player : players) {
+//            vector<float> rectangle = player->get_rectangle(this->map_width, this->map_height,
+//                                                            this->default_obs_setting.scale_up_ratio,
+//                                                            this->default_obs_setting.vision_x_min,
+//                                                            this->default_obs_setting.vision_y_min);
+//            ra(rect_start_index, 5) = rectangle[0];
+//            ra(rect_start_index+1, 5) = rectangle[1];
+//            ra(rect_start_index+2, 5) = rectangle[2];
+//            ra(rect_start_index+3, 5) = rectangle[3];
+//            rect_start_index = rect_start_index + 4;
+//            ra(size_start_index + stoi(player->name), 5) = player->get_total_size();
+//            int player_index = stoi(player->name);
+//            float fr0 = rectangle[0] - this->default_food_manager.default_food_ball.radius_min;
+//            float fr1 = rectangle[1] - this->default_food_manager.default_food_ball.radius_min;
+//            float fr2 = rectangle[2] + this->default_food_manager.default_food_ball.radius_min;
+//            float fr3 = rectangle[3] + this->default_food_manager.default_food_ball.radius_min;
+//            for (int i = 0; i < food_end; i++) {
+//                if (balls[i]->position.x > fr0 && balls[i]->position.x < fr2
+//                    && balls[i]->position.y > fr1 && balls[i]->position.y < fr3) {
+//                    ra(i, player_index + player_start_index) = 1.0f;
+//                } else {
+//                    ra(i, player_index + player_start_index) = 0.0f;
+//                }
+//            }
+//            for (int i = food_end; i < thorns_end; i++) {
+//                if (balls[i]->judge_in_rectangle(rectangle)) {
+//                    ra(i, player_index + player_start_index) = 1.0f;
+//                } else {
+//                    ra(i, player_index + player_start_index) = 0.0f;
+//                }
+//            }
+//            for (int i = thorns_end; i < spore_end; i++) {
+//                if (balls[i]->judge_in_rectangle(rectangle)) {
+//                    ra(i, player_index + player_start_index) = 1.0f;
+//                } else {
+//                    ra(i, player_index + player_start_index) = 0.0f;
+//                }
+//            }
+//            for (int i = spore_end; i < clone_end; i++) {
+//                if (balls[i]->judge_in_rectangle(rectangle)) {
+//                    ra(i, player_index + player_start_index) = 1.0f;
+//                } else {
+//                    ra(i, player_index + player_start_index) = 0.0f;
+//                }
+//            }
+//        }
+//        return arr;
+//    }
+//    py::array obs_full_array() {
+//        vector<BaseBall*> balls;
+//        this->food_manager.get_balls(balls);
+//        this->thorns_manager.get_balls(balls);
+//        this->spore_manager.get_balls(balls);
+//        this->player_manager.get_balls(balls);
+//        vector<float> ret (balls.size()*5, 0);
+//        int i = 0;
+//        for (auto ball : balls) {
+//            ret[i*5] = ball->position.x;
+//            ret[i*5+1] = ball->position.y;
+//            ret[i*5+2] = ball->radius;
+//            if (ball->ball_type == 4) {
+//                ret[i*5+3] = stof(ball->get_owner());
+//                ret[i*5+4] = stof(ball->get_team_name());
+//            }
+//            i++;
+//        }
+//        return py::array(ret.size(), ret.data());
+//    }
     vector<string> get_player_names() {
         vector<string>* ret = this->player_manager.get_player_names();
         return *ret;
