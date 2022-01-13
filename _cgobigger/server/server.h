@@ -152,17 +152,14 @@ public:
                 } else if (action_type == 3 || action_type == 4) {
                     direction = Vector2(0.0f, 0.0f);
                     player->move(direction, this->state_tick_duration);
-                    player->get_balls(moving_balls);
                 } else {
                     player->move(direction, this->state_tick_duration);
-                    player->get_balls(moving_balls);
                 }
             }
         } else {
             for (auto player : players) {
                 Vector2 direction = Vector2(0.0f, 0.0f);
                 player->move(direction, this->state_tick_duration);
-                player->get_balls(moving_balls);
             }
         }
         vector<BaseBall*> thorns_balls;
@@ -172,7 +169,6 @@ public:
                 thorns_ball->move(this->state_tick_duration);
             }
         }
-        this->thorns_manager.get_balls(moving_balls);
         vector<BaseBall*> spore_balls;
         this->spore_manager.get_balls(spore_balls);
         for (auto spore_ball : spore_balls) {
@@ -181,6 +177,8 @@ public:
             }
         }
         this->player_manager.adjust();
+        this->player_manager.get_balls(moving_balls);
+        this->thorns_manager.get_balls(moving_balls);
         this->player_manager.get_balls(total_balls);
         this->thorns_manager.get_balls(total_balls);
         this->spore_manager.get_balls(total_balls);
