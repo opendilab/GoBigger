@@ -46,13 +46,17 @@ class Border:
     Overview:
         used to specify a rectangular range
     '''
-    def __init__(self, minx, miny, maxx, maxy):
+    def __init__(self, minx, miny, maxx, maxy, random_generator=None):
         self.minx = minx
         self.miny = miny
         self.maxx = maxx
         self.maxy = maxy
         self.width = self.maxx - self.minx
         self.height =self.maxy - self.miny
+        if random_generator is not None:
+            self._random = random_generator
+        else:
+            self._random = random.Random()
 
     def __repr__(self) -> str:
         return '[' + str(self.minx) + ',' + str(self.miny) + ',' + str(self.maxx) + ',' + str(self.maxy) + ']'
@@ -75,8 +79,8 @@ class Border:
         Returns:
             Vector2: the sampled position.
         '''
-        x = random.uniform(self.minx, self.maxx)
-        y = random.uniform(self.miny, self.maxy)
+        x = self._random.uniform(self.minx, self.maxx)
+        y = self._random.uniform(self.miny, self.maxy)
         return Vector2(x, y)
 
     def get_joint(self, border) :
@@ -86,7 +90,7 @@ class Border:
         new_maxy = min(self.maxy, border.maxy)
         if new_minx > new_maxx or new_miny > new_maxy:
             return None
-        return Border(new_minx, new_maxx, new_miny, new_maxy)
+        return Border(new_minx, new_maxx, new_miny, new_maxy, self._random)
 
 
 class QuadNode:

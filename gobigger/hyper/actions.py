@@ -3,7 +3,6 @@ import sys
 import time
 import pygame
 from pygame.math import Vector2
-import random
 import queue
 import math
 from easydict import EasyDict

@@ -1,3 +1,4 @@
+import random
 import math
 import logging
 import uuid
@@ -13,7 +14,7 @@ from gobigger.players import HumanPlayer
 
 class PlayerManager(BaseManager):
 
-    def __init__(self, cfg, border, team_num, player_num_per_team, spore_manager_settings):
+    def __init__(self, cfg, border, team_num, player_num_per_team, spore_manager_settings, random_generator=None):
         super(PlayerManager, self).__init__(cfg, border)
         self.players = {}
         self.team_num = team_num
@@ -21,6 +22,10 @@ class PlayerManager(BaseManager):
         self.player_num = self.team_num * self.player_num_per_team
         self.spore_manager_settings = spore_manager_settings
         self.spore_settings = self.spore_manager_settings.ball_settings
+        if random_generator is not None:
+            self._random = random_generator
+        else:
+            self._random = random.Random()
 
     def init_balls(self, custom_init=None):
         if custom_init is None:
