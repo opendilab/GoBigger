@@ -1,7 +1,7 @@
 FOOD_COLOR_GRAYSCALE = (1)
 THORNS_COLOR_GRAYSCALE = (2)
 SPORE_COLOR_GRAYSCALE = (3)
-PLAYER_COLORS_GRAYSCALE = [(i) for i in range(4, 30)]
+PLAYER_COLORS_GRAYSCALE = [(i) for i in range(4, 100)]
 BACKGROUND_GRAYSCALE = (255)
 
 FOOD_COLOR = (253, 246, 227)
@@ -25,6 +25,36 @@ PLAYER_COLORS = [
     ],
     [
         (195,206,231), # gray
+    ],
+    [
+        (128,128,128), # gray2
+    ],
+    [
+        (128,0,0), # maroon
+    ],
+    [
+        (128,128,0), # olive
+    ],
+    [
+        (0,128,0), # green2
+    ],
+    [
+        (128,0,128), # purple2
+    ],
+    [
+        (0,128,128), # teal
+    ],
+    [
+        (0,0,128), # navy
+    ],
+    [
+        (255,127,80), # coral
+    ],
+    [
+        (255,215,0), # goal
+    ],
+    [
+        (154,205,50), # yellow green
     ],
 ]
 BACKGROUND = (0, 43, 54)
