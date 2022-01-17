@@ -32,6 +32,7 @@ Indices and tables
    advanced/cfg_intro
    advanced/custom_init
    advanced/collision
+   advanced/hyper
 
 .. toctree::
    :maxdepth: 2

@@ -35,6 +35,7 @@ GoBigger 提供了多种接口供用户方便快捷地与游戏环境进行交�
    advanced/cfg_intro
    advanced/custom_init
    advanced/collision
+   advanced/hyper
 
 .. toctree::
    :maxdepth: 2

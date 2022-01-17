@@ -68,7 +68,7 @@ class Server:
         cfg = copy.deepcopy(server_default_config)
         return EasyDict(cfg)
 
-    def __init__(self, cfg=None):
+    def __init__(self, cfg=None, seed=None):
         self.cfg = Server.default_config()
         if isinstance(cfg, dict):
             cfg = EasyDict(cfg)
@@ -97,18 +97,20 @@ class Server:
         self.load_bin_frame_num = self.cfg.load_bin_frame_num
         self.obs_settings = self.cfg.obs_settings
         
-        self.border = Border(0, 0, self.map_width, self.map_height)
+        self.seed(seed)
+        self.border = Border(0, 0, self.map_width, self.map_height, self._random)
         self.last_time = 0
         self.screens_all = []
         self.screens_partial = {}
         self.actions_record = []
 
-        self.food_manager = FoodManager(self.cfg.manager_settings.food_manager, border=self.border)
-        self.thorns_manager = ThornsManager(self.cfg.manager_settings.thorns_manager, border=self.border)
-        self.spore_manager = SporeManager(self.cfg.manager_settings.spore_manager, border=self.border)
+        self.food_manager = FoodManager(self.cfg.manager_settings.food_manager, border=self.border, random_generator=self._random)
+        self.thorns_manager = ThornsManager(self.cfg.manager_settings.thorns_manager, border=self.border, random_generator=self._random)
+        self.spore_manager = SporeManager(self.cfg.manager_settings.spore_manager, border=self.border, random_generator=self._random)
         self.player_manager  = PlayerManager(self.cfg.manager_settings.player_manager, border=self.border,
                                              team_num=self.team_num, player_num_per_team=self.player_num_per_team, 
-                                             spore_manager_settings=self.cfg.manager_settings.spore_manager)
+                                             spore_manager_settings=self.cfg.manager_settings.spore_manager,
+                                             random_generator=self._random)
 
         self.collision_detection_type = self.cfg.collision_detection_type
         self.collision_detection = create_collision_detection(self.collision_detection_type, border=self.border)
@@ -260,7 +262,6 @@ class Server:
         self.screens_all = []
         self.screens_partial = {}
         self.actions_record = []
-        self.seed()
         self.load_record()
         self.food_manager.reset()
         self.thorns_manager.reset()
@@ -421,4 +422,4 @@ class Server:
             self._seed = random.randrange(sys.maxsize)
         else:
             self._seed = seed
-        random.seed(self._seed)
+        self._random = random.Random(self._seed)
