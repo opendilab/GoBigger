@@ -3,7 +3,6 @@ import pytest
 import uuid
 from pygame.math import Vector2
 import pygame
-import random
 import cv2
 import math
 
@@ -30,8 +29,8 @@ class RealtimeRender(EnvRender):
                                                         thorns_balls=server.thorns_manager.get_balls(), 
                                                         spore_balls=server.spore_manager.get_balls(), 
                                                         players=server.player_manager.get_players(), 
-                                                        player_num_per_team=1)
-        # for debugƒ
+                                                        player_num_per_team=player_num_per_team)
+        # for debug
         font= pygame.font.SysFont('Menlo', 15, True)
 
         team_name_size = {}

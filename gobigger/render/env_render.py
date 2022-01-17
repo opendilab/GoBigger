@@ -3,7 +3,6 @@ import pytest
 import uuid
 from pygame.math import Vector2
 import pygame
-import random
 import numpy as np
 import cv2
 import time

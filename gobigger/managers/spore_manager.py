@@ -13,8 +13,12 @@ from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 
 class SporeManager(BaseManager):
 
-    def __init__(self, cfg, border):
+    def __init__(self, cfg, border, random_generator=None):
         super(SporeManager, self).__init__(cfg, border)
+        if random_generator is not None:
+            self._random = random_generator
+        else:
+            self._random = random.Random()
 
     def get_balls(self):
         return list(self.balls.values())
@@ -40,7 +44,7 @@ class SporeManager(BaseManager):
         if position is None:
             position = self.border.sample()
         if size is None:
-            size = random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
+            size = self._random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
         name = uuid.uuid1()
         return SporeBall(name=name, position=position, border=self.border, direction=Vector2(1,0), vel_init=0)
     
@@ -50,11 +54,12 @@ class SporeManager(BaseManager):
         if custom_init is not None:
             for ball_cfg in custom_init:
                 ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
-                ball.direction = Vector2(*ball_cfg[3:5])
-                ball.vel = Vector2(*ball_cfg[5:7])
-                ball.acc = Vector2(*ball_cfg[7:9])
-                ball.move_time = ball_cfg[9]
-                ball.moving = ball_cfg[10]
+                if len(ball_cfg) > 3:
+                    ball.direction = Vector2(*ball_cfg[3:5])
+                    ball.vel = Vector2(*ball_cfg[5:7])
+                    ball.acc = Vector2(*ball_cfg[7:9])
+                    ball.move_time = ball_cfg[9]
+                    ball.moving = ball_cfg[10]
                 self.balls[ball.name] = ball
 
     def step(self, duration):

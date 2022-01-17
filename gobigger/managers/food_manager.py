@@ -13,10 +13,14 @@ from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 
 class FoodManager(BaseManager):
 
-    def __init__(self, cfg, border):
+    def __init__(self, cfg, border, random_generator=None):
         super(FoodManager, self).__init__(cfg, border)
         self.food_refresh_time = self.cfg.refresh_time
         self.refresh_time_count = 0
+        if random_generator is not None:
+            self._random = random_generator
+        else:
+            self._random = random.Random()
 
     def get_balls(self):
         return list(self.balls.values())
@@ -47,7 +51,7 @@ class FoodManager(BaseManager):
         if position is None:
             position = self.border.sample()
         if size is None:
-            size = random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
+            size = self._random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
         name = uuid.uuid1()
         return FoodBall(name=name, position=position, border=self.border, size=size, **self.ball_settings)
 

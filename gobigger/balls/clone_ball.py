@@ -2,7 +2,6 @@ import math
 import logging
 import uuid
 import copy
-import random
 from easydict import EasyDict
 from pygame.math import Vector2
 
@@ -92,7 +91,7 @@ class CloneBall(BaseBall):
             if (self.vel + self.vel_last).length() != 0:
                 self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
             else:
-                self.direction = Vector2(random.random(), random.random()).normalize()
+                self.direction = Vector2(0.000001, 0.000001).normalize()
 
         self.check_border()
         self.stop_flag = stop_flag
@@ -160,7 +159,7 @@ class CloneBall(BaseBall):
         if (self.vel + self.vel_last).length() != 0:
             self.direction = copy.deepcopy((self.vel + self.vel_last).normalize())
         else:
-            self.direction = Vector2(random.random(), random.random()).normalize()
+            self.direction = Vector2(0.000001, 0.000001).normalize()
         self.check_border()
 
     def eat(self, ball, clone_num=None):
@@ -315,7 +314,7 @@ class CloneBall(BaseBall):
         self.stop_time = 0
         self.acc_stop = - 1 / self.stop_zero_time * (self.vel + self.vel_last)
         self.acc = Vector2(0, 0)
-        self.direction = direction if direction is not None else Vector2(random.random(), random.random())
+        self.direction = direction if direction is not None else Vector2(0.000001, 0.000001)
         self.last_given_acc = Vector2(0, 0)
         return True
 

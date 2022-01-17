@@ -15,7 +15,7 @@
     server = Server()
     render = EnvRender(server.map_width, server.map_height)
     server.set_render(render)
-    server.start()
+    server.reset()
     player_names = server.get_player_names_with_team() 
     # get [[team1_player1, team1_player2], [team2_player1, team2_player2], ...]
     for i in range(10000):
