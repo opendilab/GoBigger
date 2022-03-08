@@ -85,5 +85,6 @@ server_default_config = dict(
         with_spatial=True,
         with_speed=False,
         with_all_vision=False,
+        cheat=False,
     ),
 )

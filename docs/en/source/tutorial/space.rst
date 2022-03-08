@@ -206,3 +206,48 @@ The existence of a partial field of view may complicate training. Therefore, GoB
     }
 
 Please note that the corresponding ``feature_layers`` and ``overlap`` in the information of other players will be set to ``None`` except for the player with the number ``'0'``.
+
+Get global vision + player's local vision
+-------------------------------------------------
+
+In many scenarios, using some cheat information (such as removing the fog of war) can effectively help the algorithm converge. Therefore, on the basis of obtaining the global vision, we have added a mode of obtaining the global vision and the player's local vision at the same time. Get it by specifying ``cheat=True``. Note that in this mode, the setting of ``with_all_vision`` will have no effect, because the global vision information will always be returned. For example, assuming there are 2 teams in a game with 1 player in each team, the ``player_state`` obtained will be as follows:
+
+.. code-block::python
+
+    {
+        'all': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...],
+                'thorns': [{'position': position, 'radius': radius}, ...],
+                'spore': [{'position': position, 'radius': radius}, ...],
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...],
+            },
+            'team_name': '',
+        }
+        '0': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...],
+                'thorns': [{'position': position, 'radius': radius}, ...],
+                'spore': [{'position': position, 'radius': radius}, ...],
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...],
+            },
+            'team_name': team_name,
+        },
+        '1': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...],
+                'thorns': [{'position': position, 'radius': radius}, ...],
+                'spore': [{'position': position, 'radius': radius}, ...],
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...],
+            },
+            'team_name': team_name,
+        },
+    }
+
+Note that the global view information is placed under the ``all`` field, where the ``team_name`` is set to empty. The rest of the player information remains the same.

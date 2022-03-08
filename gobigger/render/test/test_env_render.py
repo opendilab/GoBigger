@@ -187,4 +187,29 @@ class TestEnvRender:
             with_all_vision=False,
         )))
         _, screen_data_players = render.update_all(food_balls, thorns_balls, spore_balls, players)
-        assert screen_data_players['1']['feature_layers'] is not None        
+        assert screen_data_players['1']['feature_layers'] is not None
+
+    def test_update_all_all_cheat(self):
+        border = Border(0, 0, 15, 15)
+        render = EnvRender(width=15, height=15)
+        food_balls = [BaseBall('0', border.sample(), border=border, size=4, radius_min=2)]
+        thorns_balls = [BaseBall('0', border.sample(), border=border, size=10, radius_min=3)]
+        spore_balls = [BaseBall('0', border.sample(), border=border, size=4, radius_min=2)]
+        players = [HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings, 
+                               team_name='0', name='0', border=border, 
+                               spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings),
+                   HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings, 
+                               team_name='1', name='1', border=border, 
+                               spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings)]
+        players[0].respawn(position=border.sample())
+        players[1].respawn(position=border.sample())
+        render.set_obs_settings(EasyDict(dict(
+            with_spatial=True,
+            with_speed=True,
+            with_all_vision=True,
+            cheat=True,
+        )))
+        _, screen_data_players = render.update_all(food_balls, thorns_balls, spore_balls, players)
+        assert screen_data_players['all']['feature_layers'] is not None
+        assert screen_data_players['1']['feature_layers'] is not None
+

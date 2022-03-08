@@ -30,6 +30,7 @@ class EnvRender(BaseRender):
         self.with_spatial = obs_settings.get('with_spatial', True)
         self.with_speed = obs_settings.get('with_speed', False)
         self.with_all_vision = obs_settings.get('with_all_vision', False)
+        self.cheat = obs_settings.get('cheat', False)
 
     def fill_all(self, screen, food_balls, thorns_balls, spore_balls, players):
         font = pygame.font.SysFont('Menlo', 12, True)
@@ -255,7 +256,42 @@ class EnvRender(BaseRender):
             screen_data_all = self.fill_all(screen_all, food_balls, thorns_balls, spore_balls, players)
         screen_data_players = {}
 
-        if self.with_all_vision:
+        if self.cheat: # all map and all players' vision
+            for player in players:
+                rectangle = self.get_rectangle_by_player(player)
+                if self.with_spatial:
+                    screen_data_player = self.get_clip_screen(screen_data_all, rectangle=rectangle)
+                    screen_data_player = np.fliplr(screen_data_player)
+                    screen_data_player = np.rot90(screen_data_player)
+                    feature_layers = self.transfer_rgb_to_features(screen_data_player, player_num=len(players))
+                if self.with_speed:
+                    overlap = self.get_overlap_with_speed(rectangle, food_balls, thorns_balls, spore_balls, players)
+                else:
+                    overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
+                screen_data_players[player.name] = {
+                    'feature_layers': feature_layers,
+                    'rectangle': rectangle,
+                    'overlap': overlap,
+                    'team_name': player.team_name,
+                }
+
+            # all map info
+            if self.with_spatial:
+                screen_data_player = np.fliplr(screen_data_all)
+                screen_data_player = np.rot90(screen_data_player)
+                feature_layers = self.transfer_rgb_to_features(screen_data_player, player_num=len(players))
+            if self.with_speed:
+                overlap = self.get_overlap_wo_rectangle_with_speed(food_balls, thorns_balls, spore_balls, players)
+            else:
+                overlap = self.get_overlap_wo_rectangle(food_balls, thorns_balls, spore_balls, players)
+            screen_data_players['all'] = {
+                'feature_layers': feature_layers,
+                'rectangle': [0, 0, self.width, self.height],
+                'overlap': overlap,
+                'team_name': '',
+            }
+
+        elif self.with_all_vision:
             for player in players:
                 if player.name == '0':
                     if self.with_spatial:

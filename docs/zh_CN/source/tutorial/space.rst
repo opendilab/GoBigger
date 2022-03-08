@@ -134,6 +134,7 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
             with_spatial=True,
             with_speed=False,
             with_all_vision=False,
+            cheat=False,
         ),
     ))
 
@@ -209,3 +210,48 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
     }
 
 请注意，除了 ``'0'`` 号玩家以外，其他玩家的信息中对应的 ``feature_layers`` 和 ``overlap`` 将会置为 ``None``。
+
+获取全局视野+玩家局部视野
+------------------------------------
+
+在许多场景下，使用一些作弊信息（例如去掉战争迷雾）能够有效帮助算法收敛。因此，我们在获取全局视野的基础上，增加了同时获取全局视野和玩家局部视野的模式。通过指定 ``cheat=True`` 来获取。注意，在此模式下，``with_all_vision`` 的设置将会失效，因为会固定返回全局视野信息。例如，假设一局游戏中有 2 个队伍，每个队伍中有 1 人，那么获取到的 ``player_state`` 将会如下：
+
+.. code-block:: python
+
+    {
+        'all': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...], 
+                'thorns': [{'position': position, 'radius': radius}, ...], 
+                'spore': [{'position': position, 'radius': radius}, ...], 
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+            }, 
+            'team_name': '',
+        }
+        '0': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...], 
+                'thorns': [{'position': position, 'radius': radius}, ...], 
+                'spore': [{'position': position, 'radius': radius}, ...], 
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+            }, 
+            'team_name': team_name, 
+        },
+        '1': {
+            'feature_layers': list(numpy.ndarray),
+            'rectangle': None,
+            'overlap': {
+                'food': [{'position': position, 'radius': radius}, ...], 
+                'thorns': [{'position': position, 'radius': radius}, ...], 
+                'spore': [{'position': position, 'radius': radius}, ...], 
+                'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], 
+            }, 
+            'team_name': team_name, 
+        },
+    }
+
+请注意，全局视野信息放在了 ``all`` 字段下，其中的 ``team_name`` 被设置为空。其余玩家信息保持不变。
