@@ -17,7 +17,8 @@ ext_modules = [
         "_cgobigger",
         ["_cgobigger/bind.cpp"],
         # Example: passing in the version to the compiled code
-        include_dirs = ['_cgobigger/'],
+        include_dirs = ['_cgobigger/',
+                        '/opt/homebrew/Cellar/boost/1.76.0/include'],
     ),
 ]
 

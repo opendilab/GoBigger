@@ -15,6 +15,7 @@ from .server_default_config import server_default_config
 
 
 def transfer_cfg_to_cserver_config(cfg):
+
     default_server = DefaultServer()
     default_server.team_num = cfg.team_num
     default_server.player_num_per_team = cfg.player_num_per_team
@@ -23,8 +24,57 @@ def transfer_cfg_to_cserver_config(cfg):
     default_server.match_time = cfg.match_time
     default_server.state_tick_per_second = cfg.state_tick_per_second
     default_server.action_tick_per_second = cfg.action_tick_per_second
+    default_server.load_bin_frame_num = -1 if cfg.load_bin_frame_num == 'all' else cfg.load_bin_frame_num
+    default_server.jump_to_frame_file = cfg.jump_to_frame_file
     if 'seed' in cfg and cfg.seed:
         default_server.seed = cfg.seed
+    # food setting
+    default_server.default_food_manager.num_init = cfg.manager_settings.food_manager.num_init
+    default_server.default_food_manager.num_min = cfg.manager_settings.food_manager.num_min
+    default_server.default_food_manager.num_max = cfg.manager_settings.food_manager.num_max
+    default_server.default_food_manager.refresh_time = cfg.manager_settings.food_manager.refresh_time
+    default_server.default_food_manager.refresh_num = cfg.manager_settings.food_manager.refresh_num
+    default_server.default_food_manager.default_food_ball.radius_min = cfg.manager_settings.food_manager.ball_settings.radius_min
+    default_server.default_food_manager.default_food_ball.radius_max = cfg.manager_settings.food_manager.ball_settings.radius_max
+    # thorns setting
+    default_server.default_thorns_manager.num_init = cfg.manager_settings.thorns_manager.num_init
+    default_server.default_thorns_manager.num_min = cfg.manager_settings.thorns_manager.num_min
+    default_server.default_thorns_manager.num_max = cfg.manager_settings.thorns_manager.num_max
+    default_server.default_thorns_manager.refresh_time = cfg.manager_settings.thorns_manager.refresh_time
+    default_server.default_thorns_manager.refresh_num = cfg.manager_settings.thorns_manager.refresh_num
+    default_server.default_thorns_manager.default_thorns_ball.radius_min = cfg.manager_settings.thorns_manager.ball_settings.radius_min
+    default_server.default_thorns_manager.default_thorns_ball.radius_max = cfg.manager_settings.thorns_manager.ball_settings.radius_max
+    default_server.default_thorns_manager.default_thorns_ball.eat_spore_vel_init = cfg.manager_settings.thorns_manager.ball_settings.eat_spore_vel_init
+    default_server.default_thorns_manager.default_thorns_ball.eat_spore_vel_zero_time = cfg.manager_settings.thorns_manager.ball_settings.eat_spore_vel_zero_time
+    # player setting
+    default_server.default_player_manager.default_clone_ball.acc_max = cfg.manager_settings.player_manager.ball_settings.acc_max
+    default_server.default_player_manager.default_clone_ball.vel_max = cfg.manager_settings.player_manager.ball_settings.vel_max
+    default_server.default_player_manager.default_clone_ball.radius_min = cfg.manager_settings.player_manager.ball_settings.radius_min
+    default_server.default_player_manager.default_clone_ball.radius_max = cfg.manager_settings.player_manager.ball_settings.radius_max
+    default_server.default_player_manager.default_clone_ball.radius_init = cfg.manager_settings.player_manager.ball_settings.radius_init
+    default_server.default_player_manager.default_clone_ball.part_num_max = cfg.manager_settings.player_manager.ball_settings.part_num_max
+    default_server.default_player_manager.default_clone_ball.on_thorns_part_num = cfg.manager_settings.player_manager.ball_settings.on_thorns_part_num
+    default_server.default_player_manager.default_clone_ball.on_thorns_part_radius_max = cfg.manager_settings.player_manager.ball_settings.on_thorns_part_radius_max
+    default_server.default_player_manager.default_clone_ball.split_radius_min = cfg.manager_settings.player_manager.ball_settings.split_radius_min
+    default_server.default_player_manager.default_clone_ball.eject_radius_min = cfg.manager_settings.player_manager.ball_settings.eject_radius_min
+    default_server.default_player_manager.default_clone_ball.recombine_age = cfg.manager_settings.player_manager.ball_settings.recombine_age
+    default_server.default_player_manager.default_clone_ball.split_vel_init = cfg.manager_settings.player_manager.ball_settings.split_vel_init
+    default_server.default_player_manager.default_clone_ball.split_vel_zero_time = cfg.manager_settings.player_manager.ball_settings.split_vel_zero_time
+    default_server.default_player_manager.default_clone_ball.stop_zero_time = cfg.manager_settings.player_manager.ball_settings.stop_zero_time
+    default_server.default_player_manager.default_clone_ball.size_decay_rate = cfg.manager_settings.player_manager.ball_settings.size_decay_rate
+    default_server.default_player_manager.default_clone_ball.given_acc_weight = cfg.manager_settings.player_manager.ball_settings.given_acc_weight
+    # spore setting
+    default_server.default_spore_manager.default_spore_ball.radius_min = cfg.manager_settings.spore_manager.ball_settings.radius_min
+    default_server.default_spore_manager.default_spore_ball.radius_max = cfg.manager_settings.spore_manager.ball_settings.radius_max
+    default_server.default_spore_manager.default_spore_ball.vel_init = cfg.manager_settings.spore_manager.ball_settings.vel_init
+    default_server.default_spore_manager.default_spore_ball.vel_zero_time = cfg.manager_settings.spore_manager.ball_settings.vel_zero_time
+    default_server.default_spore_manager.default_spore_ball.spore_radius_init = cfg.manager_settings.spore_manager.ball_settings.spore_radius_init
+
+    # obs setting
+    default_server.default_obs_setting.with_spatial = cfg.obs_settings.with_spatial
+    default_server.default_obs_setting.with_speed = cfg.obs_settings.with_speed
+    default_server.default_obs_setting.with_all_vision = cfg.obs_settings.with_all_vision
+
     return default_server
 
 
@@ -40,17 +90,8 @@ class Server:
         if isinstance(cfg, dict):
             cfg = EasyDict(cfg)
             self.cfg = deep_merge_dicts(self.cfg, cfg)
-        logging.debug(self.cfg)
-        default_server = DefaultServer()
-        default_server.team_num = self.cfg.team_num
-        default_server.player_num_per_team = self.cfg.player_num_per_team
-        default_server.map_width = self.cfg.map_width
-        default_server.map_height = self.cfg.map_height
-        default_server.match_time = self.cfg.match_time
-        default_server.state_tick_per_second = self.cfg.state_tick_per_second
-        default_server.action_tick_per_second = self.cfg.action_tick_per_second
-        if 'seed' in self.cfg and self.cfg.seed:
-            default_server.seed = self.cfg.seed
+        default_server = transfer_cfg_to_cserver_config(self.cfg)
+        logging.debug(default_server)
         self.server = CServer(default_server)
         self.team_num = self.cfg.team_num
         self.player_num_per_team = self.cfg.player_num_per_team
