@@ -287,10 +287,12 @@ class CloneBall(BaseBall):
         assert self.age < self.recombine_age or ball.age < ball.recombine_age
         p = ball.position - self.position
         d = p.length()
-        assert self.radius + ball.radius > d
-        f = min(self.radius + ball.radius - d, (self.radius + ball.radius - d) / (d+0.00001))
-        self.position = self.position - f * p * (ball.size / (self.size + ball.size))
-        ball.position = ball.position + f * p * (self.size / (self.size + ball.size))
+        if self.radius + ball.radius > d:
+            f = min(self.radius + ball.radius - d, (self.radius + ball.radius - d) / (d+0.00001))
+            self.position = self.position - f * p * (ball.size / (self.size + ball.size))
+            ball.position = ball.position + f * p * (self.size / (self.size + ball.size))
+        else:
+            print('WARNINGS: self.radius ({}) + ball.radius ({}) <= d ({})'.format(self.radius, ball.radius, d))
         self.check_border()
         ball.check_border()
         return True
