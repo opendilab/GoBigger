@@ -62,7 +62,9 @@ class HumanPlayer(BasePlayer):
             self.stop_flag = False # Exit stopped state
             for ball in self.balls.values():
                 ball.stop_flag = False
-        if self.stop_flag: 
+        if self.get_clone_num() == 0:
+            pass
+        elif self.stop_flag: 
             if self.get_clone_num() == 1: 
                 for ball in self.balls.values():
                     ball.move(given_acc=None, given_acc_center=None, duration=duration)
