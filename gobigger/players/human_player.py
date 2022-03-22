@@ -112,8 +112,11 @@ class HumanPlayer(BasePlayer):
             <list>: list of new spores
         '''
         ret = []
-        for ball in self.balls.values():
-            ret.append(ball.eject(direction=direction))
+        ball_names = list(self.balls.keys())
+        for ball_name in ball_names:
+            if ball_name in self.balls:
+                ball = self.balls[ball_name]
+                ret.append(ball.eject(direction=direction))
         return ret
 
     def get_keys_sort_by_balls(self):
@@ -135,9 +138,10 @@ class HumanPlayer(BasePlayer):
         '''
         balls_keys = self.get_keys_sort_by_balls()
         for k in balls_keys:
-            ret = self.balls[k].split(self.get_clone_num(), direction=direction)
-            if ret and isinstance(ret, CloneBall):
-                self.add_balls(ret)
+            if k in self.balls:
+                ret = self.balls[k].split(self.get_clone_num(), direction=direction)
+                if ret and isinstance(ret, CloneBall):
+                    self.add_balls(ret)
         return True
 
     def eat(self, ball):
