@@ -158,7 +158,10 @@ class HumanPlayer(BasePlayer):
     def remove_balls(self, ball):
         ball.remove()
         if ball.name in self.balls:
-            del self.balls[ball.name]
+            try:
+                del self.balls[ball.name]
+            except:
+                pass
         return True
 
     def respawn(self, position):

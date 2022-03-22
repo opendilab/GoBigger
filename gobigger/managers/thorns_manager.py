@@ -42,10 +42,16 @@ class ThornsManager(BaseManager):
         if isinstance(balls, list):
             for ball in balls:
                 ball.remove()
-                del self.balls[ball.name]
+                try:
+                    del self.balls[ball.name]
+                except:
+                    pass
         elif isinstance(balls, ThornsBall):
             balls.remove()
-            del self.balls[balls.name]
+            try:
+                del self.balls[balls.name]
+            except:
+                pass
 
     def spawn_ball(self, position=None, size=None):
         if position is None:
