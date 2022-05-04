@@ -7,40 +7,33 @@
 [![unit_test](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml/badge.svg?branch=main)](https://github.com/opendilab/GoBigger/actions/workflows/unit_test.yml)
 [![codecov](https://codecov.io/gh/opendilab/GoBigger/branch/main/graph/badge.svg?token=GwOV3jn0Le)](https://codecov.io/gh/opendilab/GoBigger)
 
+![banner](assets/banner.png)
+
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
-
-## Ongoing
-
-* 2022.1.17 We updated our C++ based game engine implementation which is ten times faster than python version. Please check [cpp](https://github.com/opendilab/GoBigger/tree/cpp) branch to get more details. 
-* 2021.11.13 We are holding a [competition](https://github.com/opendilab/GoBigger-Challenge-2021) —— Go-Bigger: Multi-Agent Decision Intelligence Environment. Come and make your agents in the game!
 
 GoBigger is a simple and efficient *agar-like* game engine and provides various interfaces for game AI development. The game is similar to [Agar](https://agar.io/), which is a massively multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls in a map. The goal is to gain as much size as possible by eating food balls and other balls smaller than the player's balls while avoiding larger ones which can eat the player's balls. Each player starts with one ball, but players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
+We pay more attention to the following points:
+
+* Complex multi-agent game design
+* Complex observation spaces built on simple rules and simple actions
+* More detailed configuration
+* Custom opening with support for go-explore
+
+
+## Outline
+
+* [Overview](#overview)
+* [Getting Start](#getting-start)
+* [Resources](#resources)
+* [Join and Contribute](#join-and-contribute)
+* [License](#license)
+
+## Overview
+
+GoBigger allows users to interact with the multi-agent environment easily within the basic rules. Through the given interface, users can simply get the observation in game and apply their operations for their agents. GoBigger is built with simple rules and actions, though it has really complicated observation spaces. 
+
 <div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
-
-### Other OpenDILab Projects
-
-- Decision AI Engine
-  - [DI-engine](https://github.com/opendilab/DI-engine)
-- Traditional academic environments and benchmarks
-  - [DI-zoo](https://github.com/opendilab/DI-engine#environment-versatility)
-- Real world decision AI applications
-  - [DI-star](https://github.com/opendilab/DI-star): Decision AI in StarCraftII
-  - [DI-drive](https://github.com/opendilab/DI-drive): Auto-driving platform
-- General nested data lib
-  - [treevalue](https://github.com/opendilab/treevalue): Tree-nested data structure
-  - [DI-treetensor](https://github.com/opendilab/DI-treetensor): Tree-nested PyTorch tensor Lib
-- Docs and Tutorials
-  - [DI-engine-docs](https://github.com/opendilab/DI-engine-docs)
-- System Support Components
-
-  - [DI-orchestrator](https://github.com/opendilab/DI-orchestrator): RL Kubernetes Custom Resource and Operator Lib
-  - [DI-hpc](https://github.com/opendilab/DI-hpc): RL HPC OP Lib
-  - [DI-store](https://github.com/opendilab/DI-store): RL Object Store
-
-## Introduction
-
-GoBigger allows users to interact with the multi-agent environment easily within the basic rules. Through the given interface, users can simply get the observation in game and apply their operations for their agents.
 
 ### Basic Rules
 
@@ -75,10 +68,10 @@ Player state should be like:
         'feature_layers': list(numpy.ndarray), # features of player
         'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
         'overlap': {
-            'food': [[position.x, position.y, radius], ...], 
-            'thorns': [[position.x, position.y, radius], ...],
-            'spore': [[position.x, position.y, radius], ...],
-            'clone': [[[position.x, position.y, radius, player_name, team_name], ...],     
+            'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'thorns': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'spore': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
+            'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of food is not sure
         }, # all balls' info in vision
         'team_name': team_name, # the team which this player belongs to 
     }
@@ -100,11 +93,9 @@ In fact, a ball can only move, eject, split, and stop in a match, thus the actio
 
 More details in [action-space](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#action-space).
 
-## Getting Started
+## Getting Start
 
-### Installation
-
-#### Prerequisites
+### Setup
 
 We test GoBigger within the following system:
 
@@ -114,7 +105,7 @@ We test GoBigger within the following system:
 
 And we recommend that your python version is 3.6. 
 
-#### Get and install GoBigger
+### Installation
 
 You can simply install GoBigger from PyPI with the following command:
 
@@ -145,7 +136,7 @@ pip install . --user
 pip install -e . --user
 ```
 
-### Launch a game environment
+### Usage
 
 After installation, you can launch your game environment easily according the following code:
 
@@ -157,7 +148,7 @@ from gobigger.render import EnvRender
 server = Server()
 render = EnvRender(server.map_width, server.map_height)
 server.set_render(render)
-server.start()
+server.reset()
 player_names = server.get_player_names_with_team()
 # get [[team1_player1, team1_player2], [team2_player1, team2_player2], ...]
 for i in range(10000):
@@ -165,13 +156,31 @@ for i in range(10000):
                for team in player_names for player_name in team}
     if not server.step(actions):
         global_state, screen_data_players = server.obs()
+        print('[{}] leaderboard={}'.format(i, global_state['leaderboard']))
     else:
         print('finish game!')
         break
 server.close()
 ```
 
-We also build a simple env following gym.Env. For more details, you can refer to [gobigger_env.py](https://github.com/opendilab/GoBigger/blob/main/gobigger/envs/gobigger_env.py).
+You will see output as following. It shows the frame number and the leaderboard per frame.
+
+```
+[0] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
+[1] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
+[2] leaderboard={'0': 27, '1': 30.99935, '2': 30.99935, '3': 30.998700032499997}
+[3] leaderboard={'0': 27, '1': 34.99610032498374, '2': 34.99675032498374, '3': 30.9961004874675}
+[4] leaderboard={'0': 27, '1': 38.99025149484726, '2': 34.99155136485701, '3': 38.992201494805016}
+[5] leaderboard={'0': 30.998700032499997, '1': 42.982054039382575, '2': 34.98635344444432, '3': 38.98620350437408}
+[6] leaderboard={'0': 34.9961004874675, '1': 42.973458273284024, '2': 34.98115656353774, '3': 38.98020671345127}
+[7] leaderboard={'0': 34.99270152230301, '1': 46.964264256209255, '2': 38.974660754429394, '3': 38.974211121796685}
+[8] leaderboard={'0': 34.98930323688059, '1': 46.954872107798515, '2': 38.96686640687893, '3': 38.96821672917049}
+[9] leaderboard={'0': 38.98525563106426, '1': 46.94548183767656, '2': 38.95907361808107, '3': 38.96222353533294}
+...
+```
+
+We also build a simple env following `gym.Env`. For more details, you can refer to [gobigger_env.py](https://github.com/opendilab/GoBigger/blob/main/gobigger/envs/gobigger_env.py).
+
 
 ### Real-time Interaction with game
 
@@ -227,23 +236,7 @@ You can also add more bots in your game. Try to win the game with more bots!
 python -m gobigger.bin.play --vs-bot --team-num 4
 ```
 
-#### bots test with Visualization
-
-If you want to test agent without human player, you can launch a game with the following code:
-
-```bash
-python -m gobigger.bin.play --bot-only --player-num 3 --team-num 1
-```
-
-You can also test your custom agent with `--agent-class` argument:
-
-```bash
-python -m gobigger.bin.play --bot-only --player-num 3 --team-num 4 --agent-class submit.bot_submission:BotSubmission
-```
-
-Beware your agent class should implement `__init__(self, team_name, player_names)` `get_actions(self, obs) -> action` method.
-
-## High-level Operations in GoBigger
+### High-level Operations in GoBigger
 
 #### Eject towards the center
 <div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
@@ -261,7 +254,15 @@ Beware your agent class should implement `__init__(self, team_name, player_names
 
 For more details, please refer to [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/)).
 
+
+## Join and Contribute
+
+Welcome to OpenDI Lab GoBigger community! Scan the QR code and add us on Wechat:
+
+![QR code](assets/qr.png)
+
+Or you can contact us with [slack](https://opendilab.slack.com/join/shared_invite/zt-v9tmv4fp-nUBAQEH1_Kuyu_q4plBssQ#/shared-invite/email) or email (opendilab.contact@gmail.com).
+
 ## License
 
 GoBigger released under the Apache 2.0 license.
-
