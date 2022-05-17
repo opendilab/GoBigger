@@ -84,38 +84,25 @@ class EnvRender(BaseRender):
         return rectangle
 
     def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-        for ball in food_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['food'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in thorns_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['thorns'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in spore_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['spore'].append([ball.position.x, ball.position.y, ball.radius])
-        for player in players:
-            for ball in player.get_balls():
-                if ball.judge_in_rectangle(rectangle):
-                    ret['clone'].append([ball.position.x, ball.position.y, ball.radius, int(player.name), int(player.team_name)])
-        return ret
-
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
         ret = {}
         food_count = 0
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = 2500*[None]
-        thorns = 30*[None]
-        spore = 10000*[None]
-        clone = 300*[None]
+
+        assert len(players) > 0, 'len(players) = {} can not be 0'.format(len(players))
+
+        food = len(food_balls) * [3 * [None]]     # without speed
+        thorns = len(thorns_balls) * [3 * [None]] # without speed 
+        spore = len(spore_balls) * [3 * [None]]   # without speed 
+        clone = len(players) * players[0].ball_settings.part_num_max * [5 * [None]]   # without speed 
         # food overlap
-        food_radius = food_balls[0].radius
-        fr0 = rectangle[0] - food_radius
-        fr1 = rectangle[1] - food_radius
-        fr2 = rectangle[2] + food_radius
-        fr3 = rectangle[3] + food_radius
+        if len(food_balls) > 0:
+            food_radius = food_balls[0].radius
+            fr0 = rectangle[0] - food_radius
+            fr1 = rectangle[1] - food_radius
+            fr2 = rectangle[2] + food_radius
+            fr3 = rectangle[3] + food_radius
         for ball in food_balls:
             x = ball.position.x
             y = ball.position.y
@@ -126,6 +113,7 @@ class EnvRender(BaseRender):
                 food_count += 1
         food = food[:food_count]
         ret['food'] = food
+
         # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
@@ -178,38 +166,25 @@ class EnvRender(BaseRender):
         return ret
 
     def get_overlap_with_speed(self, rectangle, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-        for ball in food_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['food'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in thorns_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['thorns'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y])
-        for ball in spore_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y])
-        for player in players:
-            for ball in player.get_balls():
-                if ball.judge_in_rectangle(rectangle):
-                    ret['clone'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, int(player.name), int(player.team_name)])
-        return ret
-
-    def get_overlap_with_speed(self, rectangle, food_balls, thorns_balls, spore_balls, players):
         ret = {}
         food_count = 0
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = 2500*[3*[None]]
-        thorns = 30*[5*[None]]
-        spore = 10000*[5*[None]]
-        clone = 300*[7*[None]]
+
+        assert len(players) > 0, 'len(players) = {} can not be 0'.format(len(players))
+
+        food = len(food_balls) * [3 * [None]]     # without speed, as food can not move
+        thorns = len(thorns_balls) * [5 * [None]] # with speed 
+        spore = len(spore_balls) * [5 * [None]]   # with speed 
+        clone = len(players) * players[0].ball_settings.part_num_max * [7 * [None]]   # with speed 
         # food overlap
-        food_radius = food_balls[0].radius
-        fr0 = rectangle[0] - food_radius
-        fr1 = rectangle[1] - food_radius
-        fr2 = rectangle[2] + food_radius
-        fr3 = rectangle[3] + food_radius
+        if len(food_balls) > 0:
+            food_radius = food_balls[0].radius
+            fr0 = rectangle[0] - food_radius
+            fr1 = rectangle[1] - food_radius
+            fr2 = rectangle[2] + food_radius
+            fr3 = rectangle[3] + food_radius
         for ball in food_balls:
             x = ball.position.x
             y = ball.position.y
