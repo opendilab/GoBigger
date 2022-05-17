@@ -84,23 +84,6 @@ class EnvRender(BaseRender):
         return rectangle
 
     def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
-        ret = {'food': [], 'thorns': [], 'spore': [], 'clone': []}
-        for ball in food_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['food'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in thorns_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['thorns'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in spore_balls:
-            if ball.judge_in_rectangle(rectangle):
-                ret['spore'].append([ball.position.x, ball.position.y, ball.radius])
-        for player in players:
-            for ball in player.get_balls():
-                if ball.judge_in_rectangle(rectangle):
-                    ret['clone'].append([ball.position.x, ball.position.y, ball.radius, int(player.name), int(player.team_name)])
-        return ret
-
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
         ret = {}
         food_count = 0
         thorns_count = 0
