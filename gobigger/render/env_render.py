@@ -183,16 +183,20 @@ class EnvRender(BaseRender):
         thorns_count = 0
         spore_count = 0
         clone_count = 0
-        food = 2500*[3*[None]]
-        thorns = 30*[5*[None]]
-        spore = 10000*[5*[None]]
-        clone = 300*[7*[None]]
+
+        assert len(players) > 0, 'len(players) = {} can not be 0'.format(len(players))
+
+        food = len(food_balls) * [3 * [None]]     # without speed, as food can not move
+        thorns = len(thorns_balls) * [5 * [None]] # with speed 
+        spore = len(spore_balls) * [5 * [None]]   # with speed 
+        clone = len(players) * players[0].ball_settings.part_num_max * [7 * [None]]   # with speed 
         # food overlap
-        food_radius = food_balls[0].radius
-        fr0 = rectangle[0] - food_radius
-        fr1 = rectangle[1] - food_radius
-        fr2 = rectangle[2] + food_radius
-        fr3 = rectangle[3] + food_radius
+        if len(food_balls) > 0:
+            food_radius = food_balls[0].radius
+            fr0 = rectangle[0] - food_radius
+            fr1 = rectangle[1] - food_radius
+            fr2 = rectangle[2] + food_radius
+            fr3 = rectangle[3] + food_radius
         for ball in food_balls:
             x = ball.position.x
             y = ball.position.y
