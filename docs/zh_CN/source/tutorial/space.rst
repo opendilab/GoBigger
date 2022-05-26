@@ -135,6 +135,7 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
             with_speed=False,
             with_all_vision=False,
             cheat=False,
+            with_spore_owner=False,
         ),
     ))
 
@@ -144,6 +145,23 @@ GoBigger 定义 ``player_state`` 中的 ``feature_layers`` 为当前玩家所能
 ------------------
 
 实际上，在游戏环境返回给用户的状态信息中，``feature_layers`` and ``overlap`` 二者包含的信息内容是一致的，只不过给出的形式不同。因此，我们可以通过设置在获取状态中不包含 ``feature_layers`` 来减少 ``server.obs()`` 的时间消耗。可以通过指定 ``with_spatial=False`` 来指定。
+
+携带孢子球所属玩家信息
+----------------------
+
+我们为每个孢子球赋予了他被哪个玩家吐出的信息。例如，某个孢子球被id为1的玩家吐出，那么这个孢子球会携带一个 ``owner`` 属性，并且值为1.
+
+举个简单的例子，如果你在 ``obs_settings`` 中设置了 ``with_spore_owner=True``，那么在你得到的孢子球信息中将会包含 ``owner`` 字段。如下所示：
+
+.. code-block:: python
+
+    [position.x, position.y, radius, owner]
+
+当然，如果你同时设置了 ``with_speed=True``，孢子球信息将会变成如下所示：
+    
+.. code-block:: python
+
+    [position.x, position.y, radius, vel.x, vel.y, owner]
 
 携带速度信息
 ------------------

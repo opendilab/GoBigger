@@ -131,6 +131,8 @@ In addition to the observation space mentioned above, GoBigger also supports dif
             with_spatial=True,
             with_speed=False,
             with_all_vision=False,
+            cheat=False,
+            with_spore_owner=False,
         ),
     ))
 
@@ -139,7 +141,24 @@ Now we introduce the role of each value in ``obs_settings``.
 With Spatial Info
 -------------------
 
-In fact, when we get ``feature_layers`` and ``overlap`` in observation, it is clear that they contains similar info but different in the form of expression. That means, we can only get ``overlap`` and drop ``feature_layers`` in our observation, which will bring us less computation because it reduces the amount of rendering calculations. You can add ``with_spatial=False`` when your server initializes。
+In fact, when we get ``feature_layers`` and ``overlap`` in observation, it is clear that they contains similar info but different in the form of expression. That means, we can only get ``overlap`` and drop ``feature_layers`` in our observation, which will bring us less computation because it reduces the amount of rendering calculations. You can add ``with_spatial=False`` when your server initializes.
+
+With Spore Owner Info
+------------------------
+
+We add owner for spores to let users know where spores come from. You can add ``with_spore_owner=True`` in ``obs_settings`` when your server initializes. We add owner in each spore's cell.
+
+For example, a spore cell will be like:
+
+.. code-block:: python
+
+    [position.x, position.y, radius, owner]
+
+Or if you set ``with_speed=True``, it will be like:
+    
+.. code-block:: python
+
+    [position.x, position.y, radius, vel.x, vel.y, owner]    
 
 With Speed Info
 -------------------
