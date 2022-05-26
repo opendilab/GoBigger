@@ -31,6 +31,7 @@ class EnvRender(BaseRender):
         self.with_speed = obs_settings.get('with_speed', False)
         self.with_all_vision = obs_settings.get('with_all_vision', False)
         self.cheat = obs_settings.get('cheat', False)
+        self.with_spore_owner = obs_settings.get('with_spore_owner', False)
 
     def fill_all(self, screen, food_balls, thorns_balls, spore_balls, players):
         font = pygame.font.SysFont('Menlo', 12, True)
@@ -122,10 +123,16 @@ class EnvRender(BaseRender):
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
-        for ball in spore_balls:
-            if ball.judge_in_rectangle(rectangle):
-                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius]
-                spore_count += 1
+        if self.with_spore_owner:
+            for ball in spore_balls:
+                if ball.judge_in_rectangle(rectangle):
+                    spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.owner]
+                    spore_count += 1
+        else:
+            for ball in spore_balls:
+                if ball.judge_in_rectangle(rectangle):
+                    spore[spore_count] = [ball.position.x, ball.position.y, ball.radius]
+                    spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
         # clone overlap
@@ -145,8 +152,12 @@ class EnvRender(BaseRender):
             ret['food'].append([ball.position.x, ball.position.y, ball.radius])
         for ball in thorns_balls:
             ret['thorns'].append([ball.position.x, ball.position.y, ball.radius])
-        for ball in spore_balls:
-            ret['spore'].append([ball.position.x, ball.position.y, ball.radius])
+        if self.with_spore_owner:
+            for ball in spore_balls:
+                ret['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.owner])
+        else:
+            for ball in spore_balls:
+                ret['spore'].append([ball.position.x, ball.position.y, ball.radius])
         for player in players:
             for ball in player.get_balls():
                 ret['clone'].append([ball.position.x, ball.position.y, ball.radius, int(player.name), int(player.team_name)])
@@ -158,8 +169,12 @@ class EnvRender(BaseRender):
             ret['food'].append([ball.position.x, ball.position.y, ball.radius])
         for ball in thorns_balls:
             ret['thorns'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y])
-        for ball in spore_balls:
-            ret['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y])
+        if self.with_spore_owner:
+            for ball in spore_balls:
+                ret['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y, ball.owner])
+        else:
+            for ball in spore_balls:
+                ret['spore'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y])
         for player in players:
             for ball in player.get_balls():
                 ret['clone'].append([ball.position.x, ball.position.y, ball.radius, ball.vel.x+ball.vel_last.x, ball.vel.y+ball.vel_last.y, int(player.name), int(player.team_name)])
@@ -203,10 +218,16 @@ class EnvRender(BaseRender):
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
-        for ball in spore_balls:
-            if ball.judge_in_rectangle(rectangle):
-                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y]
-                spore_count += 1
+        if self.with_spore_owner:
+            for ball in spore_balls:
+                if ball.judge_in_rectangle(rectangle):
+                    spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y, ball.owner]
+                    spore_count += 1
+        else:
+            for ball in spore_balls:
+                if ball.judge_in_rectangle(rectangle):
+                    spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.vel.x, ball.vel.y]
+                    spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
         # clone overlap

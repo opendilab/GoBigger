@@ -86,5 +86,6 @@ server_default_config = dict(
         with_speed=False,
         with_all_vision=False,
         cheat=False,
+        with_spore_owner=False,
     ),
 )

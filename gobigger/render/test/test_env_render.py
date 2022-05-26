@@ -6,7 +6,7 @@ import pygame
 import random
 from easydict import EasyDict
 
-from gobigger.balls import BaseBall
+from gobigger.balls import BaseBall, SporeBall
 from gobigger.players import HumanPlayer
 from gobigger.utils import Border
 from gobigger.server import Server
@@ -64,6 +64,11 @@ class TestEnvRender:
     def test_get_overlap(self):
         border = Border(0, 0, 1000, 1000)
         render = EnvRender(width=1000, height=1000)
+        render.set_obs_settings(EasyDict(dict(
+            with_spatial=False,
+            with_speed=False,
+            with_all_vision=False,
+        )))
         food_balls = [BaseBall('0', border.sample(), border=border)]
         thorns_balls = [BaseBall('0', border.sample(), border=border)]
         spore_balls = [BaseBall('0', border.sample(), border=border)]
@@ -260,3 +265,36 @@ class TestEnvRender:
         assert screen_data_players['all']['feature_layers'] is not None
         assert screen_data_players['1']['feature_layers'] is not None
 
+    def test_update_all_with_spore_owner(self):
+        border = Border(0, 0, 15, 15)
+        render = EnvRender(width=15, height=15)
+        food_balls = [BaseBall('0', border.sample(), border=border, size=4, radius_min=2)]
+        thorns_balls = [BaseBall('0', border.sample(), border=border, size=10, radius_min=3)]
+        spore_balls = [SporeBall('0', border.sample(), border=border, size=4, owner='0', direction=Vector2(1,1))]
+        players = [HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings, 
+                               team_name='0', name='0', border=border, 
+                               spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings),
+                   HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings, 
+                               team_name='1', name='1', border=border, 
+                               spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings)]
+        players[0].respawn(position=border.sample())
+        players[1].respawn(position=border.sample())
+        render.set_obs_settings(EasyDict(dict(
+            with_spatial=False,
+            with_speed=False,
+            with_all_vision=False,
+            cheat=False,
+            with_spore_owner=True,
+        )))
+        _, screen_data_players = render.update_all(food_balls, thorns_balls, spore_balls, players)
+        assert screen_data_players['0']['overlap']['spore'][0][-1] == '0'
+
+        render.set_obs_settings(EasyDict(dict(
+            with_spatial=False,
+            with_speed=True,
+            with_all_vision=False,
+            cheat=False,
+            with_spore_owner=True,
+        )))
+        _, screen_data_players = render.update_all(food_balls, thorns_balls, spore_balls, players)
+        assert screen_data_players['0']['overlap']['spore'][0][-1] == '0'

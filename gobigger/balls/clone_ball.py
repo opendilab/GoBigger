@@ -234,7 +234,7 @@ class CloneBall(BaseBall):
             self.set_size(self.size - spore_radius**2)
             direction_unit = direction.normalize()
             position = self.position + direction_unit * (self.radius + spore_radius)
-            return SporeBall(name=uuid.uuid1(), position=position, border=self.border, direction=direction_unit, **self.spore_settings)
+            return SporeBall(name=uuid.uuid1(), position=position, border=self.border, direction=direction_unit, owner=self.owner, **self.spore_settings)
         else:
             return False
 

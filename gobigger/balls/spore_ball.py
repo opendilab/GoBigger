@@ -29,7 +29,7 @@ class SporeBall(BaseBall):
         ))
         return EasyDict(cfg)
 
-    def __init__(self, name, position, border, size=1, vel=None, acc=None, direction=Vector2(0,0), **kwargs):
+    def __init__(self, name, position, border, size=1, vel=None, acc=None, direction=Vector2(0,0), owner=-1, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = SporeBall.default_config()
@@ -42,6 +42,7 @@ class SporeBall(BaseBall):
         self.direction = direction.normalize()
         self.vel = self.vel_init * self.direction
         self.acc = - (self.vel_init / self.vel_zero_time) * self.direction
+        self.owner = owner
         self.move_time = 0
         # reset size
         if math.sqrt(self.size) != self.spore_radius_init:
