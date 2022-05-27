@@ -15,6 +15,7 @@ server_default_config = dict(
     load_bin_path='',
     load_bin_frame_num = 'all',
     jump_to_frame_file = '',
+    match_ratio=1.0, # match_ratio will be multiple to manager to control ball num
     manager_settings=dict(
         # food setting
         food_manager=dict(

@@ -30,6 +30,7 @@ GoBigger 将可配置参数统一放在 ``gobigger/server/server_default_config.
 * ``load_bin_path``: 加载动作序列文件的路径
 * ``load_bin_frame_num``: 加载动作序列到第几帧
 * ``jump_to_frame_file``: 需要跳跃的帧信息文件路径
+* ``match_ratio``: 比赛setting的配置比例。默认是1.0。这个值将会乘到manager里涉及到球球数量的参数和地图大小上，来保证等比例对场景进行缩放。例如如果这个值设为0.5，则地图宽高会乘以math.sqrt(0.5)来保证面积为原来的0.5倍，然后地图内球球的数量会乘以0.5。
 * ``manager_settings``
     * ``food_manager``
         * ``num_init``: 地图中初始化的食物球数量，默认为2000

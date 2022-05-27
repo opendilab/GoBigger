@@ -30,6 +30,7 @@ The configurable parameters will be described in detail below.
 * ``load_bin_path``: The path to load the action sequence file
 * ``load_bin_frame_num``: Load the action sequence to the first few frames
 * ``jump_to_frame_file``: The path of the frame information file that needs to be jumped
+* ``match_ratio``: match_ratio will be multiple to manager to control ball num. The default is 1.0
 * ``manager_settings``
     * ``food_manager``
         * ``num_init``: The number of food balls initialized in the map, the default is 2000
