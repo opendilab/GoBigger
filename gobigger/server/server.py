@@ -9,6 +9,7 @@ import time
 import numpy as np
 import copy
 import pickle
+import math
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
@@ -73,6 +74,7 @@ class Server:
         if isinstance(cfg, dict):
             cfg = EasyDict(cfg)
             self.cfg = deep_merge_dicts(self.cfg, cfg)
+        self.update_match_ratio() # update match ratio
         logging.debug(self.cfg)
         self.team_num = self.cfg.team_num
         self.player_num_per_team = self.cfg.player_num_per_team
@@ -96,7 +98,7 @@ class Server:
         self.load_bin_path = self.cfg.load_bin_path
         self.load_bin_frame_num = self.cfg.load_bin_frame_num
         self.obs_settings = self.cfg.obs_settings
-        
+
         self.seed(seed)
         self.border = Border(0, 0, self.map_width, self.map_height, self._random)
         self.last_time = 0
@@ -114,6 +116,21 @@ class Server:
 
         self.collision_detection_type = self.cfg.collision_detection_type
         self.collision_detection = create_collision_detection(self.collision_detection_type, border=self.border)
+
+    def update_match_ratio(self):
+        # map size
+        self.cfg.map_width = int(self.cfg.map_width * math.sqrt(self.cfg.match_ratio))
+        self.cfg.map_height = int(self.cfg.map_height * math.sqrt(self.cfg.match_ratio))
+        # food
+        self.cfg.manager_settings.food_manager.num_init = int(self.cfg.manager_settings.food_manager.num_init * self.cfg.match_ratio)
+        self.cfg.manager_settings.food_manager.num_min = int(self.cfg.manager_settings.food_manager.num_min * self.cfg.match_ratio)
+        self.cfg.manager_settings.food_manager.num_max = int(self.cfg.manager_settings.food_manager.num_max * self.cfg.match_ratio)
+        self.cfg.manager_settings.food_manager.refresh_num = int(self.cfg.manager_settings.food_manager.refresh_num * self.cfg.match_ratio)
+        # thorns
+        self.cfg.manager_settings.thorns_manager.num_init = int(self.cfg.manager_settings.thorns_manager.num_init * self.cfg.match_ratio)
+        self.cfg.manager_settings.thorns_manager.num_min = int(self.cfg.manager_settings.thorns_manager.num_min * self.cfg.match_ratio)
+        self.cfg.manager_settings.thorns_manager.num_max = int(self.cfg.manager_settings.thorns_manager.num_max * self.cfg.match_ratio)
+        self.cfg.manager_settings.thorns_manager.refresh_num = int(self.cfg.manager_settings.thorns_manager.refresh_num * self.cfg.match_ratio)
 
     def spawn_balls(self):
         '''
