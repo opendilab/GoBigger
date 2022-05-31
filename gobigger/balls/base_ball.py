@@ -101,14 +101,14 @@ class BaseBall(ABC):
             Check to see if the position of the ball exceeds the bounds of the map. 
             If it exceeds, the speed and acceleration in the corresponding direction will be zeroed, and the position will be edged
         """
-        if self.position.x < self.border.minx + self.radius or self.position.x > self.border.maxx - self.radius:
-            self.position.x = max(self.position.x, self.border.minx + self.radius)
-            self.position.x = min(self.position.x, self.border.maxx - self.radius)
+        if self.position.x < self.border.minx or self.position.x > self.border.maxx:
+            self.position.x = max(self.position.x, self.border.minx)
+            self.position.x = min(self.position.x, self.border.maxx)
             self.vel.x = 0
             self.acc.x = 0
-        if self.position.y < self.border.miny + self.radius or self.position.y > self.border.maxy - self.radius:
-            self.position.y = max(self.position.y, self.border.miny + self.radius)
-            self.position.y = min(self.position.y, self.border.maxy - self.radius)
+        if self.position.y < self.border.miny or self.position.y > self.border.maxy:
+            self.position.y = max(self.position.y, self.border.miny)
+            self.position.y = min(self.position.y, self.border.maxy)
             self.vel.y = 0
             self.acc.y = 0
 
