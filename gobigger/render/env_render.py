@@ -6,6 +6,7 @@ import pygame
 import numpy as np
 import cv2
 import time
+import copy
 
 from .base_render import BaseRender
 from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, BLACK, WHITE
@@ -49,12 +50,28 @@ class EnvRender(BaseRender):
         return screen_data
 
     def get_clip_screen(self, screen_data, rectangle):
+        rectangle_tmp = copy.deepcopy(rectangle)
+        left_top_x, left_top_y, right_bottom_x, right_bottom_y = rectangle_tmp
+        left_top_x_fix = max(left_top_x, 0)
+        left_top_y_fix = max(left_top_y, 0)
+        right_bottom_x_fix = min(right_bottom_x, self.width)
+        right_bottom_y_fix = min(right_bottom_y, self.height)
+
         if len(screen_data.shape) == 3:
-            screen_data_clip = screen_data[rectangle[0]:rectangle[2], 
-                                           rectangle[1]:rectangle[3], :]
+            screen_data_clip = screen_data[left_top_x_fix:right_bottom_x_fix, 
+                                           left_top_y_fix:right_bottom_y_fix, :]
+            screen_data_clip = np.pad(screen_data_clip, 
+                                      ((left_top_x_fix-left_top_x,right_bottom_x-right_bottom_x_fix),
+                                       (left_top_y_fix-left_top_y,right_bottom_y-right_bottom_y_fix),
+                                       (0,0)), 
+                                      mode='constant')
         elif len(screen_data.shape) == 2:
-            screen_data_clip = screen_data[rectangle[0]:rectangle[2], 
-                                           rectangle[1]:rectangle[3]]
+            screen_data_clip = screen_data[left_top_x_fix:right_bottom_x_fix, 
+                                           left_top_y_fix:right_bottom_y_fix]
+            screen_data_clip = np.pad(screen_data_clip, 
+                                      ((left_top_x_fix-left_top_x,right_bottom_x-right_bottom_x_fix),
+                                       (left_top_y_fix-left_top_y,right_bottom_y-right_bottom_y_fix)), 
+                                      mode='constant')
         else:
             raise NotImplementedError
         return screen_data_clip
@@ -75,12 +92,16 @@ class EnvRender(BaseRender):
         xs_max = max(xs_max, self.vision_x_min)
         ys_max = max(ys_max, self.vision_y_min)
         scale_up_len =  max(xs_max, ys_max)
-        left_top_x = min(max(int(centroid.x - scale_up_len * self.scale_up_ratio), 0), 
-                         max(int(self.width_full - scale_up_len * self.scale_up_ratio * 2), 0))
-        left_top_y = min(max(int(centroid.y - scale_up_len * self.scale_up_ratio), 0),
-                         max(int(self.height_full - scale_up_len * self.scale_up_ratio * 2), 0))
-        right_bottom_x = min(int(left_top_x + scale_up_len * self.scale_up_ratio * 2), self.width_full)
-        right_bottom_y = min(int(left_top_y + scale_up_len * self.scale_up_ratio * 2), self.height_full)
+        left_top_x = int(centroid.x - scale_up_len * self.scale_up_ratio)
+        left_top_y = int(centroid.y - scale_up_len * self.scale_up_ratio)
+        right_bottom_x = int(left_top_x + scale_up_len * self.scale_up_ratio * 2)
+        right_bottom_y = int(left_top_y + scale_up_len * self.scale_up_ratio * 2)
+        # left_top_x = min(max(int(centroid.x - scale_up_len * self.scale_up_ratio), 0), 
+        #                  max(int(self.width_full - scale_up_len * self.scale_up_ratio * 2), 0))
+        # left_top_y = min(max(int(centroid.y - scale_up_len * self.scale_up_ratio), 0),
+        #                  max(int(self.height_full - scale_up_len * self.scale_up_ratio * 2), 0))
+        # right_bottom_x = min(int(left_top_x + scale_up_len * self.scale_up_ratio * 2), self.width_full)
+        # right_bottom_y = min(int(left_top_y + scale_up_len * self.scale_up_ratio * 2), self.height_full)
         rectangle = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
         return rectangle
 
