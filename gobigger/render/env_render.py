@@ -60,22 +60,18 @@ class EnvRender(BaseRender):
         if len(screen_data.shape) == 3:
             screen_data_clip = screen_data[left_top_x_fix:right_bottom_x_fix, 
                                            left_top_y_fix:right_bottom_y_fix, :]
-            tmp_shape = screen_data_clip.shape
             screen_data_clip = np.pad(screen_data_clip, 
                                       ((left_top_x_fix-left_top_x,right_bottom_x-right_bottom_x_fix),
                                        (left_top_y_fix-left_top_y,right_bottom_y-right_bottom_y_fix),
                                        (0,0)), 
                                       mode='constant')
-            print(tmp_shape, screen_data_clip.shape)
         elif len(screen_data.shape) == 2:
             screen_data_clip = screen_data[left_top_x_fix:right_bottom_x_fix, 
                                            left_top_y_fix:right_bottom_y_fix]
-            tmp_shape = screen_data_clip.shape
             screen_data_clip = np.pad(screen_data_clip, 
                                       ((left_top_x_fix-left_top_x,right_bottom_x-right_bottom_x_fix),
                                        (left_top_y_fix-left_top_y,right_bottom_y-right_bottom_y_fix)), 
                                       mode='constant')
-            print(tmp_shape, screen_data_clip.shape)
         else:
             raise NotImplementedError
         return screen_data_clip
