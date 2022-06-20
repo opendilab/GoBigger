@@ -26,7 +26,7 @@ def demo_bot():
         state_tick_per_second=10, # frame
         action_tick_per_second=5, 
         collision_detection_type='precision',
-        save_video=True,
+        save_video=False,
         save_quality='low', # ['high', 'low']
         save_path='',
         save_bin=False, # save bin to go-explore
