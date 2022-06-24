@@ -9,43 +9,42 @@
 .. code-block:: python
 
     import random
-    from gobigger.server import Server
-    from gobigger.render import EnvRender
+    from gobigger.envs import GoBiggerEnv
 
-    server = Server()
-    render = EnvRender(server.map_width, server.map_height)
-    server.set_render(render)
-    server.reset()
-    player_names = server.get_player_names_with_team() 
-    # get [[team1_player1, team1_player2], [team2_player1, team2_player2], ...]
-    for i in range(10000):
-        actions = {player_name: [random.uniform(-1, 1), random.uniform(-1, 1), -1] \
-                   for team in player_names for player_name in team}
-        if not server.step(actions):
-            global_state, screen_data_players = server.obs()
-            print('[{}] leaderboard={}'.format(i, global_state['leaderboard']))
-        else:
+    env = GoBiggerEnv(dict(
+        team_num=2,
+        player_num_per_team=2,
+    ))
+    obs = env.reset()
+    team_infos = env.get_team_infos()
+    for i in range(1000):
+        actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+                   1: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+                   2: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+                   3: [random.uniform(-1, 1), random.uniform(-1, 1), -1]}
+        obs, rew, done, info = env.step(actions)
+        print('[{}] leaderboard={}'.format(i, obs[0]['leaderboard']))
+        if done:
             print('finish game!')
             break
-    server.close()
+    env.close()
 
-在上述代码中，首先构建了 ``Server`` 类作为游戏引擎，并构建 ``EnvRender`` 类作为渲染引擎，由二者协调游戏的进行。然后，通过 ``server.step()`` 完成游戏每一步的进行，通过 ``server.obs()`` 获取游戏环境的当前状态。执行之后，将会得到类似下面的输出，给出了每一帧排行榜信息。
+在上述代码中，首先构建了 ``GoBiggerEnv`` 作为环境，然后通过 ``env.step()`` 完成游戏每一步的进行，并获取到对应的 ``observation``，``reward``，``done``，``info`` 等信息。执行之后，将会得到类似下面的输出，给出了每一帧排行榜信息。
 
 .. code-block::
 
-    [0] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
-    [1] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
-    [2] leaderboard={'0': 27, '1': 30.99935, '2': 30.99935, '3': 30.998700032499997}
-    [3] leaderboard={'0': 27, '1': 34.99610032498374, '2': 34.99675032498374, '3': 30.9961004874675}
-    [4] leaderboard={'0': 27, '1': 38.99025149484726, '2': 34.99155136485701, '3': 38.992201494805016}
-    [5] leaderboard={'0': 30.998700032499997, '1': 42.982054039382575, '2': 34.98635344444432, '3': 38.98620350437408}
-    [6] leaderboard={'0': 34.9961004874675, '1': 42.973458273284024, '2': 34.98115656353774, '3': 38.98020671345127}
-    [7] leaderboard={'0': 34.99270152230301, '1': 46.964264256209255, '2': 38.974660754429394, '3': 38.974211121796685}
-    [8] leaderboard={'0': 34.98930323688059, '1': 46.954872107798515, '2': 38.96686640687893, '3': 38.96821672917049}
-    [9] leaderboard={'0': 38.98525563106426, '1': 46.94548183767656, '2': 38.95907361808107, '3': 38.96222353533294}
+    [0] leaderboard={0: 4.6, 1: 4.6}
+    [1] leaderboard={0: 4.6, 1: 4.6}
+    [2] leaderboard={0: 4.6, 1: 4.6}
+    [3] leaderboard={0: 4.6, 1: 4.6}
+    [4] leaderboard={0: 4.6, 1: 4.6}
+    [5] leaderboard={0: 4.6, 1: 4.6}
+    [6] leaderboard={0: 4.6, 1: 4.6}
+    [7] leaderboard={0: 4.6, 1: 4.6}
+    [8] leaderboard={0: 4.6, 1: 4.6}
+    [9] leaderboard={0: 4.6, 1: 4.6}
+    [10] leaderboard={0: 4.6, 1: 4.6}
     ...
-
-我们也遵循 ``gym.Env`` 的接口完成了一个简单的 ``Env`` 类，具体可以查看 ``gobigger/envs/gobigger_env.py``。
 
 
 自定义游戏环境
