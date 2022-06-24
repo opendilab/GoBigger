@@ -26,7 +26,7 @@ class TestCollisionDection:
         for i in range(totol_num):
             x = random.randint(border.minx, border.maxx) + random.random()
             y = random.randint(border.miny, border.maxy) + random.random()
-            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border))
+            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border, radius=1))
         collision_detection = create_collision_detection("exhaustive", border=border)
         query_list = random.sample(gallery_list, query_num)
         collision_detection.solve(query_list, gallery_list)
@@ -40,7 +40,7 @@ class TestCollisionDection:
         for i in range(totol_num):
             x = random.randint(border.minx, border.maxx) + random.random()
             y = random.randint(border.miny, border.maxy) + random.random()
-            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border))
+            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border, radius=1))
         collision_detection = create_collision_detection("precision", border=border)
         query_list = random.sample(gallery_list, query_num)
         collision_detection.solve(query_list, gallery_list)
@@ -54,7 +54,7 @@ class TestCollisionDection:
         for i in range(totol_num):
             x = random.randint(border.minx, border.maxx) + random.random()
             y = random.randint(border.miny, border.maxy) + random.random()
-            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border))
+            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border, radius=1))
         collision_detection = create_collision_detection("rebuild_quadtree", border=border)
         query_list = random.sample(gallery_list, query_num)
         collision_detection.solve(query_list, gallery_list)
@@ -69,7 +69,7 @@ class TestCollisionDection:
         for i in range(totol_num):
             x = random.randint(border.minx, border.maxx) + random.random()
             y = random.randint(border.miny, border.maxy) + random.random()
-            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border))
+            gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border, radius=1))
         collision_detection = create_collision_detection("remove_quadtree", border=border)
         collision_detection.solve([], gallery_list)
         change_list = []
@@ -94,7 +94,7 @@ class SpeedTest:
         for i in range(totol_num):
             x = random.randint(border.minx, border.maxx) + random.random()
             y = random.randint(border.miny, border.maxy) + random.random()
-            self.gallery_list.append(BaseBall(i, position = Vector2(x, y), border = border))
+            self.gallery_list.append(BaseBall(i, position=Vector2(x, y), border=border, radius=1))
         self.exhaustive = create_collision_detection("exhaustive", border = border)
         self.precision = create_collision_detection("precision", border = border)
         self.rebuild_quadtree = create_collision_detection("rebuild_quadtree", border = border)

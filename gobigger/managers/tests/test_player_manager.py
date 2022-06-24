@@ -50,7 +50,7 @@ class TestPlayerManager:
         player_manager = self.get_manager()
         player_manager.init_balls()
         players = player_manager.get_players()
-        player = player_manager.get_player_by_name(players[0].name)
+        player = player_manager.get_player_by_name(players[0].player_id)
         assert isinstance(player, HumanPlayer)
 
     def test_add_balls(self):
@@ -59,14 +59,14 @@ class TestPlayerManager:
         player_manager = self.get_manager()
         player_manager.init_balls()
         players = player_manager.get_players()
-        player_name = players[0].name
+        player_id = players[0].player_id
         num_old = len(player_manager.get_balls())
-        ball = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        ball = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
         player_manager.add_balls(ball)
         num_new = len(player_manager.get_balls())
         assert num_new - num_old == 1
-        ball1 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
-        ball2 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        ball1 = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
+        ball2 = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
         balls = [ball1, ball2]
         player_manager.add_balls(balls)
 
@@ -76,15 +76,15 @@ class TestPlayerManager:
         player_manager = self.get_manager()
         player_manager.init_balls()
         players = player_manager.get_players()
-        player_name = players[0].name
-        ball = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        player_id = players[0].player_id
+        ball = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
         player_manager.add_balls(ball)
         num_old = len(player_manager.get_balls())
         player_manager.remove_balls(ball)
         num_new = len(player_manager.get_balls())
         assert num_new - num_old == -1
-        ball1 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
-        ball2 = CloneBall(players[0].team_name, 'name', border.sample(), border=border, size=16, vel=None, acc=None, owner=player_name)
+        ball1 = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
+        ball2 = CloneBall('name', border.sample(), border=border, radius=4, team_id=players[0].team_id, player_id=player_id)
         balls = [ball1, ball2]
         player_manager.remove_balls(balls)
 

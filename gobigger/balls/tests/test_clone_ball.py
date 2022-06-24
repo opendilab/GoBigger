@@ -11,27 +11,27 @@ logging.basicConfig(level=logging.DEBUG)
 @pytest.mark.unittest
 class TestCloneBall:
 
-    def get_clone(self, size=None):
+    def get_clone(self, radius=None):
         border = Border(0, 0, 1000, 1000)
         position = Vector2(100, 100)
-        team_name = uuid.uuid1()
-        name = uuid.uuid1()
-        size = CloneBall.default_config().radius_init ** 2 if size is None else size
-        owner = uuid.uuid1()
-        return CloneBall(team_name, name, position, border=border, size=size, vel=None, acc=None, owner=owner, clone_num=1)
+        team_id = uuid.uuid1()
+        ball_id = uuid.uuid1()
+        radius = CloneBall.default_config().radius_init if radius is None else radius
+        player_id = uuid.uuid1()
+        return CloneBall(ball_id, position, border=border, radius=radius, team_id=team_id, player_id=player_id)
 
     def get_thorns(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 1000, 1000)
         thorns_position = Vector2(100, 100)
-        thorns_size = ThornsBall.default_config().radius_min ** 2
-        return ThornsBall(name, thorns_position, border=border, size=thorns_size)
+        thorns_radius = ThornsBall.default_config().radius_min
+        return ThornsBall(ball_id, thorns_position, border=border, radius=thorns_radius)
 
     def get_food(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 1000, 1000)
         position = Vector2(200, 200)
-        return FoodBall(name, position, border=border, size=25, vel=None, acc=None)
+        return FoodBall(ball_id, position, border=border, radius=5)
 
     def test_init(self):
         clone_ball = self.get_clone()
@@ -68,47 +68,40 @@ class TestCloneBall:
 
     def test_move(self):
         border = Border(0, 0, 1000, 1000)
-        clone_ball = self.get_clone(size=256)
+        clone_ball = self.get_clone(radius=16)
         direction = Vector2(1,0) * 1000
         logging.debug('===================== before move =====================')
-        logging.debug('position={}, vel={}, acc={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.acc, clone_ball.vel_max))
+        logging.debug('position={}, vel={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.vel_max))
         for i in range(10):
             clone_ball.move(given_acc=direction, given_acc_center=Vector2(0,0), duration=0.05)
             logging.debug('===================== after move =====================')
-            logging.debug('position={}, vel={}, acc={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.acc, clone_ball.vel_max))
-        clone_ball.stop(direction)
+            logging.debug('position={}, vel={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.vel_max))
         for i in range(20):
             clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
             logging.debug('===================== move after stop =====================')
-            logging.debug('position={}, vel={}, acc={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.acc, clone_ball.vel_max))
+            logging.debug('position={}, vel={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.vel_max))
         clone_ball.split(1)
-        clone_ball.stop(direction)
         for i in range(20):
             clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
             logging.debug('===================== move after stop =====================')
-            logging.debug('position={}, vel={}, acc={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.acc, clone_ball.vel_max))
+            logging.debug('position={}, vel={}, vel_max={}'.format(clone_ball.position, clone_ball.vel, clone_ball.vel_max))
 
     def test_eject(self):
         logging.debug('===================== test eject =====================')
         eject_radius_min = CloneBall.default_config().eject_radius_min
-        clone_ball = self.get_clone(size=eject_radius_min**2)
-        direction = Vector2(1,0) * 1000
-        clone_ball.stop(direction)
+        clone_ball = self.get_clone(radius=eject_radius_min)
         rets = clone_ball.eject()
         logging.debug('clone_ball: {}, eject_radius_min={}'.format(clone_ball, eject_radius_min))
-        if clone_ball.size < eject_radius_min**2:
+        if clone_ball.radius < eject_radius_min:
             assert rets
         else:
             logging.debug('spore_ball: {}'.format(rets))
-        clone_ball = self.get_clone()
         assert not clone_ball.eject()
     
     def test_split(self):
         logging.debug('===================== test split =====================')
         split_radius_min = CloneBall.default_config().split_radius_min
-        clone_ball = self.get_clone(size=split_radius_min**2)
-        direction = Vector2(1,0) * 1000
-        clone_ball.stop(direction)
+        clone_ball = self.get_clone(radius=split_radius_min)
         logging.debug('clone_ball: {}, split_radius_min={}'.format(clone_ball, split_radius_min))
         rets = clone_ball.split(1)
         logging.debug('===================== after split =====================')
@@ -120,12 +113,12 @@ class TestCloneBall:
     def test_rigid_collision(self):
         border = Border(0, 0, 1000, 1000)
         position = Vector2(100, 100)
-        owner = uuid.uuid1()
-        name1 = uuid.uuid1()
-        name2 = uuid.uuid1()
-        team_name = uuid.uuid1()
-        clone_ball_1 = CloneBall(team_name, name1, position=Vector2(100, 100), border=border, size=25, vel=None, acc=None, owner=owner, clone_num=2)
-        clone_ball_2 = CloneBall(team_name, name2, position=Vector2(100, 110), border=border, size=26, vel=None, acc=None, owner=owner, clone_num=2)
+        player_id = uuid.uuid1()
+        ball_id1 = uuid.uuid1()
+        ball_id2 = uuid.uuid1()
+        team_id = uuid.uuid1()
+        clone_ball_1 = CloneBall(ball_id1, position=Vector2(100, 100), border=border, radius=5, team_id=team_id, player_id=player_id)
+        clone_ball_2 = CloneBall(ball_id2, position=Vector2(100, 110), border=border, radius=6, team_id=team_id, player_id=player_id)
         logging.debug('===================== test rigid_collision =====================')
         logging.debug('clone_ball_1: {}'.format(clone_ball_1))
         logging.debug('clone_ball_2: {}'.format(clone_ball_2))
@@ -136,26 +129,15 @@ class TestCloneBall:
 
     def test_move_wo_stop_flag(self):
         clone_ball = self.get_clone()
-        clone_ball.stop_flag = True
         clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
-        clone_ball.stop_time = clone_ball.stop_zero_time
         clone_ball.move(given_acc=None, given_acc_center=Vector2(1,0), duration=0.05)
-        clone_ball.stop_flag = False
         clone_ball.move(given_acc=None, given_acc_center=None, duration=0.05)
-
-    def test_eat_max(self):
-        clone_ball = self.get_clone()
-        clone_ball.set_size(clone_ball.radius_max**2)
-        food_ball = self.get_food()
-        clone_ball.eat(food_ball)
 
     def test_eat_baseball(self):
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        owner = None
-        name = uuid.uuid1()
-        base_ball = BaseBall(name, position, border=border, owner=owner, size=1, 
-                 acc_max=5, vel_max=10, radius_min=5, radius_max=10)
+        ball_id = uuid.uuid1()
+        base_ball = BaseBall(ball_id, position, border=border, radius=1)
         clone_ball = self.get_clone()
         clone_ball.eat(base_ball)
 

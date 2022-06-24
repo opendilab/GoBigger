@@ -44,7 +44,7 @@ class BotAgent(BaseAgent):
             direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
         else:
             direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
-        action_type = -1
+        action_type = 0
         self.actions_queue.put([direction.x, direction.y, action_type])
         action_ret = self.actions_queue.get()
         return action_ret
@@ -61,17 +61,16 @@ class BotAgent(BaseAgent):
 
         my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
         min_distance, min_thorns_ball = self.process_thorns_balls(thorns_balls, my_clone_balls[0])
+        min_distance, min_food_ball = self.process_food_balls(food_balls, my_clone_balls[0])        
         if min_thorns_ball is not None:
             direction = (min_thorns_ball['position'] - my_clone_balls[0]['position']).normalize()
         else:
-            direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
-        action_type = -1
+            if min_food_ball is not None:
+                direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
+            else:
+                direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
+        action_type = 0
         self.actions_queue.put([direction.x, direction.y, action_type])
-        self.actions_queue.put([None, None, -1])
-        self.actions_queue.put([None, None, -1])
-        self.actions_queue.put([None, None, -1])
-        self.actions_queue.put([None, None, -1])
-        self.actions_queue.put([None, None, -1])
         action_ret = self.actions_queue.get()
         return action_ret
 
@@ -87,28 +86,28 @@ class BotAgent(BaseAgent):
 
         my_clone_balls, others_clone_balls = self.process_clone_balls(clone_balls)
 
-        if len(my_clone_balls) >= 9 and my_clone_balls[4]['radius'] > 14:
-            self.actions_queue.put([None, None, 2])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, -1])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
-            self.actions_queue.put([None, None, 0])
+        if len(my_clone_balls) >= 9 and my_clone_balls[4]['radius'] > 4:
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([0, 0, 0])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
+            self.actions_queue.put([None, None, 1])
             action_ret = self.actions_queue.get()
             return action_ret
 
         if len(others_clone_balls) > 0 and my_clone_balls[0]['radius'] < others_clone_balls[0]['radius']:
             direction = (my_clone_balls[0]['position'] - others_clone_balls[0]['position']).normalize()
-            action_type = -1
+            action_type = 0
         else:
             min_distance, min_thorns_ball = self.process_thorns_balls(thorns_balls, my_clone_balls[0])
             if min_thorns_ball is not None:
@@ -125,8 +124,8 @@ class BotAgent(BaseAgent):
             if action_random < 0.04 and action_random > 0.02:
                 action_type = 2
             else:
-                action_type = -1
-        direction = self.add_noise_to_direction(direction)
+                action_type = 0
+        direction = self.add_noise_to_direction(direction).normalize()
         self.actions_queue.put([direction.x, direction.y, action_type])
         action_ret = self.actions_queue.get()
         return action_ret
@@ -175,8 +174,8 @@ class BotAgent(BaseAgent):
                     tmp={}
                     tmp['position'] = Vector2(vv[0],vv[1])
                     tmp['radius'] = vv[2]
-                    tmp['player'] = str(int(vv[-2]))
-                    tmp['team'] = str(int(vv[-1]))
+                    tmp['player'] = int(vv[-2])
+                    tmp['team'] = int(vv[-1])
                     new_overlap[k].append(tmp)
             else:
                 new_overlap[k] = []
@@ -197,5 +196,6 @@ class BotAgent(BaseAgent):
         return new_overlap
     
     def add_noise_to_direction(self, direction, noise_ratio=0.1):
-        direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, ((random.random() * 2 - 1)*noise_ratio)*direction.y)
+        direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, 
+                                        ((random.random() * 2 - 1)*noise_ratio)*direction.y)
         return direction

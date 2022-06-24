@@ -14,13 +14,16 @@ class FoodBall(BaseBall):
     @staticmethod
     def default_config():
         cfg = BaseBall.default_config()
-        cfg.update(dict())
+        cfg.update(dict(
+            radius_min=0.5,
+            radius_max=0.5,
+        ))
         return EasyDict(cfg)
 
-    def __init__(self, name, position, border, size=1, vel=None, acc=None, **kwargs):
-        super(FoodBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **kwargs)
+    def __init__(self, ball_id, position, radius, border, **kwargs):
+        super(FoodBall, self).__init__(ball_id, position, radius=radius, border=border, **kwargs)
         self.check_border()
-
+        
     def move(self, direction, duration):
         logging.debug('FoodBall can not move')
         return

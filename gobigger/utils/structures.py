@@ -14,7 +14,9 @@ def format_vector(v, norm_max):
              1) The maximum speed limit is 5, given that the current speed is (6,8), it will return (3,4)
              2) Limit the maximum acceleration and return to the acceleration after the limit
     '''
-    if v.length() < norm_max:
+    if v.length() == 0:
+        return v
+    elif v.length() < norm_max:
         # logging.debug('v={}, v.length()={}, norm_max={}'.format(v, v.length(), norm_max))
         return v
     else:
@@ -158,7 +160,7 @@ class QuadNode:
             
     def remove(self, node):
         for i, item in enumerate(self.items):
-            if item.name == node.name:
+            if item.ball_id == node.ball_id:
                 del self.items[i]
                 break
         node.quad_node = None

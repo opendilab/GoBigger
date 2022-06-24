@@ -8,9 +8,9 @@ from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 
 class HumanPlayer(BasePlayer):
 
-    def __init__(self, cfg, team_name, name, border, spore_settings):
-        self.team_name = team_name
-        self.name = name
+    def __init__(self, cfg, team_id, player_id, border, spore_settings):
+        self.team_id = team_id
+        self.player_id = player_id
         self.border = border
         self.balls = {}
         self.ball_settings = cfg
@@ -40,9 +40,9 @@ class HumanPlayer(BasePlayer):
         '''
         if isinstance(balls, list):
             for ball in balls:
-                self.balls[ball.name] = ball
+                self.balls[ball.ball_id] = ball
         elif isinstance(balls, CloneBall):
-            self.balls[balls.name] = balls
+            self.balls[balls.ball_id] = balls
         return True
 
     def move(self, direction=None, duration=0.05):
@@ -58,42 +58,17 @@ class HumanPlayer(BasePlayer):
         Returns:
             position <Vector2>: position after moving 
         '''
-        if direction is not None: 
-            self.stop_flag = False # Exit stopped state
-            for ball in self.balls.values():
-                ball.stop_flag = False
         if self.get_clone_num() == 0:
-            pass
-        elif self.stop_flag: 
-            if self.get_clone_num() == 1: 
-                for ball in self.balls.values():
-                    ball.move(given_acc=None, given_acc_center=None, duration=duration)
-            else: #If there are multiple balls, control them to move to the center
-                centroid = self.cal_centroid()
-                for ball in self.balls.values():
-                    given_acc_center = centroid - ball.position
-                    if given_acc_center.length() == 0:
-                        given_acc_center = Vector2(0.000001, 0.000001)
-                    elif given_acc_center.length() > 1:
-                        given_acc_center = given_acc_center.normalize()
-                    given_acc_center *= 20
-                    ball.move(given_acc=direction, given_acc_center=given_acc_center, duration=duration)
-        else:
-            if self.get_clone_num() == 1:
-                for ball in self.balls.values():
-                    ball.move(given_acc=direction, given_acc_center=Vector2(0,0), duration=duration)
-            else:
-                centroid = self.cal_centroid()
-                for ball in self.balls.values():
-                    given_acc_center = centroid - ball.position
-                    if given_acc_center.length() == 0:
-                        given_acc_center = Vector2(0.000001, 0.000001)
-                    elif given_acc_center.length() > 1:
-                        given_acc_center = given_acc_center.normalize()
-                    given_acc_center *= 20
-                    ball.move(given_acc=direction, given_acc_center=given_acc_center, duration=duration)
+            return True
+        if self.get_clone_num() == 1:
+            for ball in self.balls.values():
+                ball.move(given_acc=direction, duration=duration)
+        elif self.get_clone_num() >= 2:
+            centroid = self.cal_centroid()
+            for ball in self.balls.values():
+                given_acc_center = centroid - ball.position
+                ball.move(given_acc=direction, given_acc_center=given_acc_center, duration=duration)
         self.size_decay()
-        return True
 
     def size_decay(self):
         '''
@@ -112,10 +87,10 @@ class HumanPlayer(BasePlayer):
             <list>: list of new spores
         '''
         ret = []
-        ball_names = list(self.balls.keys())
-        for ball_name in ball_names:
-            if ball_name in self.balls:
-                ball = self.balls[ball_name]
+        ball_ids = list(self.balls.keys())
+        for ball_id in ball_ids:
+            if ball_id in self.balls:
+                ball = self.balls[ball_id]
                 ret.append(ball.eject(direction=direction))
         return ret
 
@@ -147,35 +122,24 @@ class HumanPlayer(BasePlayer):
     def eat(self, ball):
         raise NotImplementedError
 
-    def stop(self):
-        if self.stop_flag:
-            return True
-        self.stop_flag = True
-        centroid = self.cal_centroid()
-        for ball in self.balls.values():
-            direction_center = centroid - ball.position
-            if direction_center.length() == 0:
-                direction_center = Vector2(0.000001, 0.000001)
-            ball.stop(direction=direction_center)
-        return True
-
     def remove_balls(self, ball):
         ball.remove()
-        if ball.name in self.balls:
+        if ball.ball_id in self.balls:
             try:
-                del self.balls[ball.name]
+                del self.balls[ball.ball_id]
             except:
                 pass
         return True
 
     def respawn(self, position):
-        ball_name = uuid.uuid1()
-        ball = CloneBall(team_name=self.team_name, name=ball_name, position=position, border=self.border, owner=self.name, 
+        ball_id = uuid.uuid1()
+        ball = CloneBall(ball_id=ball_id, position=position, border=self.border, radius=self.ball_settings.radius_init,
+                         team_id=self.team_id, player_id=self.player_id, 
                          spore_settings=self.spore_settings, **self.ball_settings)
         direction = Vector2(1, 0)
-        ball.stop()
+        # ball.stop()
         self.balls = {}
-        self.balls[ball.name] = ball   
+        self.balls[ball.ball_id] = ball   
         return True
 
     def cal_centroid(self):
@@ -233,9 +197,3 @@ class HumanPlayer(BasePlayer):
         for ball in self.get_balls():
             total_size += ball.size
         return total_size
-
-
-
-
-
-

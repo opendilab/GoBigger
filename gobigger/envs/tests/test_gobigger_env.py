@@ -13,11 +13,10 @@ class TestGoBiggerEnv:
 
     def test_env(self):
         env = GoBiggerEnv()
+        obs = env.reset()
         env.seed(1000)
-        global_state, screen_data_players = env.reset()
-        assert len(screen_data_players) == env.server.team_num * env.server.player_num_per_team
         obs, reward, done, info = env.step(actions=None)
-        global_state, screen_data_players = obs
-        assert len(screen_data_players) == env.server.team_num * env.server.player_num_per_team
+        global_state, player_states = obs
+        assert len(player_states) == env.server.team_num * env.server.player_num_per_team
         env.close()
         assert True

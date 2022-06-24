@@ -78,29 +78,29 @@ class TestQuadNode:
     def test_get_quad(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border)
+        node = BaseBall('0', position=border.sample(), border=border, radius=1)
         assert isinstance(quad_node.get_quad(node=node), int)
 
     def test_insert(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border)
+        node = BaseBall('0', position=border.sample(), border=border, radius=1)
         quad_node.insert(node=node)
 
     def test_find(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border)
+        node = BaseBall('0', position=border.sample(), border=border, radius=1)
         quad_node.find(border)
 
     def test_clear(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border)
+        node = BaseBall('0', position=border.sample(), border=border, radius=1)
         quad_node.clear()
 
     def test_remove(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border)
+        node = BaseBall('0', position=border.sample(), border=border, radius=1)
         quad_node.remove(node=node)

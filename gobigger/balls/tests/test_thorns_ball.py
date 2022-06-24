@@ -12,73 +12,67 @@ logging.basicConfig(level=logging.DEBUG)
 class TestThornsBall:
 
     def test_init(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        size = 1600
-        thorns_ball = ThornsBall(name, position, border = border, size=size)
+        thorns_ball = ThornsBall(ball_id, position, border = border, radius=4)
         assert True
 
     def test_eat_move(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 1000, 1000)
         thorns_position = Vector2(100, 100)
-        thorns_size = ThornsBall.default_config().radius_min ** 2
-        thorns_ball = ThornsBall(name, thorns_position, border=border, size=thorns_size)
+        thorns_radius = ThornsBall.default_config().radius_min
+        thorns_ball = ThornsBall(ball_id, thorns_position, border=border, radius=thorns_radius)
 
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         spore_position = Vector2(100, 100)
-        spore_size = SporeBall.default_config().spore_radius_init ** 2
+        spore_radius = SporeBall.default_config().radius_init
         direction = Vector2(1, 0)
-        spore_ball = SporeBall(name, spore_position, border=border, size=spore_size, direction=direction)
+        spore_ball = SporeBall(ball_id, spore_position, border=border, radius=spore_radius, direction=direction)
 
         logging.debug('=========================== before eat =============================')
-        logging.debug('[thorns] position={}, size={}, vel={}, move_time={}'
-            .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_time))
+        logging.debug('[thorns] position={}, size={}, vel={}, move_frame={}'
+            .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_frame))
         logging.debug('[spore]  position={}, size={}, vel={}'
             .format(spore_ball.position, spore_ball.size, spore_ball.vel))
         thorns_ball.eat(spore_ball)
         logging.debug('=========================== after eat  =============================')
-        logging.debug('[thorns] position={}, size={}, vel={}, move_time={}'
-            .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_time))
+        logging.debug('[thorns] position={}, size={}, vel={}, move_frame={}'
+            .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_frame))
         logging.debug('[spore]  position={}, size={}, vel={}'
             .format(spore_ball.position, spore_ball.size, spore_ball.vel))
 
         for i in range(10):
             thorns_ball.move(duration=0.05)
             logging.debug('=========================== after move {} ============================='.format(i))
-            logging.debug('[thorns] position={}, size={}, vel={}, move_time={}'
-                .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_time))
+            logging.debug('[thorns] position={}, size={}, vel={}, move_frame={}'
+                .format(thorns_ball.position, thorns_ball.size, thorns_ball.vel, thorns_ball.move_frame))
 
         assert True
 
     def test_judge_in_rectangle(self):
         border = Border(0, 0, 800, 800)
         position = Vector2(400, 400)
-        owner = None
-        name = uuid.uuid1()
-        thorns_ball = ThornsBall(name, position, border, size=100)
+        ball_id = uuid.uuid1()
+        thorns_ball = ThornsBall(ball_id, position, border=border, radius=10)
         rectangle = [300, 300, 500, 500]
-        logging.debug(thorns_ball.judge_in_rectangle(rectangle))
-        assert True
+        assert thorns_ball.judge_in_rectangle(rectangle)
 
     def test_eat_others(self):
         border = Border(0, 0, 800, 800)
         position = Vector2(400, 400)
-        owner = None
-        name = uuid.uuid1()
-        thorns_ball = ThornsBall(name, position, border, size=100)
+        ball_id = uuid.uuid1()
+        thorns_ball = ThornsBall(ball_id, position, border=border, radius=10)
         position = Vector2(10, 10)
-        owner = None
-        name = uuid.uuid1()
-        base_ball = BaseBall(name, position, border=border, owner=owner, size=1, 
-                 acc_max=5, vel_max=10, radius_min=5, radius_max=10)
+        ball_id = uuid.uuid1()
+        base_ball = BaseBall(ball_id, position, border=border, radius=1)
         thorns_ball.eat(base_ball)
 
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         spore_position = Vector2(100, 100)
-        spore_size = SporeBall.default_config().spore_radius_init ** 2
+        spore_radius = SporeBall.default_config().radius_init
         direction = Vector2(1, 0)
-        spore_ball = SporeBall(name, spore_position, border=border, size=spore_size, direction=direction)
+        spore_ball = SporeBall(ball_id, spore_position, border=border, radius=spore_radius, direction=direction)
         thorns_ball.set_size(thorns_ball.radius_max**2)
         thorns_ball.eat(spore_ball)

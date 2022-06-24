@@ -20,52 +20,37 @@ class BaseBall(ABC):
         Overview:
             Default config
         '''
-        cfg = dict(
-            radius_min = 5, # Minimum radius
-            radius_max = 10, # Maximum radius
-        )
+        cfg = dict()
         return EasyDict(cfg)
 
-    def __init__(self, name, position, border, size=None, vel=None, acc=None, color : int = 1, **kwargs):
+    def __init__(self, ball_id, position, radius, border, **kwargs):
         '''
         Parameters:
-             border <border>: Circumscribed rectangle of the ball
              vel <Vector2> : the direction of the ball's speed 
              acc <Vector2> : the direction of the ball's acceleration
         '''
-        self.name = name
+        self.ball_id = ball_id
         self.position = position
-        self.border = border
-        self.vel = Vector2(0, 0) if vel is None else vel 
-        self.acc = Vector2(0, 0) if acc is None else acc 
 
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = BaseBall.default_config()
         cfg = deep_merge_dicts(cfg, kwargs)
-        self.color=color
-        self.radius_min = cfg.radius_min
-        self.radius_max = cfg.radius_max
-        if size is None:
-            size = self.radius_min ** 2
-        self.set_size(size)
+        self.radius = radius
+        self.border = border
+        self.size = self.radius_to_size(self.radius)
         self.is_remove = False
         self.quad_node = None
 
     def set_size(self, size: float) -> None:
-        """
-        Overview:
-            Set radius according to weight
-        Parameters:
-            size <float>: weight
-        """
         self.size = size
-        self.radius = math.sqrt(self.size)
-        if self.radius > self.radius_max:
-            self.radius = self.radius_max
-        elif self.radius < self.radius_min:
-            self.radius = self.radius_min
-        self.size = self.radius * self.radius
+        self.radius = self.size_to_radius(self.size)
+
+    def radius_to_size(self, radius):
+        return pow(radius, 2) * 2.3
+
+    def size_to_radius(self, size):
+        return pow(size/2.3, 1/2)
 
     def move(self, direction, duration):
         """
@@ -104,13 +89,9 @@ class BaseBall(ABC):
         if self.position.x < self.border.minx or self.position.x > self.border.maxx:
             self.position.x = max(self.position.x, self.border.minx)
             self.position.x = min(self.position.x, self.border.maxx)
-            self.vel.x = 0
-            self.acc.x = 0
         if self.position.y < self.border.miny or self.position.y > self.border.maxy:
             self.position.y = max(self.position.y, self.border.miny)
             self.position.y = min(self.position.y, self.border.maxy)
-            self.vel.y = 0
-            self.acc.y = 0
 
     def get_dis(self, ball):
         '''
@@ -130,7 +111,7 @@ class BaseBall(ABC):
         Returns:
             is_covered <bool>: covered or not
         '''
-        if ball.name == self.name:
+        if ball.ball_id == self.ball_id:
             return False
         dis = self.get_dis(ball)
         if self.radius > dis or ball.radius > dis:
@@ -154,7 +135,7 @@ class BaseBall(ABC):
         return dx**2 + dy**2 <= self.radius**2
 
     def __repr__(self) -> str:
-        return 'position={}, size={:.3f}, radius={:.3f}, vel={}, acc={}'.format(self.position, self.size, self.radius, self.vel, self.acc)
+        return 'position={}, size={:.3f}, radius={:.3f}'.format(self.position, self.size, self.radius)
 
     def __eq__(self, other):
         return self.size == other.size
