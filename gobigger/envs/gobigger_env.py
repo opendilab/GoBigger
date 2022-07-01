@@ -33,7 +33,7 @@ class GoBiggerEnv(gym.Env):
         return obs, reward, done, info
 
     def reset(self):
-        self.server = Server(cfg=self.server_cfg)
+        self.init_server()
         self.server.reset()
         obs = self.server.obs()
         global_state, player_states = obs
@@ -50,3 +50,6 @@ class GoBiggerEnv(gym.Env):
     def get_team_infos(self):
         assert hasattr(self, 'server'), "Please call `reset()` first"
         return self.server.get_team_infos()
+
+    def init_server(self):
+        self.server = Server(cfg=self.server_cfg)

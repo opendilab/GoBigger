@@ -10,11 +10,5 @@ from .gobigger_env import GoBiggerEnv
 
 class GoBiggerSPEnv(GoBiggerEnv):
 
-    def reset(self):
+    def init_server(self):
         self.server = ServerSP(cfg=self.server_cfg)
-        self.server.reset()
-        obs = self.server.obs()
-        global_state, player_states = obs
-        self.last_total_size = [global_state['leaderboard'][i] \
-                                for i in range(len(global_state['leaderboard']))]
-        return obs
