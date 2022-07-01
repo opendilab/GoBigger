@@ -19,7 +19,7 @@ from pygame.math import Vector2
 from gobigger.utils import Border, create_collision_detection, deep_merge_dicts, PlayerStatesUtil, PlaybackUtil
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 from gobigger.managers import FoodManager, SporeManager, ThornsManager, PlayerManager
-from .server_default_config import server_default_config
+from gobigger.configs import server_default_config
 
 
 class Server:

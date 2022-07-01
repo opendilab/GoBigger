@@ -15,7 +15,6 @@ class HumanPlayer(BasePlayer):
         self.balls = {}
         self.ball_settings = cfg
         self.spore_settings = spore_settings
-        self.stop_flag = False
 
     def get_clone_num(self):
         '''

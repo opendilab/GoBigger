@@ -97,3 +97,64 @@ class PlayerStatesUtil:
         clone = clone[:clone_count]
         ret['clone'] = clone
         return ret
+
+
+class PlayerStatesSPUtil(PlayerStatesUtil):
+
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+        ret = {}
+        food_count = 0
+        thorns_count = 0
+        spore_count = 0
+        clone_count = 0
+
+        assert len(players) > 0, 'len(players) = {} can not be 0'.format(len(players))
+
+        food = len(food_balls) * [3 * [None]]     # without speed
+        thorns = len(thorns_balls) * [3 * [None]] # without speed 
+        spore = len(spore_balls) * [3 * [None]]   # without speed 
+        clone = len(players) * players[0].ball_settings.part_num_max * [5 * [None]]   # without speed 
+
+        food_radius = 0.5
+        fr0 = rectangle[0] - food_radius
+        fr1 = rectangle[1] - food_radius
+        fr2 = rectangle[2] + food_radius
+        fr3 = rectangle[3] + food_radius
+        food_balls_x = food_balls[:,0]
+        food_balls_y = food_balls[:,1]
+        food_result = ne.evaluate('(food_balls_x>fr0) & (food_balls_x<fr2) & (food_balls_y>fr1) & (food_balls_y<fr3)')
+        x = food_balls_x[food_result==True]
+        y = food_balls_y[food_result==True]
+        r_col = np.ones_like(x) * food_radius
+        res = np.stack((x, y, r_col), axis=-1)
+        ret['food'] = res.tolist()
+        # p = food_balls[food_result==True]
+        # r_col = np.ones([p.shape[0]]) * food_radius
+        # res = np.c_[p, r_col]
+        # ret['food'] = res.tolist()
+
+        # thorns overlap
+        for ball in thorns_balls:
+            if ball.judge_in_rectangle(rectangle):
+                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius]
+                thorns_count += 1
+        thorns = thorns[:thorns_count]
+        ret['thorns'] = thorns
+        # spore overlap
+        for ball in spore_balls:
+            if ball.judge_in_rectangle(rectangle):
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.owner]
+                spore_count += 1
+        spore = spore[:spore_count]
+        ret['spore'] = spore
+        # clone overlap
+        for player in players:
+            for ball in player.get_balls():
+                if ball.judge_in_rectangle(rectangle):
+                    clone[clone_count] = [ball.position.x, ball.position.y, ball.radius, 
+                                          ball.vel.x, ball.vel.y, ball.direction.x, ball.direction.y, 
+                                          player.player_id, player.team_id, ball.ball_id]
+                    clone_count += 1
+        clone = clone[:clone_count]
+        ret['clone'] = clone
+        return ret

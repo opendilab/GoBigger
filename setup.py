@@ -24,6 +24,7 @@ setup(
         'gobigger.envs',
         'gobigger.bin',
         'gobigger.hyper',
+        'gobigger.configs'
     ],
     install_requires=[
         'easydict',

@@ -1,13 +1,3 @@
-'''
-self.save_video = self.playback_settings.save_video
-self.save_fps = self.playback_settings.save_fps
-self.save_resolution = self.playback_settings.save_resolution
-self.save_all = self.playback_settings.save_all
-self.save_partial = self.playback_settings.save_partial
-self.save_dir = self.playback_settings.save_dir
-self.save_name_prefix = self.playback_settings.save_name_prefix
-'''
-
 server_default_config = dict(
     team_num=4, 
     player_num_per_team=3, 

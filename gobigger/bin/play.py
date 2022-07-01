@@ -12,7 +12,7 @@ from gobigger.utils import Border
 from gobigger.server import Server
 from gobigger.render import RealtimeRender, RealtimePartialRender, EnvRender
 from gobigger.agents import BotAgent
-from gobigger.envs import GoBiggerEnv
+from gobigger.envs import GoBiggerEnv, GoBiggerSPEnv
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -473,6 +473,56 @@ def play_all():
     render.close()
 
 
+def play_partial_sp():
+    env = GoBiggerSPEnv(dict(
+        team_num=1, 
+        player_num_per_team=1,
+    ))
+    obs = env.reset()
+    done = False
+    render = RealtimePartialRender()
+    fps_real = 0
+    t1 = time.time()
+    clock = pygame.time.Clock()
+    fps_set = env.server.fps
+    for i in range(100000):
+        clone_balls = obs[1][0]['overlap']['clone']
+        ball_ids = [ball[-1] for ball in clone_balls]
+        actions = None
+        x, y = None, None
+        action_type = 0
+        # ================ control by keyboard ===============
+        mouse_pos = pygame.mouse.get_pos()
+        x = (mouse_pos[0]-render.game_screen_width/2) / (render.game_screen_width/4)
+        y = (mouse_pos[1]-render.game_screen_height/2) / (render.game_screen_height/4)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q: # eject
+                    x, y = None, None                    
+                    action_type = 1
+                elif event.key == pygame.K_w: # split
+                    x, y = None, None                    
+                    action_type = 2
+                elif event.key == pygame.K_e: # cheating, adding weight
+                    action_type = 0
+                    env.server.player_manager.get_players()[0].get_balls()[0].set_size(144)
+        actions = {player.player_id: {ball_id: [x, y, action_type] for ball_id in ball_ids} for player in env.server.player_manager.get_players()}
+        if not done:
+            obs, reward, done, info = env.step(actions=actions)
+            # import pdb; pdb.set_trace()
+            render.fill(obs[0], obs[1][0], player_num_per_team=1, fps=fps_real)
+            render.show()
+            if i % fps_set == 0:
+                t2 = time.time()
+                fps_real = fps_set/(t2-t1)
+                t1 = time.time()
+        else:
+            logging.debug('Game Over')
+            break
+        clock.tick(fps_set)
+    render.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--player-num', type=int, choices=[1,2,3], default=1)
@@ -484,8 +534,9 @@ if __name__ == '__main__':
                                                                     'submit.bot_submission:BotSubmission\'')
     args = parser.parse_args()
 
-    play_partial()
+    # play_partial()
     # play_all()
+    play_partial_sp()
 
     # if args.bot_only:
     #     play_by_bot(team_num=args.team_num, player_num=args.player_num, agent_class=args.agent_class)

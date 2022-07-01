@@ -49,11 +49,6 @@ class PlayerManager(BaseManager):
                     self.players[player_id] = player
                     init_dict[team_id][player_id] = False
             for ball_cfg in custom_init:
-                # [position.x, position.y, radius, player_name, team_name, 
-                #  vel.x, vel.y, acc.x, acc.y, vel_last.x,
-                #  vel_last.y, acc_last.x, acc_last.y, direction.x, direction.y,
-                #  last_given_acc.x, last_given_acc.y, age, cooling_last, stop_flag,
-                #  stop_time, acc_stop.x, acc_stop.y]
                 position = Vector2(*ball_cfg[0:2])
                 radius = ball_cfg[2]
                 player_id = ball_cfg[3]

@@ -23,7 +23,7 @@ def demo_bot():
         player_num_per_team=3,
         frame_limit=20*10,
         playback_settings=dict(
-            save_video=True,
+            save_video=False,
         ),
     ))
     obs = env.reset()

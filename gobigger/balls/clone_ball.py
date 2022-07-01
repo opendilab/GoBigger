@@ -50,7 +50,7 @@ class CloneBall(BaseBall):
     def __init__(self, ball_id, position, radius, border, team_id, player_id,
                  vel_given=Vector2(0,0), acc_given=Vector2(0,0), 
                  from_split=False, split_direction=Vector2(0,0),
-                 spore_settings=SporeBall.default_config(), **kwargs):
+                 spore_settings=SporeBall.default_config(), sequence_generator=None, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = CloneBall.default_config()
@@ -71,6 +71,7 @@ class CloneBall(BaseBall):
         self.size_decay_rate_per_frame = cfg.size_decay_rate_per_frame
         self.center_acc_weight = cfg.center_acc_weight
         self.spore_settings = spore_settings
+        self.sequence_generator = sequence_generator
         self.cfg = cfg
         # normal kwargs
         self.team_id = team_id
@@ -189,11 +190,12 @@ class CloneBall(BaseBall):
             around_split_directions.append(split_direction)
         balls = []
         for p, s in zip(around_positions, around_split_directions):
-            around_ball = CloneBall(ball_id=uuid.uuid1(), position=p, radius=around_radius, border=self.border, 
+            ball_id = uuid.uuid1() if self.sequence_generator is None else self.sequence_generator.get()
+            around_ball = CloneBall(ball_id=ball_id, position=p, radius=around_radius, border=self.border, 
                                     team_id=self.team_id, player_id=self.player_id, 
                                     vel_given=copy.deepcopy(self.vel_given), acc_given=copy.deepcopy(self.acc_given),
                                     from_split=True, split_direction=s, spore_settings=self.spore_settings, 
-                                    **self.cfg)
+                                    sequence_generator=self.sequence_generator, **self.cfg)
             balls.append(around_ball)
         return balls
 
@@ -235,11 +237,12 @@ class CloneBall(BaseBall):
             self.set_size(split_size)
             clone_num += 1
             position = self.position + direction * (self.radius * 2)
-            return CloneBall(ball_id=uuid.uuid1(), position=position, radius=self.radius, border=self.border, 
+            ball_id = uuid.uuid1() if self.sequence_generator is None else self.sequence_generator.get()
+            return CloneBall(ball_id=ball_id, position=position, radius=self.radius, border=self.border, 
                              team_id=self.team_id, player_id=self.player_id,
                              vel_given=copy.deepcopy(self.vel_given), acc_given=copy.deepcopy(self.acc_given),
                              from_split=True, split_direction=direction, spore_settings=self.spore_settings, 
-                             **self.cfg)
+                             sequence_generator=self.sequence_generator, **self.cfg)
         else:
             return False
 
