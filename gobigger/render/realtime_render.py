@@ -18,7 +18,7 @@ class RealtimeRender(BaseRender):
         Used in real-time games, giving a global view
     '''
     def __init__(self, game_screen_width=800, game_screen_height=800, info_width=0, info_height=0, with_show=True,
-                 padding=20, map_width=256, map_height=256):
+                 padding=20, map_width=200, map_height=200):
         super(RealtimeRender, self).__init__(game_screen_width=game_screen_width, 
                                              game_screen_height=game_screen_height, 
                                              info_width=info_width, info_height=info_height,

@@ -1,13 +1,13 @@
 server_default_config = dict(
     team_num=4, # the number of team in a game
     player_num_per_team=3, # the number of players in a team in a game
-    map_width=256, # map width
-    map_height=256, # map height
+    map_width=200, # map width
+    map_height=200, # map height
     frame_limit=60*10*20, # the number of frames in a game
     fps=20, # the number of frame in each second
     collision_detection_type='precision', # type of collision detection 
     match_ratio=1.0, # match_ratio will be multiple to manager to control ball num
-    eat_ratio=pow(1.2, 1/3), # ball A could eat ball B only when the radius A > eat_ratio * radius B
+    eat_ratio=1.105, # ball A could eat ball B only when the radius A > eat_ratio * radius B
     playback_settings=dict(
         save_video=False,
         save_fps=10,
@@ -32,26 +32,29 @@ server_default_config = dict(
     manager_settings=dict(
         # food setting
         food_manager=dict(
-            num_init=2000, # initial number
-            num_min=2000, # Minimum number
-            num_max=2500, # Maximum number
+            num_init=1800, # initial number
+            num_min=1800, # Minimum number
+            num_max=2300, # Maximum number
             refresh_frame_freq=8, # Time interval (seconds) for refreshing food in the map
             refresh_percent=0.01, # The number of refreshed foods in the map each time
+            score = 100,
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                radius_min=0.5,
-                radius_max=0.5,
+                radius_min=0.438,  # score = 100
+                radius_max=0.438,
             ),
         ),
         # thorns setting
         thorns_manager=dict(
-            num_init=16, # initial number
-            num_min=16, # Minimum number
-            num_max=24, # Maximum number
+            num_init=20, # initial number
+            num_min=20, # Minimum number
+            num_max=28, # Maximum number
             refresh_frame_freq=40, # Time interval (seconds) for refreshing thorns in the map
             refresh_percent=0.4, # The number of refreshed  thorns in the map each time
+            min_score = 10000,
+            max_score = 15000,
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                radius_min=2.4, 
-                radius_max=3.0, 
+                radius_min=2.086,
+                radius_max=2.540, 
                 eat_spore_vel_init=10, 
                 eat_spore_vel_zero_frame=20,
             ),
@@ -61,12 +64,13 @@ server_default_config = dict(
             ball_settings=dict(  # The specific parameter description can be viewed in the ball module
                 acc_weight=30,
                 vel_max=100,
-                radius_init=1,
+                radius_init=0.755,
+                init_score = 1000,
                 part_num_max=16,
                 on_thorns_part_num=10,
                 on_thorns_part_radius_max=3,
-                split_radius_min=1.6,
-                eject_radius_min=1.5,
+                split_radius_min=1.289,  #score = 3600
+                eject_radius_min=1.222,  #score = 3200
                 recombine_frame=320,
                 split_vel_init=40,
                 split_vel_zero_frame=20,
@@ -78,7 +82,7 @@ server_default_config = dict(
         # spore setting
         spore_manager=dict(
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
-                radius_init=1,
+                radius_init=0.859,
                 vel_init=50,
                 vel_zero_frame=10,
             ),

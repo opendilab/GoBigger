@@ -1,5 +1,6 @@
 import numpy as np
 import numexpr as ne
+from easydict import EasyDict
 
 
 class PlayerStatesUtil:
@@ -12,11 +13,16 @@ class PlayerStatesUtil:
         food_balls = np.array([[ball.position.x, ball.position.y] for ball in food_balls])
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
-            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
+            overlap, raw_balls = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
+            player_score, can_feed, can_split = self.get_score_and_action(overlap, player.team_id)
             player_states[player.player_id] = {
                 'rectangle': rectangle,
                 'overlap': overlap,
-                'team_id': player.team_id,
+                'team_name': player.team_id,
+                'raw_balls': raw_balls,
+                'score': player_score,
+                'can_feed': can_feed, 
+                'can_split': can_split,
             }
         return player_states
 
@@ -96,7 +102,65 @@ class PlayerStatesUtil:
                     clone_count += 1
         clone = clone[:clone_count]
         ret['clone'] = clone
-        return ret
+        raw_balls = self.get_raw_balls(ret['clone'], ret['food'], ret['thorns'], ret['spore'])
+        return ret, raw_balls
+    
+    def radius_to_score(self, radius):
+        # radius = sqrt(score / 100 *0.042 + 0.15)
+        return (np.power(radius,2) - 0.15) / 0.042 * 100
+    
+    def score_to_radius(self, score):
+        radius = np.sqrt(score / 100 * 0.042 + 0.15)
+        return radius
+
+    def get_msg_ball(self, balls, ball_type):
+        # message MsgBall {
+        #                     int32  Type    // 球类型 (1球 2粮食 3刺 4孢子)
+        #                     uint64 Own     // 球所有者(玩家球为玩家id,粮食刺为0)
+        #                     uint32 Score   // 球大小
+        #                     int32  X       // 球位置x
+        #                     int32  Y       // 球位置y
+        #                     int32 XSpeed   // 当前速度x
+        #                     int32 YSpeed   // 当前速度y
+        #                     int32 XDrct    // 当前方向x
+        #                     int32 YDrct    // 当前方向y
+        #                 }
+        ball_type_map = {'clone':1, 'food':2, 'thorn':3, 'spore':4}
+        raw_balls = []
+        for bl in balls:
+            ball = EasyDict()
+            ball.Type = ball_type_map[ball_type]
+            ball.Own = bl[-2] if ball_type == 'clone' else 0
+            ball.score = self.radius_to_score(bl[2])
+            ball.X = bl[0] * 100
+            ball.Y = bl[1] * 100
+            ball.NX = (bl[0] + 0.05*bl[3])*100 if ball_type == 'clone' else bl[0]
+            ball.NY = (bl[1] + 0.05*bl[4])*100 if ball_type == 'clone' else bl[1]
+            ball.XSpeed = bl[3] if ball_type == 'clone' else 0
+            ball.YSpeed = bl[4] if ball_type == 'clone' else 0
+            ball.XDrct = bl[5]  if ball_type == 'clone' else 0
+            ball.YDrct = bl[6]  if ball_type == 'clone' else 0
+            raw_balls.append(ball)
+        return raw_balls
+
+    def get_raw_balls(self, clone, food, thorns, spore):
+        raw_balls = []
+        raw_balls += self.get_msg_ball(clone, 'clone')
+        raw_balls += self.get_msg_ball(food, 'food')
+        raw_balls += self.get_msg_ball(spore, 'spore')
+        raw_balls += self.get_msg_ball(thorns, 'thorn')
+        return raw_balls
+    
+    def get_score_and_action(self, overlap, team_num):
+        clone = np.array(overlap['clone'])
+        own_balls = clone[np.where(clone[:,-1]==team_num)]
+        size = own_balls[:,2]
+        player_score = self.radius_to_score(size).sum().item()
+        # can action
+        size = sorted(size)
+        can_feed = size[-1]>(1.6*0.755)    # min feed size
+        can_split = (size[-1]>(1.5*0.755)) and (len(own_balls)<16)   # min split size
+        return player_score, can_feed, can_split
 
 
 class PlayerStatesSPUtil(PlayerStatesUtil):
