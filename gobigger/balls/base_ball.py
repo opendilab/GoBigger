@@ -45,12 +45,14 @@ class BaseBall(ABC):
     def set_size(self, size: float) -> None:
         self.size = size
         self.radius = self.size_to_radius(self.size)
-
+    
     def radius_to_size(self, radius):
-        return pow(radius, 2) * 2.3
-
-    def size_to_radius(self, size):
-        return pow(size/2.3, 1/2)
+        # radius = sqrt(score / 100 *0.042 + 0.15)
+        return (math.pow(radius,2) - 0.15) / 0.042 * 100
+    
+    def size_to_radius(self, score):
+        radius = math.sqrt(score / 100 * 0.042 + 0.15)
+        return radius
 
     def move(self, direction, duration):
         """
