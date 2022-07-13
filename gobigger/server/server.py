@@ -277,6 +277,7 @@ class Server:
             'border': [self.map_width, self.map_height],
             'total_frame': self.frame_limit,
             'last_frame_count': self.last_frame_count,
+            'last_time':self.last_frame_count,
             'leaderboard': {
                 i: team_name_size[i] for i in range(self.team_num)
             }
