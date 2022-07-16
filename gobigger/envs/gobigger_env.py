@@ -5,18 +5,27 @@ import time
 
 from gobigger.server import Server
 from gobigger.render import EnvRender
+import copy
 
 
 class GoBiggerEnv(gym.Env):
 
-    def __init__(self, server_cfg=None):
+    def __init__(self, server_cfg=None, step_mul=5):
         self.server_cfg = server_cfg
         self.step_time_all = 0
         self.obs_time_all = 0
-
+        self.step_mul = step_mul
+    
     def step(self, actions):
         t1 = time.time()
-        done = self.server.step(actions=actions)
+        noop_action = {}
+        for player_id in list(actions.keys()):
+            noop_action[player_id] = [None, None, 0]
+        for i in range(self.step_mul):
+            if i==0:
+                done = self.server.step(actions=actions)
+            else:
+                done = self.server.step(actions=noop_action)
         t2 = time.time()
         obs = self.server.obs()
         t3 = time.time()
