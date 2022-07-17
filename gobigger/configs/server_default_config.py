@@ -38,7 +38,6 @@ server_default_config = dict(
             num_max=2300, # Maximum number
             refresh_frame_freq=8, # Time interval (seconds) for refreshing food in the map
             refresh_percent=0.01, # The number of refreshed foods in the map each time
-            score=100,
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
                 score_min=100, # radius=0.438,  # score = 100
                 score_max=100,
