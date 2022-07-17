@@ -86,17 +86,17 @@ class EnvRender(BaseRender):
                 team_score[player.team_id] = 0
             team_name_score[player.team_id][player.player_id] = player.get_total_score()
             team_score[player.team_id] += team_name_score[player.team_id][player.player_id]
-        team_score = sorted(team_score.items(), key=lambda d: d[0], reverse=True)
+        team_score = sorted(team_score.items(), key=lambda d: d[1], reverse=True)
         start = 10
         for index, (team_id, score) in enumerate(team_score):
             start += 20
-            font = pygame.font.SysFont('arial', 10, True)
-            fps_txt = font.render('{} : {:.3f}'.format(team_id, score), True, PLAYER_COLORS[int(team_id)][0])
+            font = pygame.font.SysFont('arial', 8, True)
+            fps_txt = font.render('{} : {:.2f}'.format(team_id, score), True, PLAYER_COLORS[int(team_id)][0])
             screen.blit(fps_txt, (self.game_screen_width+5, start))
             start += 20
-            font = pygame.font.SysFont('arial', 9, True)
+            font = pygame.font.SysFont('arial', 7, True)
             for player_id, player_score in team_name_score[team_id].items():
-                fps_txt = font.render('  {} : {:.3f}'.format(chr(player_id%player_num_per_team+65), player_score), True, 
+                fps_txt = font.render('{} : {:.2f}'.format(chr(player_id%player_num_per_team+65), player_score), True, 
                                       PLAYER_COLORS[team_id][0])
                 screen.blit(fps_txt, (self.game_screen_width+5, start))
                 start += 20

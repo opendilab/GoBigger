@@ -3,6 +3,7 @@ import random
 import logging
 import copy
 import queue
+import math
 from pygame.math import Vector2
 
 from .base_agent import BaseAgent
@@ -104,7 +105,7 @@ class BotAgent(BaseAgent):
             action_ret = self.actions_queue.get()
             return action_ret
 
-        if len(others_clone_balls) > 0 and my_clone_balls[0]['radius'] < others_clone_balls[0]['radius']:
+        if len(others_clone_balls) > 0 and self.can_eat(others_clone_balls[0]['radius'], my_clone_balls[0]['radius']):
             direction = (my_clone_balls[0]['position'] - others_clone_balls[0]['position'])
             action_type = 0
         else:
@@ -151,7 +152,7 @@ class BotAgent(BaseAgent):
         min_distance = 10000
         min_thorns_ball = None
         for thorns_ball in thorns_balls:
-            if thorns_ball['radius'] < my_max_clone_ball['radius']:
+            if self.can_eat(my_max_clone_ball['radius'], thorns_ball['radius']):
                 distance = (thorns_ball['position'] - my_max_clone_ball['position']).length()
                 if distance < min_distance:
                     min_distance = distance
@@ -202,3 +203,9 @@ class BotAgent(BaseAgent):
         direction = direction + Vector2(((random.random() * 2 - 1)*noise_ratio)*direction.x, 
                                         ((random.random() * 2 - 1)*noise_ratio)*direction.y)
         return direction
+
+    def radius_to_score(self, radius):
+        return (math.pow(radius,2) - 0.15) / 0.042 * 100
+    
+    def can_eat(self, radius1, radius2):
+        return self.radius_to_score(radius1) > 1.3 * self.radius_to_score(radius2)

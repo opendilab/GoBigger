@@ -35,7 +35,7 @@ server_default_config = dict(
         food_manager=dict(
             num_init=1800, # initial number
             num_min=1800, # Minimum number
-            num_max=2300, # Maximum number
+            num_max=2000, # Maximum number
             refresh_frame_freq=8, # Time interval (seconds) for refreshing food in the map
             refresh_percent=0.01, # The number of refreshed foods in the map each time
             ball_settings=dict( # The specific parameter description can be viewed in the ball module
@@ -68,7 +68,7 @@ server_default_config = dict(
                 on_thorns_part_score_max=3600,
                 split_score_min=3600,  # radius = 1.289
                 eject_score_min=3200,  # radius = 1.222
-                recombine_frame=320,
+                recombine_frame=400,
                 split_vel_init=15,
                 split_vel_zero_frame=30,
                 score_decay_min=2600, 

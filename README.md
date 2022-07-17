@@ -11,6 +11,8 @@
 
 [GoBigger Doc](https://gobigger.readthedocs.io/en/latest/index.html) ([中文版](https://gobigger.readthedocs.io/zh_CN/latest/))
 
+Welcome to GoBigger v0.2!
+
 GoBigger is an efficient and straightforward *agar-like* game engine and provides various interfaces for game AI development. The game is similar to [Agar](https://agar.io/), a massive multiplayer online action game created by Brazilian developer Matheus Valadares. In GoBigger, players control one or more circular balls on a map. The goal is to gain as much size as possible by eating Food Balls and other balls smaller than the player's balls while avoiding larger ones that can eat the player's balls. Each player starts with one ball, and players can split a ball into two when it reaches a sufficient size, allowing them to control multiple balls.
 
 We pay more attention to the following points:
@@ -39,14 +41,14 @@ GoBigger allows users to to interact with the multi-agent environment within the
 
 To understand the rules in the game, GoBigger provides a few concepts as follows:
 
-* `Match`: GoBigger will allow several agents (4 by default) to join in a match. There are many different units in a match, such as food balls, thorns balls, spore balls and player balls. When this match ends, each agent should gain more size by eating other balls to get a higher rank. 
+* `Match`: GoBigger will allow several agents (4 by default) to join in a match. There are many different units in a match, such as food balls, thorns balls, spore balls and clone balls. When this match ends, each agent should gain more size by eating other balls to get a higher rank. 
 * `Agent`: Each agent control a team, including several players (3 by default). Teamwork is essential for an agent to play against other agents.
-* `Player`: Each player starts with one ball. To improve the operability of the game, GoBigger provides several operations for a player ball, including `split`, `eject` and `stop`.
+* `Player`: Each player starts with one ball. To improve the operability of the game, GoBigger provides several operations for a player ball, including `split` and `eject`.
 * `Ball`: GoBigger provides 4 kinds of balls in a match.
     - `Food Ball`: Food balls are the neutral resources in the game. If a player ball eats a food ball, the food ball’s size will be parsed to the player ball.
     - `Thorn Ball`: If a player ball eats a thorns ball, the thorns ball’s size will be parsed to the player ball. But at the same time, the player ball will explode and split into several pieces (10 by default).
     - `Spore Ball`: Spore balls are ejected by the player balls. 
-    - `Player Ball`: Player balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ centers. 
+    - `Clone Ball`: Clone balls are the balls you can control in the game. You can change its moving direction. In addition, it can eat other balls smaller than itself by covering others’ centers. 
 
 For more details, please refer to [what-is-gobigger](https://gobigger.readthedocs.io/en/latest/tutorial/what_is_gobigger.html).
 
@@ -65,31 +67,31 @@ The player state should be like:
 ```
 {
     player_name: {
-        'feature_layers': list(numpy.ndarray), # features of player
         'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
         'overlap': {
-            'food': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-            'thorns': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-            'spore': [{'position': position, 'radius': radius}, ...], # the length of food is not sure
-            'clone': [{'position': position, 'radius': radius, 'player': player_name, 'team': team_name}, ...], # the length of food is not sure
+            'food': [[position.x, position.y, radius], ...],
+            'thorns': [[position.x, position.y, radius], ...],
+            'spore': [[position.x, position.y, radius, owner_id], ...], 
+            'clone': [[position.x, position.y, radius, score, next_position.x, next_position.y,
+                       vel.x, vel.y, direction.x, direction.y, player_id, team_id], ...], 
         }, # all balls' info in vision
         'team_name': team_name, # the team which this player belongs to 
+        'score': score, # the score of the player
+        'can_eject': bool, # if the player can do the `eject` action
+        'can_split': bool, # if the player can do the `split` action
     }
 }
 ```
 
-We define that `feature_layers` in `player_state` represent the feature of this player. `feature_layers` has several channels, and each channel gives the info of food balls, spore balls, thorns balls, or player balls in its vision. For example, in a match, we have 4 teams and 3 players for each team, then we get `feature_layers` as a list, and the length of this list should be 15, including 12 player channels, 1 food ball channel, 1 spore ball channel and 1 thorns ball channel.
-
-Since getting `feature_layers` costs much time, GoBigger also provides player state without `feature_layers` when you add `use_spatial=False` in your render. More details [here](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#observation-space-without-feature-layers).
+Here GoBigger provides the player with all the balls' information in his vision. 
 
 ### Action Space
 
-In fact, a ball can only move, eject, split, and stop in a match; thus, the action space simply includes:
+In fact, a ball can only move, eject and split in a match. Thus the action space simply includes:
 
 * Moving direction for the player balls.
 * Split: Players can split a ball into two when it reaches a sufficient size.
 * Eject: Player balls can eject spore in your moving direction.
-* Stop: Stop player balls and gather together.
 
 More details in [action-space](https://gobigger.readthedocs.io/en/latest/tutorial/space.html#action-space).
 
@@ -142,44 +144,41 @@ After installation, you can launch your game environment easily according the fo
 
 ```python
 import random
-from gobigger.server import Server
-from gobigger.render import EnvRender
+from gobigger.envs import create_env
 
-server = Server()
-render = EnvRender(server.map_width, server.map_height)
-server.set_render(render)
-server.reset()
-player_names = server.get_player_names_with_team()
-# get [[team1_player1, team1_player2], [team2_player1, team2_player2], ...]
-for i in range(10000):
-    actions = {player_name: [random.uniform(-1, 1), random.uniform(-1, 1), -1] \
-               for team in player_names for player_name in team}
-    if not server.step(actions):
-        global_state, screen_data_players = server.obs()
-        print('[{}] leaderboard={}'.format(i, global_state['leaderboard']))
-    else:
+env = create_env('st_v0')
+obs = env.reset()
+for i in range(1000):
+    actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+               1: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+               2: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
+               3: [random.uniform(-1, 1), random.uniform(-1, 1), -1]}
+    obs, rew, done, info = env.step(actions)
+    print('[{}] leaderboard={}'.format(i, obs[0]['leaderboard']))
+    if done:
         print('finish game!')
         break
-server.close()
+env.close()
 ```
 
 You will see output as follows. It shows the frame number and the leaderboard per frame.
 
 ```
-[0] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
-[1] leaderboard={'0': 27, '1': 27, '2': 27, '3': 27}
-[2] leaderboard={'0': 27, '1': 30.99935, '2': 30.99935, '3': 30.998700032499997}
-[3] leaderboard={'0': 27, '1': 34.99610032498374, '2': 34.99675032498374, '3': 30.9961004874675}
-[4] leaderboard={'0': 27, '1': 38.99025149484726, '2': 34.99155136485701, '3': 38.992201494805016}
-[5] leaderboard={'0': 30.998700032499997, '1': 42.982054039382575, '2': 34.98635344444432, '3': 38.98620350437408}
-[6] leaderboard={'0': 34.9961004874675, '1': 42.973458273284024, '2': 34.98115656353774, '3': 38.98020671345127}
-[7] leaderboard={'0': 34.99270152230301, '1': 46.964264256209255, '2': 38.974660754429394, '3': 38.974211121796685}
-[8] leaderboard={'0': 34.98930323688059, '1': 46.954872107798515, '2': 38.96686640687893, '3': 38.96821672917049}
-[9] leaderboard={'0': 38.98525563106426, '1': 46.94548183767656, '2': 38.95907361808107, '3': 38.96222353533294}
+[0] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[1] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[2] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[3] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[4] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[5] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[6] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[7] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[8] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[9] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[10] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
 ...
 ```
 
-We also build a simple env following `gym.Env`. For more details, you can refer to [gobigger_env.py](https://github.com/opendilab/GoBigger/blob/main/gobigger/envs/gobigger_env.py).
+For more details, you can refer to [gobigger_env.py](https://github.com/opendilab/GoBigger/blob/main/gobigger/envs/gobigger_env.py).
 
 
 ### Real-time Interaction with the Game

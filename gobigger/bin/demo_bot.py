@@ -21,9 +21,9 @@ def demo_bot():
     env = GoBiggerEnv(dict(
         team_num=4, 
         player_num_per_team=3,
-        frame_limit=20*10,
+        frame_limit=60*20*10,
         playback_settings=dict(
-            save_video=False,
+            save_video=True,
         ),
     ))
     obs = env.reset()
@@ -48,4 +48,4 @@ def demo_bot():
 
 
 if __name__ == '__main__':
-    demo_bot()
+    # demo_bot()
