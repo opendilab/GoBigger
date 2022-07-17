@@ -70,7 +70,7 @@ server_default_config = dict(
                 split_score_min=3600,  # radius = 1.289
                 eject_score_min=3200,  # radius = 1.222
                 recombine_frame=320,
-                split_vel_init=12,
+                split_vel_init=15,
                 split_vel_zero_frame=30,
                 score_decay_min=2600, 
                 score_decay_rate_per_frame=0.00005, # * sqrt(radius)

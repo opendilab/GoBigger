@@ -11,10 +11,14 @@ class PlayerStatesUtil:
 
     def get_player_states(self, food_balls, thorns_balls, spore_balls, players):
         player_states = {}
+        if len(food_balls) > 0:
+            food_radius = food_balls[0].radius
+        else:
+            food_radius = 0
         food_balls = np.array([[ball.position.x, ball.position.y] for ball in food_balls])
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
-            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
+            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players, food_radius)
             player_score, can_split, can_eject = player.get_info()
             player_states[player.player_id] = {
                 'rectangle': rectangle,
@@ -46,7 +50,7 @@ class PlayerStatesUtil:
         rectangle = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
         return rectangle
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0):
         ret = {}
         food_count = 0
         thorns_count = 0
@@ -60,23 +64,26 @@ class PlayerStatesUtil:
         spore = len(spore_balls) * [3 * [None]]   # without speed 
         clone = len(players) * players[0].ball_settings.part_num_max * [5 * [None]]   # without speed 
 
-        food_radius = 0.5
-        fr0 = rectangle[0] - food_radius
-        fr1 = rectangle[1] - food_radius
-        fr2 = rectangle[2] + food_radius
-        fr3 = rectangle[3] + food_radius
-        food_balls_x = food_balls[:,0]
-        food_balls_y = food_balls[:,1]
-        food_result = ne.evaluate('(food_balls_x>fr0) & (food_balls_x<fr2) & (food_balls_y>fr1) & (food_balls_y<fr3)')
-        x = food_balls_x[food_result==True]
-        y = food_balls_y[food_result==True]
-        r_col = np.ones_like(x) * food_radius
-        res = np.stack((x, y, r_col), axis=-1)
-        ret['food'] = res.tolist()
-        # p = food_balls[food_result==True]
-        # r_col = np.ones([p.shape[0]]) * food_radius
-        # res = np.c_[p, r_col]
-        # ret['food'] = res.tolist()
+        # spore overlap
+        if len(food) > 0:
+            fr0 = rectangle[0] - food_radius
+            fr1 = rectangle[1] - food_radius
+            fr2 = rectangle[2] + food_radius
+            fr3 = rectangle[3] + food_radius
+            food_balls_x = food_balls[:,0]
+            food_balls_y = food_balls[:,1]
+            food_result = ne.evaluate('(food_balls_x>fr0) & (food_balls_x<fr2) & (food_balls_y>fr1) & (food_balls_y<fr3)')
+            x = food_balls_x[food_result==True]
+            y = food_balls_y[food_result==True]
+            r_col = np.ones_like(x) * food_radius
+            res = np.stack((x, y, r_col), axis=-1)
+            ret['food'] = res.tolist()
+            # p = food_balls[food_result==True]
+            # r_col = np.ones([p.shape[0]]) * food_radius
+            # res = np.c_[p, r_col]
+            # ret['food'] = res.tolist()
+        else:
+            ret['food'] = []
 
         # thorns overlap
         for ball in thorns_balls:
@@ -109,7 +116,7 @@ class PlayerStatesUtil:
 
 class PlayerStatesSPUtil(PlayerStatesUtil):
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0):
         ret = {}
         food_count = 0
         thorns_count = 0
@@ -123,23 +130,26 @@ class PlayerStatesSPUtil(PlayerStatesUtil):
         spore = len(spore_balls) * [3 * [None]]   # without speed 
         clone = len(players) * players[0].ball_settings.part_num_max * [5 * [None]]   # without speed 
 
-        food_radius = 0.5
-        fr0 = rectangle[0] - food_radius
-        fr1 = rectangle[1] - food_radius
-        fr2 = rectangle[2] + food_radius
-        fr3 = rectangle[3] + food_radius
-        food_balls_x = food_balls[:,0]
-        food_balls_y = food_balls[:,1]
-        food_result = ne.evaluate('(food_balls_x>fr0) & (food_balls_x<fr2) & (food_balls_y>fr1) & (food_balls_y<fr3)')
-        x = food_balls_x[food_result==True]
-        y = food_balls_y[food_result==True]
-        r_col = np.ones_like(x) * food_radius
-        res = np.stack((x, y, r_col), axis=-1)
-        ret['food'] = res.tolist()
-        # p = food_balls[food_result==True]
-        # r_col = np.ones([p.shape[0]]) * food_radius
-        # res = np.c_[p, r_col]
-        # ret['food'] = res.tolist()
+        # spore overlap
+        if len(food) > 0:
+            fr0 = rectangle[0] - food_radius
+            fr1 = rectangle[1] - food_radius
+            fr2 = rectangle[2] + food_radius
+            fr3 = rectangle[3] + food_radius
+            food_balls_x = food_balls[:,0]
+            food_balls_y = food_balls[:,1]
+            food_result = ne.evaluate('(food_balls_x>fr0) & (food_balls_x<fr2) & (food_balls_y>fr1) & (food_balls_y<fr3)')
+            x = food_balls_x[food_result==True]
+            y = food_balls_y[food_result==True]
+            r_col = np.ones_like(x) * food_radius
+            res = np.stack((x, y, r_col), axis=-1)
+            ret['food'] = res.tolist()
+            # p = food_balls[food_result==True]
+            # r_col = np.ones([p.shape[0]]) * food_radius
+            # res = np.c_[p, r_col]
+            # ret['food'] = res.tolist()
+        else:
+            ret['food'] = []
 
         # thorns overlap
         for ball in thorns_balls:
