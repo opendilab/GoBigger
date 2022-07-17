@@ -3,7 +3,7 @@ from easydict import EasyDict
 from pygame.math import Vector2
 import math
 
-from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
+from gobigger.utils import format_vector, add_score, Border, deep_merge_dicts
 from .base_ball import BaseBall
 
 
@@ -21,19 +21,19 @@ class SporeBall(BaseBall):
     def default_config():
         cfg = BaseBall.default_config()
         cfg.update(dict(
-            radius_init=1.5,
+            score_init=1.5,
             vel_init=50,
             vel_zero_frame=10,
         ))
         return EasyDict(cfg)
 
-    def __init__(self, ball_id, position, border, radius, direction=Vector2(0,0), owner=-1, **kwargs):
+    def __init__(self, ball_id, position, border, score, direction=Vector2(0,0), owner=-1, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = SporeBall.default_config()
         cfg = deep_merge_dicts(cfg, kwargs)
-        super(SporeBall, self).__init__(ball_id, position, radius=radius, border=border, **cfg)
-        self.radius_init = cfg.radius_init
+        super(SporeBall, self).__init__(ball_id, position, score=score, border=border, **cfg)
+        self.score_init = cfg.score_init
         self.vel_init = cfg.vel_init
         self.vel_zero_frame = cfg.vel_zero_frame
         # normal kwargs
@@ -42,9 +42,9 @@ class SporeBall(BaseBall):
         self.vel_piece = self.vel / self.vel_zero_frame
         self.owner = owner
         self.move_frame = 0
-        # reset size
-        if self.size_to_radius(self.size) != self.radius_init:
-            self.set_size(self.radius_to_size(self.radius_init))
+        # reset score
+        if self.score != self.score_init:
+            self.set_score(self.score_init)
         self.moving = True
         self.check_border()
 

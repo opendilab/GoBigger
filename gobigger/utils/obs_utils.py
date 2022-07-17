@@ -15,13 +15,13 @@ class PlayerStatesUtil:
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
             overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players)
-            player_score, can_feed, can_split = self.get_score_and_action(overlap, player.team_id)
+            player_score, can_split, can_eject = player.get_info()
             player_states[player.player_id] = {
                 'rectangle': rectangle,
                 'overlap': overlap,
                 'team_name': player.team_id,
                 'score': player_score,
-                'can_feed': can_feed, 
+                'can_eject': can_eject, 
                 'can_split': can_split,
             }
         return player_states
@@ -97,7 +97,6 @@ class PlayerStatesUtil:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
                     ball.next_position = Vector2(ball.position.x + 0.05*ball.vel.x, ball.position.x + 0.05*ball.vel.x)
-                    ball.score = self.radius_to_score(ball.radius)
                     clone[clone_count] = [ball.position.x, ball.position.y, ball.radius,
                                           ball.score, ball.next_position.x, ball.next_position.y,
                                           ball.vel.x, ball.vel.y, ball.direction.x, ball.direction.y, 
@@ -106,23 +105,6 @@ class PlayerStatesUtil:
         clone = clone[:clone_count]
         ret['clone'] = clone
         return ret
-    
-    def radius_to_score(self, radius):
-        return (np.power(radius,2) - 0.15) / 0.042 * 100
-    
-    def score_to_radius(self, score):
-        return np.sqrt(score / 100 * 0.042 + 0.15)
-    
-    def get_score_and_action(self, overlap, team_num):
-        clone = np.array(overlap['clone'])
-        own_balls = clone[np.where(clone[:,-1]==team_num)]
-        size = own_balls[:,2]
-        player_score = self.radius_to_score(size).sum().item()
-        # can action
-        size = sorted(size)
-        can_feed = self.radius_to_score(size[-1])>3200   # min feed size
-        can_split = (self.radius_to_score(size[-1])>3600) and (len(own_balls)<16)   # min split size
-        return player_score, can_feed, can_split
 
 
 class PlayerStatesSPUtil(PlayerStatesUtil):
@@ -177,7 +159,9 @@ class PlayerStatesSPUtil(PlayerStatesUtil):
         for player in players:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
-                    clone[clone_count] = [ball.position.x, ball.position.y, ball.radius, 
+                    ball.next_position = Vector2(ball.position.x + 0.05*ball.vel.x, ball.position.x + 0.05*ball.vel.x)
+                    clone[clone_count] = [ball.position.x, ball.position.y, ball.radius,
+                                          ball.score, ball.next_position.x, ball.next_position.y,
                                           ball.vel.x, ball.vel.y, ball.direction.x, ball.direction.y, 
                                           player.player_id, player.team_id, ball.ball_id]
                     clone_count += 1

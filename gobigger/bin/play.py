@@ -52,7 +52,7 @@ def play_partial_against_bot():
                     action_type = 2
                 elif event.key == pygame.K_e: # cheating, adding weight
                     action_type = 0
-                    env.server.player_manager.get_players()[0].get_balls()[0].set_size(100000)
+                    env.server.player_manager.get_players()[0].get_balls()[0].set_score(100000)
         actions = {my_player_id: [x, y, action_type]}
         actions.update({agent.name: agent.step(obs[1][agent.name]) for agent in bot_agents})
         if not done:
@@ -106,7 +106,7 @@ def play_all_against_bot():
                     action_type = 2
                 elif event.key == pygame.K_e: # cheating, adding weight
                     action_type = 0
-                    env.server.player_manager.get_players()[0].get_balls()[0].set_size(100000)
+                    env.server.player_manager.get_players()[0].get_balls()[0].set_score(100000)
         actions = {my_player_id: [x, y, action_type]}
         actions.update({agent.name: agent.step(obs[1][agent.name]) for agent in bot_agents})
         if not done:
@@ -162,7 +162,7 @@ def play_partial_sp_against_bot():
                     action_type = 2
                 elif event.key == pygame.K_e: # cheating, adding weight
                     action_type = 0
-                    env.server.player_manager.get_players()[0].get_balls()[0].set_size(100000)
+                    env.server.player_manager.get_players()[0].get_balls()[0].set_score(100000)
         actions = {player.player_id: {ball_id: [x, y, action_type] for ball_id in ball_ids} for player in env.server.player_manager.get_players()}
         if not done:
             obs, reward, done, info = env.step(actions=actions)

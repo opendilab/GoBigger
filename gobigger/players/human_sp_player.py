@@ -13,11 +13,11 @@ class HumanSPPlayer(HumanPlayer):
         if ball_id is None:
             for ball_id, ball in self.balls.items():
                 ball.move(given_acc=direction, duration=duration)
-                ball.size_decay()
+                ball.score_decay()
         else:
             if ball_id in self.balls:
                 self.balls[ball_id].move(given_acc=direction, duration=duration)
-                self.balls[ball_id].size_decay()
+                self.balls[ball_id].score_decay()
 
     def eject(self, ball_id=None, direction=None):
         ret = []
@@ -34,7 +34,7 @@ class HumanSPPlayer(HumanPlayer):
 
     def respawn(self, position):
         ball = CloneBall(ball_id=self.sequence_generator.get(), position=position, border=self.border, 
-                         radius=self.ball_settings.radius_init, team_id=self.team_id, 
+                         score=self.ball_settings.score_init, team_id=self.team_id, 
                          player_id=self.player_id, spore_settings=self.spore_settings, 
                          sequence_generator=self.sequence_generator, **self.ball_settings)
         self.balls = {}

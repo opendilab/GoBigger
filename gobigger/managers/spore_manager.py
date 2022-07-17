@@ -50,11 +50,11 @@ class SporeManager(BaseManager):
         if position is None:
             position = self.border.sample()
         name = uuid.uuid1()
-        return SporeBall(name=name, position=position, border=self.border, radius=self.ball_settings.radius_init,
+        return SporeBall(name=name, position=position, border=self.border, score=self.ball_settings.score_init,
                          direction=Vector2(1,0))
     
     def init_balls(self, custom_init=None):
-        # [position.x, position.y, radius, direction.x, direction.y, vel.x, vel.y, acc.x, acc.y, 
+        # [position.x, position.y, score, direction.x, direction.y, vel.x, vel.y, acc.x, acc.y, 
         #  move_time, moving]
         if custom_init is not None:
             for ball_cfg in custom_init:

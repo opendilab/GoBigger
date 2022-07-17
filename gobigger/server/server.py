@@ -186,18 +186,18 @@ class Server:
             if isinstance(moving_ball, CloneBall): 
                 if isinstance(target_ball, CloneBall):
                     if moving_ball.team_id != target_ball.team_id:
-                        if moving_ball.size > target_ball.size and self.can_eat(moving_ball.size, target_ball.size):
+                        if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                             moving_ball.eat(target_ball)
                             self.player_manager.remove_balls(target_ball)
-                        elif self.can_eat(target_ball.size, moving_ball.size):
+                        elif self.can_eat(target_ball.score, moving_ball.score):
                             target_ball.eat(moving_ball)
                             self.player_manager.remove_balls(moving_ball)
                     elif moving_ball.player_id != target_ball.player_id:
-                        if moving_ball.size > target_ball.size and self.can_eat(moving_ball.size, target_ball.size):
+                        if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                             if self.player_manager.get_clone_num(target_ball) > 1:
                                 moving_ball.eat(target_ball)
                                 self.player_manager.remove_balls(target_ball)
-                        elif self.can_eat(target_ball.size, moving_ball.size):
+                        elif self.can_eat(target_ball.score, moving_ball.score):
                             if self.player_manager.get_clone_num(moving_ball) > 1:
                                 target_ball.eat(moving_ball)
                                 self.player_manager.remove_balls(moving_ball)
@@ -208,14 +208,14 @@ class Server:
                     moving_ball.eat(target_ball)
                     self.spore_manager.remove_balls(target_ball)
                 elif isinstance(target_ball, ThornsBall):
-                    if moving_ball.size > target_ball.size and self.can_eat(moving_ball.size, target_ball.size):
+                    if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                         ret = moving_ball.eat(target_ball, clone_num=self.player_manager.get_clone_num(moving_ball))
                         self.thorns_manager.remove_balls(target_ball)
                         if isinstance(ret, list): 
                             self.player_manager.add_balls(ret) 
             elif isinstance(moving_ball, ThornsBall):
                 if isinstance(target_ball, CloneBall):
-                    if moving_ball.size < target_ball.size and self.can_eat(target_ball.size, moving_ball.size): 
+                    if moving_ball.score < target_ball.score and self.can_eat(target_ball.score, moving_ball.score): 
                         ret = target_ball.eat(moving_ball, clone_num=self.player_manager.get_clone_num(target_ball))
                         self.thorns_manager.remove_balls(moving_ball)
                         if isinstance(ret, list): 
@@ -230,8 +230,8 @@ class Server:
         else:
             return
 
-    def can_eat(self, size1, size2):
-        if size1 > self.eat_ratio * size2:
+    def can_eat(self, score1, score2):
+        if score1 > self.eat_ratio * score2:
             return True
         else:
             return False
@@ -272,14 +272,14 @@ class Server:
         return global_state, player_states
 
     def get_global_state(self):
-        team_name_size = self.player_manager.get_teams_size()
+        team_name_score = self.player_manager.get_teams_score()
         global_state = {
             'border': [self.map_width, self.map_height],
             'total_frame': self.frame_limit,
             'last_frame_count': self.last_frame_count,
             'last_time':self.last_frame_count,
             'leaderboard': {
-                i: team_name_size[i] for i in range(self.team_num)
+                i: team_name_score[i] for i in range(self.team_num)
             }
         }
         return global_state

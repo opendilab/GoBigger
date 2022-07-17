@@ -55,13 +55,13 @@ class FoodManager(BaseManager):
             except:
                 pass
 
-    def spawn_ball(self, position=None, radius=None):
+    def spawn_ball(self, position=None, score=None):
         if position is None:
             position = self.border.sample()
-        if radius is None:
-            radius = self._random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)
+        if score is None:
+            score = self._random.uniform(self.ball_settings.score_min, self.ball_settings.score_max)
         ball_id = uuid.uuid1()
-        return FoodBall(ball_id=ball_id, position=position, border=self.border, radius=radius, **self.ball_settings)
+        return FoodBall(ball_id=ball_id, position=position, border=self.border, score=score, **self.ball_settings)
 
     def init_balls(self, custom_init=None):
         if custom_init is None or len(custom_init) == 0:
@@ -70,7 +70,7 @@ class FoodManager(BaseManager):
                 self.balls[ball.ball_id] = ball
         else:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), radius=ball_cfg[2])
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), score=ball_cfg[2])
                 self.balls[ball.ball_id] = ball
 
     def step(self, duration):

@@ -23,7 +23,7 @@ class BaseBall(ABC):
         cfg = dict()
         return EasyDict(cfg)
 
-    def __init__(self, ball_id, position, radius, border, **kwargs):
+    def __init__(self, ball_id, position, score, border, **kwargs):
         '''
         Parameters:
              vel <Vector2> : the direction of the ball's speed 
@@ -36,20 +36,20 @@ class BaseBall(ABC):
         kwargs = EasyDict(kwargs)
         cfg = BaseBall.default_config()
         cfg = deep_merge_dicts(cfg, kwargs)
-        self.radius = radius
+        self.score = score
         self.border = border
-        self.size = self.radius_to_size(self.radius)
+        self.radius = self.score_to_radius(self.score)
         self.is_remove = False
         self.quad_node = None
 
-    def set_size(self, size: float) -> None:
-        self.size = size
-        self.radius = self.size_to_radius(self.size)
+    def set_score(self, score: float) -> None:
+        self.score = score
+        self.radius = self.score_to_radius(self.score)
     
-    def radius_to_size(self, radius):
+    def radius_to_score(self, radius):
         return (math.pow(radius,2) - 0.15) / 0.042 * 100
     
-    def size_to_radius(self, score):
+    def score_to_radius(self, score):
         return math.sqrt(score / 100 * 0.042 + 0.15)
 
     def move(self, direction, duration):
@@ -135,13 +135,13 @@ class BaseBall(ABC):
         return dx**2 + dy**2 <= self.radius**2
 
     def __repr__(self) -> str:
-        return 'position={}, size={:.3f}, radius={:.3f}'.format(self.position, self.size, self.radius)
+        return 'position={}, score={:.3f}, radius={:.3f}'.format(self.position, self.score, self.radius)
 
     def __eq__(self, other):
-        return self.size == other.size
+        return self.score == other.score
 
     def __le__(self, other):
-        return self.size < other.size
+        return self.score < other.score
 
     def __gt__(self, other):
-        return self.size > other.size
+        return self.score > other.score

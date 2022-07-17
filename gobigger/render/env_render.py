@@ -78,25 +78,25 @@ class EnvRender(BaseRender):
         return screen
 
     def render_leaderboard_colorful(self, screen, players, player_num_per_team):
-        team_name_size = {}
-        team_size = {}
+        team_name_score = {}
+        team_score = {}
         for player in players:
-            if player.team_id not in team_name_size:
-                team_name_size[player.team_id] = {}
-                team_size[player.team_id] = 0
-            team_name_size[player.team_id][player.player_id] = player.get_total_size()
-            team_size[player.team_id] += team_name_size[player.team_id][player.player_id]
-        team_size = sorted(team_size.items(), key=lambda d: d[0], reverse=True)
+            if player.team_id not in team_name_score:
+                team_name_score[player.team_id] = {}
+                team_score[player.team_id] = 0
+            team_name_score[player.team_id][player.player_id] = player.get_total_score()
+            team_score[player.team_id] += team_name_score[player.team_id][player.player_id]
+        team_score = sorted(team_score.items(), key=lambda d: d[0], reverse=True)
         start = 10
-        for index, (team_id, size) in enumerate(team_size):
+        for index, (team_id, score) in enumerate(team_score):
             start += 20
             font = pygame.font.SysFont('arial', 10, True)
-            fps_txt = font.render('{} : {:.3f}'.format(team_id, size), True, PLAYER_COLORS[int(team_id)][0])
+            fps_txt = font.render('{} : {:.3f}'.format(team_id, score), True, PLAYER_COLORS[int(team_id)][0])
             screen.blit(fps_txt, (self.game_screen_width+5, start))
             start += 20
             font = pygame.font.SysFont('arial', 9, True)
-            for player_id, player_size in team_name_size[team_id].items():
-                fps_txt = font.render('  {} : {:.3f}'.format(chr(player_id%player_num_per_team+65), player_size), True, 
+            for player_id, player_score in team_name_score[team_id].items():
+                fps_txt = font.render('  {} : {:.3f}'.format(chr(player_id%player_num_per_team+65), player_score), True, 
                                       PLAYER_COLORS[team_id][0])
                 screen.blit(fps_txt, (self.game_screen_width+5, start))
                 start += 20

@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 
 from gobigger.balls import BaseBall
-from gobigger.utils import format_vector, add_size, save_screen_data_to_img, Border, QuadNode
+from gobigger.utils import format_vector, add_score, save_screen_data_to_img, Border, QuadNode
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,11 +22,11 @@ def test_format_vector():
     assert v_format.y == 4
 
 
-def test_add_size():
-    size_old = 10
-    size_add = 20
-    size_new = add_size(size_old, size_add)
-    assert size_new == 30
+def test_add_score():
+    score_old = 10
+    score_add = 20
+    score_new = add_score(score_old, score_add)
+    assert score_new == 30
 
 
 def test_save_screen_data_to_img():
@@ -78,29 +78,29 @@ class TestQuadNode:
     def test_get_quad(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border, radius=1)
+        node = BaseBall('0', position=border.sample(), border=border, score=1)
         assert isinstance(quad_node.get_quad(node=node), int)
 
     def test_insert(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border, radius=1)
+        node = BaseBall('0', position=border.sample(), border=border, score=1)
         quad_node.insert(node=node)
 
     def test_find(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border, radius=1)
+        node = BaseBall('0', position=border.sample(), border=border, score=1)
         quad_node.find(border)
 
     def test_clear(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border, radius=1)
+        node = BaseBall('0', position=border.sample(), border=border, score=1)
         quad_node.clear()
 
     def test_remove(self):
         border = Border(0, 0, 1000, 1000)
         quad_node = QuadNode(border)
-        node = BaseBall('0', position=border.sample(), border=border, radius=1)
+        node = BaseBall('0', position=border.sample(), border=border, score=1)
         quad_node.remove(node=node)

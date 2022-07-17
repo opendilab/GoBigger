@@ -50,10 +50,10 @@ class PlayerManager(BaseManager):
                     init_dict[team_id][player_id] = False
             for ball_cfg in custom_init:
                 position = Vector2(*ball_cfg[0:2])
-                radius = ball_cfg[2]
+                score = ball_cfg[2]
                 player_id = ball_cfg[3]
                 team_id = ball_cfg[4]
-                ball = CloneBall(ball_id=uuid.uuid1(), position=position, border=self.border, radius=radius, 
+                ball = CloneBall(ball_id=uuid.uuid1(), position=position, border=self.border, score=score, 
                                  team_id=team_id, player_id=player_id, 
                                  spore_settings=self.spore_settings, **self.cfg.ball_settings)
                 if len(ball_cfg) > 5:
@@ -153,14 +153,14 @@ class PlayerManager(BaseManager):
             team_player_ids[player.team_id].append(player.player_id)
         return sorted(team_player_ids.items())
 
-    def get_teams_size(self):
-        team_name_size = {}
+    def get_teams_score(self):
+        team_name_score = {}
         for player in self.get_players():
-            if player.team_id not in team_name_size:
-                team_name_size[player.team_id] = player.get_total_size()
+            if player.team_id not in team_name_score:
+                team_name_score[player.team_id] = player.get_total_score()
             else:
-                team_name_size[player.team_id] += player.get_total_size()
-        return team_name_size
+                team_name_score[player.team_id] += player.get_total_score()
+        return team_name_score
 
     def reset(self):
         '''

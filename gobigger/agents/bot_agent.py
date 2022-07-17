@@ -17,7 +17,6 @@ class BotAgent(BaseAgent):
         self.name = name
         self.actions_queue = queue.Queue()
         self.last_clone_num = 1
-        self.last_total_size = 0
         self.level = level
 
     def step(self, obs):

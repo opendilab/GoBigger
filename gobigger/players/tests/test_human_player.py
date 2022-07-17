@@ -55,7 +55,7 @@ class TestHumanPlayer:
         player.respawn(position=border.sample())
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
-        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, radius=40)
+        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, score=40)
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
@@ -92,7 +92,7 @@ class TestHumanPlayer:
         logging.debug('=================== after adjust ===================')
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
-        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, radius=40)
+        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, score=40)
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
@@ -132,15 +132,15 @@ class TestHumanPlayer:
         position = Vector2(100, 100)
         team_id = uuid.uuid1()
         ball_id = uuid.uuid1()
-        radius = CloneBall.default_config().radius_init
+        score = CloneBall.default_config().score_init
         player_id = uuid.uuid1()
-        ball1 = CloneBall(ball_id, position, border=border, radius=radius, team_id=team_id, player_id=player_id)
+        ball1 = CloneBall(ball_id, position, border=border, score=score, team_id=team_id, player_id=player_id)
         position = Vector2(102, 102)
         team_id = uuid.uuid1()
         ball_id = uuid.uuid1()
-        radius = CloneBall.default_config().radius_init
+        score = CloneBall.default_config().score_init
         player_id = uuid.uuid1()
-        ball2 = CloneBall(ball_id, position, border=border, radius=radius, team_id=team_id, player_id=player_id)
+        ball2 = CloneBall(ball_id, position, border=border, score=score, team_id=team_id, player_id=player_id)
         player.add_balls([ball1, ball2])
 
 

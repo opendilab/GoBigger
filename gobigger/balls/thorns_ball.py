@@ -3,7 +3,7 @@ from easydict import EasyDict
 import math
 from pygame.math import Vector2
 
-from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
+from gobigger.utils import format_vector, add_score, Border, deep_merge_dicts
 from .base_ball import BaseBall
 from .spore_ball import SporeBall
 
@@ -21,21 +21,21 @@ class ThornsBall(BaseBall):
     def default_config():
         cfg = BaseBall.default_config()
         cfg.update(dict(
-            radius_min=3, # Minimum radius, greater than the player's maximum number of clones multiplied by the player's minimum weight
-            radius_max=5, # Maximum radius
+            score_min=3, # Minimum score, greater than the player's maximum number of clones multiplied by the player's minimum weight
+            score_max=5, # Maximum score
             eat_spore_vel_init=4, # Initialization speed after eating spores
             eat_spore_vel_zero_frame=10, # Time to zero speed after eating spores(s)
         ))
         return EasyDict(cfg)
 
-    def __init__(self, ball_id, position, radius, border, **kwargs):
+    def __init__(self, ball_id, position, score, border, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = ThornsBall.default_config()
         cfg = deep_merge_dicts(cfg, kwargs)
-        super(ThornsBall, self).__init__(ball_id, position, radius=radius, border=border, **cfg)
-        self.radius_min = cfg.radius_min
-        self.radius_max = cfg.radius_max
+        super(ThornsBall, self).__init__(ball_id, position, score=score, border=border, **cfg)
+        self.score_min = cfg.score_min
+        self.score_max = cfg.score_max
         self.eat_spore_vel_init = cfg.eat_spore_vel_init
         self.eat_spore_vel_zero_frame = cfg.eat_spore_vel_zero_frame
         self.move_frame = 0
@@ -60,9 +60,7 @@ class ThornsBall(BaseBall):
 
     def eat(self, ball):
         if isinstance(ball, SporeBall):
-            self.set_size(add_size(self.size, ball.size))
-            if self.radius > self.radius_max:
-                self.radius = self.radius_max
+            self.set_score(add_score(self.score, ball.score))
             if ball.vel.length() > 0:
                 self.vel = self.eat_spore_vel_init * ball.vel.normalize()
                 self.vel_piece = self.vel / self.eat_spore_vel_zero_frame
@@ -72,11 +70,10 @@ class ThornsBall(BaseBall):
             logging.debug('ThornsBall can not eat {}'.format(type(ball)))
         return True
 
-    def set_size(self, size: float) -> None:
-        self.size = size
-        self.radius = self.size_to_radius(self.size)
-        if self.radius > self.radius_max:
-            self.radius = self.radius_max
-        elif self.radius < self.radius_min:
-            self.radius = self.radius_min
-        self.size = self.radius_to_size(self.radius)
+    def set_score(self, score: float) -> None:
+        self.score = score
+        if self.score > self.score_max:
+            self.score = self.score_max
+        elif self.score < self.score_min:
+            self.score = self.score_min
+        self.radius = self.score_to_radius(self.score)

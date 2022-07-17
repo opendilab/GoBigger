@@ -16,7 +16,7 @@ class TestSporesBall:
         border = Border(0, 0, 1000, 1000)
         position = Vector2(100, 100)
         direction = Vector2(1, 0)
-        spore_ball = SporeBall(ball_id, position, border=border, radius=2, direction=direction)
+        spore_ball = SporeBall(ball_id, position, border=border, score=2, direction=direction)
         logging.debug('direction={}, position={}, vel={}, move_frame={}'
             .format(spore_ball.direction, spore_ball.position, spore_ball.vel, spore_ball.move_frame))
         for i in range(10):
@@ -30,5 +30,5 @@ class TestSporesBall:
         border = Border(0, 0, 1000, 1000)
         position = Vector2(100, 100)
         direction = Vector2(1, 0)
-        spore_ball = SporeBall(ball_id, position, border=border, radius=2, direction=direction)
+        spore_ball = SporeBall(ball_id, position, border=border, score=2, direction=direction)
         spore_ball.eat(ball=None)

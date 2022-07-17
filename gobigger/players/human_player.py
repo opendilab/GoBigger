@@ -67,15 +67,15 @@ class HumanPlayer(BasePlayer):
             for ball in self.balls.values():
                 given_acc_center = centroid - ball.position
                 ball.move(given_acc=direction, given_acc_center=given_acc_center, duration=duration)
-        self.size_decay()
+        self.score_decay()
 
-    def size_decay(self):
+    def score_decay(self):
         '''
         Overview: 
-            The player’s balls' size will decay over time
+            The player’s balls' scor will decay over time
         '''
         for ball in self.balls.values():
-            ball.size_decay()
+            ball.score_decay()
         return True
 
     def eject(self, direction=None):
@@ -96,7 +96,7 @@ class HumanPlayer(BasePlayer):
     def get_keys_sort_by_balls(self):
         '''
         Overview:
-            Sort by ball size from largest to smallest
+            Sort by ball score from largest to smallest
         Return:
             <list>: list of names
         '''
@@ -132,7 +132,8 @@ class HumanPlayer(BasePlayer):
 
     def respawn(self, position):
         ball_id = uuid.uuid1()
-        ball = CloneBall(ball_id=ball_id, position=position, border=self.border, radius=self.ball_settings.radius_init,
+        ball = CloneBall(ball_id=ball_id, position=position, border=self.border, 
+                         score=self.ball_settings.score_init,
                          team_id=self.team_id, player_id=self.player_id, 
                          spore_settings=self.spore_settings, **self.ball_settings)
         direction = Vector2(1, 0)
@@ -148,12 +149,12 @@ class HumanPlayer(BasePlayer):
         '''
         x = 0
         y = 0
-        total_size = 0
+        total_score = 0
         for ball in self.get_balls():
-            x += ball.size * ball.position.x
-            y += ball.size * ball.position.y
-            total_size += ball.size
-        return Vector2(x, y) / total_size
+            x += ball.score * ball.position.x
+            y += ball.score * ball.position.y
+            total_score += ball.score
+        return Vector2(x, y) / total_score
 
     def adjust(self):
         '''
@@ -176,7 +177,7 @@ class HumanPlayer(BasePlayer):
                                 balls[i].rigid_collision(balls[j]) # Rigid body collision                       
                             else:
                                 if dis < balls[i].radius or dis < balls[j].radius: 
-                                    if balls[i].size > balls[j].size:
+                                    if balls[i].score > balls[j].score:
                                         balls[i].eat(balls[j])
                                         balls[j].remove()
                                         to_remove_balls.append(balls[j])
@@ -187,12 +188,25 @@ class HumanPlayer(BasePlayer):
         for ball in to_remove_balls: 
             self.remove_balls(ball)
 
-    def get_total_size(self):
+    def get_total_score(self):
         '''
             Overview: 
-                Get the total size of all balls of the current player
+                Get the total score of all balls of the current player
         '''
-        total_size = 0
+        total_score = 0
         for ball in self.get_balls():
-            total_size += ball.size
-        return total_size
+            total_score += ball.score
+        return total_score
+
+    def get_info(self):
+        total_score = 0
+        can_eject = False
+        can_split = False
+        for ball in self.get_balls():
+            total_score += ball.score
+            if ball.score > self.ball_settings.eject_score_min:
+                can_eject = True
+            if self.get_clone_num() < self.ball_settings.part_num_max \
+                and ball.score > self.ball_settings.split_score_min:
+                can_split = True
+        return total_score, can_split, can_eject

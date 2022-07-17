@@ -25,9 +25,9 @@ class TestEnvRender:
     def test_fill_all(self):
         border = Border(0, 0, 1000, 1000)
         render = EnvRender()
-        food_balls = [BaseBall('0', border.sample(), border=border, radius=1)]
-        thorns_balls = [BaseBall('0', border.sample(), border=border, radius=1)]
-        spore_balls = [BaseBall('0', border.sample(), border=border, radius=1)]
+        food_balls = [BaseBall('0', border.sample(), border=border, score=100)]
+        thorns_balls = [BaseBall('0', border.sample(), border=border, score=10000)]
+        spore_balls = [BaseBall('0', border.sample(), border=border, score=1400)]
         players = [HumanPlayer(cfg=Server.default_config().manager_settings.player_manager.ball_settings, 
                                team_id=0, player_id=0, border=border, 
                                spore_settings=Server.default_config().manager_settings.spore_manager.ball_settings)]

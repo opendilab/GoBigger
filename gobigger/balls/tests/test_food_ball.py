@@ -16,7 +16,7 @@ class TestFoodBall:
         ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(ball_id, position, border=border, radius=1)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         assert True
 
     def test_default_config(self):
@@ -26,12 +26,12 @@ class TestFoodBall:
         ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(ball_id, position, border=border, radius=1)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         food_ball.move(direction=None, duration=None)
 
     def test_eat(self):
         ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(ball_id, position, border=border, radius=1)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         food_ball.eat(ball=None)

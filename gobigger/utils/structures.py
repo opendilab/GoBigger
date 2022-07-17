@@ -23,12 +23,12 @@ def format_vector(v, norm_max):
         return v.normalize() * norm_max
 
 
-def add_size(size_old, size_add):
+def add_score(score_old, score_add):
     '''
     Overview:
-        Calculate the size of the big ball after eating the small ball
+        Calculate the score of the big ball after eating the small ball
     '''
-    return size_old + size_add
+    return score_old + score_add
 
 
 def save_screen_data_to_img(screen_data, img_path=None):
