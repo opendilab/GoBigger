@@ -86,7 +86,7 @@ class TestServer:
                 actions = {player_name: [random.uniform(-1, 1), random.uniform(-1, 1), -1] \
                             for player_name in servers[server_index].get_player_names()}
                 done = servers[server_index].step(actions=actions)
-                global_state, players_obs = servers[server_index].obs()
+                global_state, players_obs, info = servers[server_index].obs()
                 logging.debug('{} {} {}'.format(server_index, i, global_state))
             logging.debug('{} start close'.format(server_index))
             logging.debug('{} finish'.format(server_index))

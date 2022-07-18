@@ -107,7 +107,8 @@ class PlayerStatesUtil:
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
                     clone[clone_count] = [ball.position.x, ball.position.y, ball.radius,
-                                          ball.score, ball.vel.x, ball.vel.y, ball.direction.x, ball.direction.y, 
+                                          ball.score, ball.vel.x, ball.vel.y, 
+                                          ball.direction.x, ball.direction.y, 
                                           player.player_id, player.team_id]
                     clone_count += 1
         clone = clone[:clone_count]
@@ -173,7 +174,8 @@ class PlayerStatesSPUtil(PlayerStatesUtil):
             for ball in player.get_balls():
                 if ball.judge_in_rectangle(rectangle):
                     clone[clone_count] = [ball.position.x, ball.position.y, ball.radius,
-                                          ball.score, ball.vel.x, ball.vel.y, ball.direction.x, ball.direction.y, 
+                                          ball.score, ball.vel.x, ball.vel.y, 
+                                          ball.direction.x, ball.direction.y, 
                                           player.player_id, player.team_id, ball.ball_id]
                     clone_count += 1
         clone = clone[:clone_count]

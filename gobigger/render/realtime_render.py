@@ -123,13 +123,15 @@ class RealtimePartialRender(BaseRender):
             x = (ball[0] - start_x) * scale_ratio_w
             y = (ball[1] - start_y) * scale_ratio_h
             r = ball[2] * scale_ratio_w
-            direction = Vector2(ball[8], ball[9])
-            pygame.draw.circle(self.screen, PLAYER_COLORS[int(ball[11])][0], Vector2(x, y), r)
+            direction = Vector2(ball[6], ball[7])
+            player_id = int(ball[8])
+            team_id = int(ball[9])
+            pygame.draw.circle(self.screen, PLAYER_COLORS[team_id][0], Vector2(x, y), r)
             point_list = to_arrow(Vector2(x, y), r, direction)
-            pygame.draw.polygon(self.screen, PLAYER_COLORS[int(ball[11])][0], point_list)
+            pygame.draw.polygon(self.screen, PLAYER_COLORS[team_id][0], point_list)
             font_size = int(r/1.6)
-            font = pygame.font.SysFont('arial', max(font_size, 8), True)
-            txt = font.render('{}'.format(chr(int(ball[7])%player_num_per_team+65)), True, WHITE)
+            font = pygame.font.SysFont('arial', max(font_size, 6), True)
+            txt = font.render('{}'.format(chr(player_id%player_num_per_team+65)), True, WHITE)
             txt_rect = txt.get_rect(center=(x, y))
             self.screen.blit(txt, txt_rect)
 

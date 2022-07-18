@@ -163,6 +163,7 @@ class HumanPlayer(BasePlayer):
             1. Possible Rigid Body Collision
             2. Possible ball-ball fusion
         '''
+        eats = 0
         balls = self.get_balls()
         balls = sorted(balls, reverse=True)
         balls_num = len(balls)
@@ -177,7 +178,8 @@ class HumanPlayer(BasePlayer):
                                 balls[i].rigid_collision(balls[j]) # Rigid body collision                       
                             else:
                                 if dis < balls[i].radius or dis < balls[j].radius: 
-                                    if balls[i].score > balls[j].score:
+                                    eats += 1
+                                    if balls[i].score > balls[j].score: # without eat_ratio
                                         balls[i].eat(balls[j])
                                         balls[j].remove()
                                         to_remove_balls.append(balls[j])
@@ -187,6 +189,7 @@ class HumanPlayer(BasePlayer):
                                         to_remove_balls.append(balls[i])
         for ball in to_remove_balls: 
             self.remove_balls(ball)
+        return eats
 
     def get_total_score(self):
         '''
