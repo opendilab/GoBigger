@@ -107,9 +107,10 @@ class PlayerManager(BaseManager):
         Overview:
             Adjust all balls in all players
         '''
+        eats = {}
         for player in self.get_players():
-            player.adjust()
-        return True
+            eats[player.player_id] = player.adjust()
+        return eats
 
     def get_clone_num(self, ball):
         return self.players[ball.player_id].get_clone_num()

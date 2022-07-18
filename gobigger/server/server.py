@@ -57,7 +57,6 @@ class Server:
 
         self.init_playback()
         self.init_opening()
-        self.init_obs()
         self.food_manager = FoodManager(self.manager_settings.food_manager, border=self.border, 
                                         random_generator=self._random)
         self.thorns_manager = ThornsManager(self.manager_settings.thorns_manager, border=self.border, 
@@ -68,6 +67,7 @@ class Server:
                                              team_num=self.team_num, player_num_per_team=self.player_num_per_team, 
                                              spore_manager_settings=self.cfg.manager_settings.spore_manager,
                                              random_generator=self._random)
+        self.init_obs()
         self.collision_detection = create_collision_detection(self.collision_detection_type, border=self.border)
 
     def update_match_ratio(self):
@@ -110,6 +110,9 @@ class Server:
                 self.custom_init_clone = data['clone']
 
     def init_obs(self):
+        self.eats = {player_id: {'food': 0, 'thorns': 0, 'spore': 0, 'clone_self': 0, 'clone_team': 0, 'clone_other': 0, 'eaten': 0} \
+                     for player_id in self.player_manager.get_player_names()}
+        print(self.eats)
         self.player_states_util = PlayerStatesUtil(self.obs_settings)
 
     def spawn_balls(self):
@@ -162,7 +165,9 @@ class Server:
             if spore_ball.moving:
                 spore_ball.move(duration=self.frame_duration)
         # Adjust the position of all player balls
-        self.player_manager.adjust()
+        eats = self.player_manager.adjust()
+        for player_id, clone_self_num in eats.items():
+            self.eats[player_id]['clone_self'] += clone_self_num
         # Collision detection
         total_balls.extend(self.player_manager.get_balls())
         total_balls.extend(self.thorns_manager.get_balls())
@@ -183,33 +188,44 @@ class Server:
 
     def deal_with_collision(self, moving_ball, target_ball):
         if not moving_ball.is_remove and not target_ball.is_remove: # Ensure that the two balls are present
-            if isinstance(moving_ball, CloneBall): 
+            if isinstance(moving_ball, CloneBall):
                 if isinstance(target_ball, CloneBall):
                     if moving_ball.team_id != target_ball.team_id:
                         if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                             moving_ball.eat(target_ball)
+                            self.eats[moving_ball.player_id]['clone_other'] += 1
+                            self.eats[target_ball.player_id]['eaten'] += 1
                             self.player_manager.remove_balls(target_ball)
                         elif self.can_eat(target_ball.score, moving_ball.score):
                             target_ball.eat(moving_ball)
+                            self.eats[target_ball.player_id]['clone_other'] += 1
+                            self.eats[moving_ball.player_id]['eaten'] += 1
                             self.player_manager.remove_balls(moving_ball)
                     elif moving_ball.player_id != target_ball.player_id:
                         if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                             if self.player_manager.get_clone_num(target_ball) > 1:
                                 moving_ball.eat(target_ball)
+                                self.eats[moving_ball.player_id]['clone_team'] += 1
+                                self.eats[target_ball.player_id]['eaten'] += 1
                                 self.player_manager.remove_balls(target_ball)
                         elif self.can_eat(target_ball.score, moving_ball.score):
                             if self.player_manager.get_clone_num(moving_ball) > 1:
                                 target_ball.eat(moving_ball)
+                                self.eats[target_ball.player_id]['clone_team'] += 1
+                                self.eats[moving_ball.player_id]['eaten'] += 1
                                 self.player_manager.remove_balls(moving_ball)
                 elif isinstance(target_ball, FoodBall):
                     moving_ball.eat(target_ball)
+                    self.eats[moving_ball.player_id]['food'] += 1
                     self.food_manager.remove_balls(target_ball)
                 elif isinstance(target_ball, SporeBall):
                     moving_ball.eat(target_ball)
+                    self.eats[moving_ball.player_id]['spore'] += 1
                     self.spore_manager.remove_balls(target_ball)
                 elif isinstance(target_ball, ThornsBall):
                     if moving_ball.score > target_ball.score and self.can_eat(moving_ball.score, target_ball.score):
                         ret = moving_ball.eat(target_ball, clone_num=self.player_manager.get_clone_num(moving_ball))
+                        self.eats[moving_ball.player_id]['thorns'] += 1
                         self.thorns_manager.remove_balls(target_ball)
                         if isinstance(ret, list): 
                             self.player_manager.add_balls(ret) 
@@ -217,6 +233,7 @@ class Server:
                 if isinstance(target_ball, CloneBall):
                     if moving_ball.score < target_ball.score and self.can_eat(target_ball.score, moving_ball.score): 
                         ret = target_ball.eat(moving_ball, clone_num=self.player_manager.get_clone_num(target_ball))
+                        self.eats[target_ball.player_id]['thorns'] += 1
                         self.thorns_manager.remove_balls(moving_ball)
                         if isinstance(ret, list): 
                             self.player_manager.add_balls(ret) 
@@ -226,6 +243,8 @@ class Server:
             elif isinstance(moving_ball, SporeBall):
                 if isinstance(target_ball, CloneBall) or isinstance(target_ball, ThornsBall): 
                     target_ball.eat(moving_ball)
+                    if isinstance(target_ball, CloneBall):
+                        self.eats[target_ball.player_id]['spore'] += 1
                     self.spore_manager.remove_balls(moving_ball)
         else:
             return
@@ -240,12 +259,12 @@ class Server:
         self.last_frame_count = 0
         self.init_playback()
         self.init_opening()
-        self.init_obs()
         self.food_manager.reset()
         self.thorns_manager.reset()
         self.spore_manager.reset()
         self.player_manager.reset()
         self.spawn_balls()
+        self.init_obs()
         self._end_flag = False
 
     def step(self, actions=None, save_frame_full_path='', **kwargs):
@@ -269,7 +288,7 @@ class Server:
                                                                   thorns_balls=self.thorns_manager.get_balls(),
                                                                   spore_balls=self.spore_manager.get_balls(),
                                                                   players=self.player_manager.get_players())
-        return global_state, player_states
+        return global_state, player_states, {'eats': self.eats}
 
     def get_global_state(self):
         team_name_score = self.player_manager.get_teams_score()

@@ -45,7 +45,6 @@ class ServerSP(Server):
 
         self.init_playback()
         self.init_opening()
-        self.init_obs()
         self.food_manager = FoodManager(self.manager_settings.food_manager, border=self.border, 
                                         random_generator=self._random)
         self.thorns_manager = ThornsManager(self.manager_settings.thorns_manager, border=self.border, 
@@ -56,9 +55,12 @@ class ServerSP(Server):
                                                team_num=self.team_num, player_num_per_team=self.player_num_per_team, 
                                                spore_manager_settings=self.cfg.manager_settings.spore_manager,
                                                random_generator=self._random)
+        self.init_obs()
         self.collision_detection = create_collision_detection(self.collision_detection_type, border=self.border)
 
     def init_obs(self):
+        self.eats = {player_id: {'food': 0, 'thorns': 0, 'spore': 0, 'clone_self': 0, 'clone_team': 0, 'clone_other': 0, 'eaten': 0} \
+                     for player_id in self.player_manager.get_player_names()}
         self.player_states_util = PlayerStatesSPUtil(self.obs_settings)
 
     def step_one_frame(self, actions=None):
