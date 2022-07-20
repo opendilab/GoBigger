@@ -112,7 +112,6 @@ class Server:
     def init_obs(self):
         self.eats = {player_id: {'food': 0, 'thorns': 0, 'spore': 0, 'clone_self': 0, 'clone_team': 0, 'clone_other': 0, 'eaten': 0} \
                      for player_id in self.player_manager.get_player_names()}
-        print(self.eats)
         self.player_states_util = PlayerStatesUtil(self.obs_settings)
 
     def spawn_balls(self):
