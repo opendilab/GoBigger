@@ -13,12 +13,13 @@ class PlayerStatesUtil:
         player_states = {}
         if len(food_balls) > 0:
             food_radius = food_balls[0].radius
+            food_score = food_balls[0].score
         else:
             food_radius = 0
         food_balls = np.array([[ball.position.x, ball.position.y] for ball in food_balls])
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
-            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players, food_radius)
+            overlap = self.get_overlap(rectangle, food_balls, thorns_balls, spore_balls, players, food_radius, food_score)
             player_score, can_split, can_eject = player.get_info()
             player_states[player.player_id] = {
                 'rectangle': rectangle,
@@ -50,7 +51,7 @@ class PlayerStatesUtil:
         rectangle = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
         return rectangle
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0, food_score = 0):
         ret = {}
         food_count = 0
         thorns_count = 0
@@ -76,7 +77,8 @@ class PlayerStatesUtil:
             x = food_balls_x[food_result==True]
             y = food_balls_y[food_result==True]
             r_col = np.ones_like(x) * food_radius
-            res = np.stack((x, y, r_col), axis=-1)
+            s_col = np.ones_like(x) * food_score
+            res = np.stack((x, y, r_col, s_col), axis=-1)
             ret['food'] = res.tolist()
             # p = food_balls[food_result==True]
             # r_col = np.ones([p.shape[0]]) * food_radius
@@ -88,14 +90,15 @@ class PlayerStatesUtil:
         # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
-                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius]
+                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius,
+                                        ball.score, ball.vel.x, ball.vel.y]
                 thorns_count += 1
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.owner]
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.score, ball.owner]
                 spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
@@ -115,7 +118,7 @@ class PlayerStatesUtil:
 
 class PlayerStatesSPUtil(PlayerStatesUtil):
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0, food_score=0):
         ret = {}
         food_count = 0
         thorns_count = 0
@@ -141,7 +144,8 @@ class PlayerStatesSPUtil(PlayerStatesUtil):
             x = food_balls_x[food_result==True]
             y = food_balls_y[food_result==True]
             r_col = np.ones_like(x) * food_radius
-            res = np.stack((x, y, r_col), axis=-1)
+            s_col = np.ones_like(x) * food_score
+            res = np.stack((x, y, r_col, s_col), axis=-1)
             ret['food'] = res.tolist()
             # p = food_balls[food_result==True]
             # r_col = np.ones([p.shape[0]]) * food_radius
@@ -153,14 +157,15 @@ class PlayerStatesSPUtil(PlayerStatesUtil):
         # thorns overlap
         for ball in thorns_balls:
             if ball.judge_in_rectangle(rectangle):
-                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius]
+                thorns[thorns_count] = [ball.position.x, ball.position.y, ball.radius,
+                                        ball.score, ball.vel.x, ball.vel.y]
                 thorns_count += 1
         thorns = thorns[:thorns_count]
         ret['thorns'] = thorns
         # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.owner]
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.score, ball.owner]
                 spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
