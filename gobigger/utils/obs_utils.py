@@ -98,7 +98,8 @@ class PlayerStatesUtil:
         # spore overlap
         for ball in spore_balls:
             if ball.judge_in_rectangle(rectangle):
-                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, ball.score, ball.owner]
+                spore[spore_count] = [ball.position.x, ball.position.y, ball.radius, 
+                                      ball.score, ball.vel.x, ball.vel.y, ball.owner]
                 spore_count += 1
         spore = spore[:spore_count]
         ret['spore'] = spore
