@@ -2,6 +2,8 @@ import os
 import cv2
 import numpy as np
 import logging
+import uuid
+import copy
 
 from gobigger.render import EnvRender
 
