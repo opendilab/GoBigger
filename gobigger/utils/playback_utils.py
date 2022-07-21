@@ -26,7 +26,7 @@ class PlaybackUtil:
                     os.makedirs(self.save_dir)
                 except:
                     pass
-                logging.warning('save_dir={} must be an existed directory!'.format(self.save_path))
+                logging.warning('save_dir={} must be an existed directory!'.format(self.save_dir))
             if not self.save_name_prefix:
                 self.save_name_prefix = str(uuid.uuid1())
             self.save_fps = int(self.save_fps)
