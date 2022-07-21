@@ -23,7 +23,7 @@ class PlaybackUtil:
         if self.save_video:
             if not os.path.isdir(self.save_dir):
                 try:
-                    os.mkdir(self.save_dir)
+                    os.makedirs(self.save_dir)
                 except:
                     pass
                 logging.warning('save_dir={} must be an existed directory!'.format(self.save_path))
