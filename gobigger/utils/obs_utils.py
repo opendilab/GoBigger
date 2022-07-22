@@ -16,6 +16,7 @@ class PlayerStatesUtil:
             food_score = food_balls[0].score
         else:
             food_radius = 0
+            food_score = 0
         food_balls = np.array([[ball.position.x, ball.position.y] for ball in food_balls])
         for player in players:
             rectangle = self.get_rectangle_by_player(player)
@@ -51,7 +52,7 @@ class PlayerStatesUtil:
         rectangle = (left_top_x, left_top_y, right_bottom_x, right_bottom_y)
         return rectangle
 
-    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0, food_score = 0):
+    def get_overlap(self, rectangle, food_balls, thorns_balls, spore_balls, players, food_radius=0, food_score=0):
         ret = {}
         food_count = 0
         thorns_count = 0
