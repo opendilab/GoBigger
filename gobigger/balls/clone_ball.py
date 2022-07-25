@@ -300,6 +300,10 @@ class CloneBall(BaseBall):
             self.set_score(self.score * (1-self.score_decay_rate_per_frame*math.sqrt(self.radius)))
         return True
 
+    def flush_frame_since_last_split(self):
+        self.frame_since_last_split = 0
+        return True
+
     def __repr__(self) -> str:
         return '{}, vel_given={}, acc_given={}, frame_since_last_split={:.3f}, player_id={}, direction={}, team_id={}'\
                 .format(super().__repr__(), self.vel_given, self.acc_given, self.frame_since_last_split, self.player_id, self.direction, self.team_id)

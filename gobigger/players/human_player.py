@@ -187,6 +187,7 @@ class HumanPlayer(BasePlayer):
                                         balls[j].eat(balls[i])
                                         balls[i].remove()
                                         to_remove_balls.append(balls[i])
+                                    balls[i].flush_frame_since_last_split()
         for ball in to_remove_balls: 
             self.remove_balls(ball)
         return eats
