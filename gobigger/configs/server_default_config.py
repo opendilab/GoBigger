@@ -4,7 +4,6 @@ server_default_config = dict(
     map_width=200, # map width
     map_height=200, # map height
     frame_limit=60*10*20, # the number of frames in a game
-    step_mul = 5,
     fps=20, # the number of frame in each second
     collision_detection_type='precision', # type of collision detection 
     match_ratio=1.0, # match_ratio will be multiple to manager to control ball num
