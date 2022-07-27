@@ -39,7 +39,6 @@ class CloneBall(BaseBall):
             split_score_min=2.5, # The lower limit of the score of the splittable ball
             eject_score_min=2.5, # The lower limit of the score of the ball that can spores
             recombine_frame=320, # Time for the split ball to rejoin 
-            split_vel_init=0.7, # The initial velocity of the split ball
             split_vel_zero_frame=40, # The time it takes for the speed of the split ball to decay to zero (s)
             score_decay_min=2600,
             score_decay_rate_per_frame=0.00005, # The score proportion of each state frame attenuation
@@ -49,7 +48,7 @@ class CloneBall(BaseBall):
 
     def __init__(self, ball_id, position, score, border, team_id, player_id,
                  vel_given=Vector2(0,0), acc_given=Vector2(0,0), 
-                 from_split=False, split_direction=Vector2(0,0),
+                 from_split=False, from_thorns=False, split_direction=Vector2(0,0),
                  spore_settings=SporeBall.default_config(), sequence_generator=None, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
@@ -65,7 +64,6 @@ class CloneBall(BaseBall):
         self.split_score_min = cfg.split_score_min
         self.eject_score_min = cfg.eject_score_min
         self.recombine_frame = cfg.recombine_frame
-        self.split_vel_init = cfg.split_vel_init
         self.split_vel_zero_frame = cfg.split_vel_zero_frame
         self.score_decay_min = cfg.score_decay_min
         self.score_decay_rate_per_frame = cfg.score_decay_rate_per_frame
@@ -80,7 +78,9 @@ class CloneBall(BaseBall):
         self.acc_given = acc_given
 
         if from_split:
-            self.vel_split = self.split_vel_init * split_direction
+            self.vel_split = self.cal_split_vel_init_from_split(self.radius) * split_direction
+        elif from_thorns:
+            self.vel_split = self.cal_split_vel_init_from_thorns(self.radius) * split_direction
         else:
             self.vel_split = Vector2(0, 0)
         self.vel_split_piece = self.vel_split / self.split_vel_zero_frame
@@ -100,7 +100,13 @@ class CloneBall(BaseBall):
 
     def cal_vel_max(self, radius, ratio):
         # return self.vel_max*1/(radius+10) * ratio
-        return (1.2 + 2 / radius) * ratio
+        return (2.35 + 5.66 / radius) * ratio
+
+    def cal_split_vel_init_from_split(self, radius):
+        return (4.75 + 0.95 * radius) / (self.split_vel_zero_frame / 20) * 2
+
+    def cal_split_vel_init_from_thorns(self, radius):
+        return (13.0 - radius) / (self.split_vel_zero_frame / 20) * 2
 
     def move(self, given_acc=None, given_acc_center=None, duration=0.05):
         """
@@ -194,7 +200,7 @@ class CloneBall(BaseBall):
             around_ball = CloneBall(ball_id=ball_id, position=p, score=around_score, border=self.border, 
                                     team_id=self.team_id, player_id=self.player_id, 
                                     vel_given=copy.deepcopy(self.vel_given), acc_given=copy.deepcopy(self.acc_given),
-                                    from_split=True, split_direction=s, spore_settings=self.spore_settings, 
+                                    from_split=False, from_thorns=True, split_direction=s, spore_settings=self.spore_settings, 
                                     sequence_generator=self.sequence_generator, **self.cfg)
             balls.append(around_ball)
         return balls
@@ -242,7 +248,7 @@ class CloneBall(BaseBall):
             return CloneBall(ball_id=ball_id, position=position, score=self.score, border=self.border, 
                              team_id=self.team_id, player_id=self.player_id,
                              vel_given=copy.deepcopy(self.vel_given), acc_given=copy.deepcopy(self.acc_given),
-                             from_split=True, split_direction=direction, spore_settings=self.spore_settings, 
+                             from_split=True, from_thorns=False, split_direction=direction, spore_settings=self.spore_settings, 
                              sequence_generator=self.sequence_generator, **self.cfg)
         else:
             return False

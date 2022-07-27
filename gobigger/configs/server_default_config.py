@@ -64,12 +64,11 @@ server_default_config = dict(
                 score_init=1000, # 0.755,
                 part_num_max=16,
                 on_thorns_part_num=10,
-                on_thorns_part_score_max=3600,
+                on_thorns_part_score_max=5000,
                 split_score_min=3600,  # radius = 1.289
                 eject_score_min=3200,  # radius = 1.222
                 recombine_frame=400,
-                split_vel_init=15,
-                split_vel_zero_frame=30,
+                split_vel_zero_frame=14,
                 score_decay_min=2600, 
                 score_decay_rate_per_frame=0.00005, # * sqrt(radius)
                 center_acc_weight=10,

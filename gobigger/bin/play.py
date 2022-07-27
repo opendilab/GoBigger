@@ -21,7 +21,7 @@ def play_partial_against_bot():
     env = GoBiggerEnv(dict(
         team_num=3, 
         player_num_per_team=1,
-    ))
+    ), step_mul=1)
     obs = env.reset()
     done = False
     render = RealtimePartialRender()
@@ -76,7 +76,7 @@ def play_all_against_bot():
     env = GoBiggerEnv(dict(
         team_num=3, 
         player_num_per_team=1,
-    ))
+    ), step_mul=1)
     obs = env.reset()
     done = False
     render = RealtimeRender()
@@ -135,7 +135,7 @@ def play_partial_sp_against_bot():
     env = GoBiggerSPEnv(dict(
         team_num=1, 
         player_num_per_team=1,
-    ))
+    ), step_mul=1)
     obs = env.reset()
     done = False
     render = RealtimePartialRender()
