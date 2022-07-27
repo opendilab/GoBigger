@@ -10,7 +10,7 @@ import copy
 
 class GoBiggerEnv(gym.Env):
 
-    def __init__(self, server_cfg=None, step_mul=2):
+    def __init__(self, server_cfg=None, step_mul=2, **kwargs):
         self.server_cfg = server_cfg
         self.step_mul = step_mul
     

@@ -4,11 +4,11 @@ from .gobigger_env import GoBiggerEnv
 from .gobigger_sp_env import GoBiggerSPEnv
 from gobigger.configs import *
 
-def create_env_st(cfg):
-    return GoBiggerEnv(cfg)
+def create_env_st(cfg, **kwargs):
+    return GoBiggerEnv(cfg, **kwargs)
 
-def create_env_sp(cfg):
-    return GoBiggerSPEnv(cfg)
+def create_env_sp(cfg, **kwargs):
+    return GoBiggerSPEnv(cfg, **kwargs)
 
 def create_env(env_name):
     '''
@@ -23,10 +23,10 @@ def create_env(env_name):
     else:
         raise NotImplementedError
 
-def create_env_custom(type, cfg=None):
+def create_env_custom(type, cfg=None, **kwargs):
     if type == 'st':
-        create_env_st(cfg)
+        return create_env_st(cfg, **kwargs)
     elif type == 'sp':
-        create_env_sp(cfg)
+        return create_env_sp(cfg, **kwargs)
     else:
         raise NotImplementedError
