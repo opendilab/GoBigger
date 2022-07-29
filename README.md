@@ -34,7 +34,7 @@ We pay more attention to the following points:
 
 GoBigger allows users to to interact with the multi-agent environment within the basic rules easily. Users can simply get the observation in the game and apply their operations for their agents through the given interface. GoBigger is built with simple rules and actions, though it has complicated observation spaces.
 
-<div align=center><img width = '640' height ='197' src ="https://github.com/opendilab/GoBigger/blob/main/assets/overview.gif"/></div>
+<div align=center><img width = '640' height ='197' src ="assets/overview.gif"/></div>
 
 ### Basic Rules
 
