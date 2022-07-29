@@ -49,10 +49,10 @@ class TestFoodManager:
         food_manager.remove_balls(balls[:100])
         logging.debug('[FoodManager.remove_balls] init num: {}, now num {}'
             .format(food_manager.cfg.num_init, len(food_manager.get_balls())))
-        food_refresh_time = food_manager.cfg.refresh_time
+        refresh_frame_freq = food_manager.cfg.refresh_frame_freq
         logging.debug('=================== test step ===================')
         for i in range(10):
-            food_manager.step(duration=food_refresh_time/2)
+            food_manager.step(duration=None)
             logging.debug('[FoodManager.step] {} food num = {}'.format(i, len(food_manager.get_balls())))
 
     def test_reset(self):

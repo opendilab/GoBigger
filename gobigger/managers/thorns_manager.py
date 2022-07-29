@@ -15,8 +15,8 @@ class ThornsManager(BaseManager):
 
     def __init__(self, cfg, border, random_generator=None):
         super(ThornsManager, self).__init__(cfg, border)
-        self.thorns_refresh_time = self.cfg.refresh_time
-        self.refresh_time_count = 0
+        self.refresh_frame_freq = self.cfg.refresh_frame_freq
+        self.refresh_frame_count = 0
         if random_generator is not None:
             self._random = random_generator
         else:
@@ -28,13 +28,14 @@ class ThornsManager(BaseManager):
     def add_balls(self, balls):
         if isinstance(balls, list):
             for ball in balls:
-                self.balls[ball.name] = ball
+                self.balls[ball.ball_id] = ball
         elif isinstance(balls, ThornsBall):
-            self.balls[balls.name] = balls
+            self.balls[balls.ball_id] = balls
         return True
 
     def refresh(self):
-        todo_num = min(self.cfg.refresh_num, self.cfg.num_max - len(self.balls))
+        left_num = self.cfg.num_max - len(self.balls)
+        todo_num = min(int(self.cfg.refresh_percent * left_num), left_num)
         for _ in range(todo_num):
             self.add_balls(self.spawn_ball())
 
@@ -43,48 +44,47 @@ class ThornsManager(BaseManager):
             for ball in balls:
                 ball.remove()
                 try:
-                    del self.balls[ball.name]
+                    del self.balls[ball.ball_id]
                 except:
                     pass
         elif isinstance(balls, ThornsBall):
             balls.remove()
             try:
-                del self.balls[balls.name]
+                del self.balls[balls.ball_id]
             except:
                 pass
 
-    def spawn_ball(self, position=None, size=None):
+    def spawn_ball(self, position=None, score=None):
         if position is None:
             position = self.border.sample()
-        if size is None:
-            size = self._random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
-        name = uuid.uuid1()
-        return ThornsBall(name=name, position=position, border=self.border, size=size, **self.ball_settings)
+        if score is None:
+            score = self._random.uniform(self.ball_settings.score_min, self.ball_settings.score_max)
+        ball_id = uuid.uuid1()
+        return ThornsBall(ball_id=ball_id, position=position, border=self.border, score=score, **self.ball_settings)
 
     def init_balls(self, custom_init=None):
-        # [position.x, position.y, radius, vel.x, vel.y, acc.x, acc.y, 
+        # [position.x, position.y, score, vel.x, vel.y, acc.x, acc.y, 
         #  move_time, moving]
-        if custom_init is None:
+        if custom_init is None or len(custom_init) == 0:
             for _ in range(self.cfg.num_init):
                 ball = self.spawn_ball()
-                self.balls[ball.name] = ball
+                self.balls[ball.ball_id] = ball
         else:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), score=ball_cfg[2])
                 if len(ball_cfg) > 3:
                     ball.vel = Vector2(*ball_cfg[3:5])
-                    ball.acc = Vector2(*ball_cfg[5:7])
-                    ball.move_time = ball_cfg[7]
-                    ball.moving = ball_cfg[8]
-                self.balls[ball.name] = ball
+                    ball.move_frame = Vector2(*ball_cfg[5])
+                    ball.moving = ball_cfg[6]
+                self.balls[ball.ball_id] = ball
 
     def step(self, duration):
-        self.refresh_time_count += duration
-        if self.refresh_time_count > self.thorns_refresh_time:
+        self.refresh_frame_count += 1
+        if self.refresh_frame_count > self.refresh_frame_freq:
             self.refresh()
-            self.refresh_time_count = 0
+            self.refresh_frame_count = 0
 
     def reset(self):
-        self.refresh_time_count = 0
+        self.refresh_frame_count = 0
         self.balls = {}
         return True

@@ -24,6 +24,7 @@ setup(
         'gobigger.envs',
         'gobigger.bin',
         'gobigger.hyper',
+        'gobigger.configs'
     ],
     install_requires=[
         'easydict',
@@ -32,5 +33,6 @@ setup(
         'pytest>=5.0.0',
         'opencv-python',
         'numpy>=1.10, <= 1.19',
+        'numexpr',
     ]
 )

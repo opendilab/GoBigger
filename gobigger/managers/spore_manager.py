@@ -26,9 +26,9 @@ class SporeManager(BaseManager):
     def add_balls(self, balls):
         if isinstance(balls, list):
             for ball in balls:
-                self.balls[ball.name] = ball
+                self.balls[ball.ball_id] = ball
         elif isinstance(balls, SporeBall):
-            self.balls[balls.name] = balls
+            self.balls[balls.ball_id] = balls
         return True
 
     def remove_balls(self, balls):
@@ -36,36 +36,35 @@ class SporeManager(BaseManager):
             for ball in balls:
                 ball.remove()
                 try:
-                    del self.balls[ball.name]
+                    del self.balls[ball.ball_id]
                 except:
                     pass
         elif isinstance(balls, SporeBall):
             balls.remove()
             try:
-                del self.balls[balls.name]
+                del self.balls[balls.ball_id]
             except:
                 pass
 
-    def spawn_ball(self, position=None, size=None):
+    def spawn_ball(self, position=None):
         if position is None:
             position = self.border.sample()
-        if size is None:
-            size = self._random.uniform(self.ball_settings.radius_min, self.ball_settings.radius_max)**2
         name = uuid.uuid1()
-        return SporeBall(name=name, position=position, border=self.border, direction=Vector2(1,0), vel_init=0)
+        return SporeBall(name=name, position=position, border=self.border, score=self.ball_settings.score_init,
+                         direction=Vector2(1,0))
     
     def init_balls(self, custom_init=None):
-        # [position.x, position.y, radius, direction.x, direction.y, vel.x, vel.y, acc.x, acc.y, 
+        # [position.x, position.y, score, direction.x, direction.y, vel.x, vel.y, acc.x, acc.y, 
         #  move_time, moving]
         if custom_init is not None:
             for ball_cfg in custom_init:
-                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]), size=ball_cfg[2]**2)
-                if len(ball_cfg) > 3:
-                    ball.direction = Vector2(*ball_cfg[3:5])
-                    ball.vel = Vector2(*ball_cfg[5:7])
-                    ball.acc = Vector2(*ball_cfg[7:9])
-                    ball.move_time = ball_cfg[9]
-                    ball.moving = ball_cfg[10]
+                ball = self.spawn_ball(position=Vector2(*ball_cfg[:2]))
+                if len(ball_cfg) > 2:
+                    ball.direction = Vector2(*ball_cfg[2:4])
+                    ball.vel = Vector2(*ball_cfg[4:6])
+                    ball.move_frame = ball_cfg[6]
+                    ball.moving = ball_cfg[7]
+                    ball.owner = ball_cfg[8]
                 self.balls[ball.name] = ball
 
     def step(self, duration):

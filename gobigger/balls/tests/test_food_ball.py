@@ -13,25 +13,25 @@ logging.basicConfig(level=logging.DEBUG)
 class TestFoodBall:
 
     def test_naive(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(name, position, border=border, size=25, vel=None, acc=None)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         assert True
 
     def test_default_config(self):
         assert isinstance(FoodBall.default_config(), EasyDict)
 
     def test_move(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(name, position, border=border, size=25, vel=None, acc=None)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         food_ball.move(direction=None, duration=None)
 
     def test_eat(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 100, 100)
         position = Vector2(10, 10)
-        food_ball = FoodBall(name, position, border=border, size=25, vel=None, acc=None)
+        food_ball = FoodBall(ball_id, position, border=border, score=1)
         food_ball.eat(ball=None)

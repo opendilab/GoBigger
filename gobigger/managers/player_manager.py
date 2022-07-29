@@ -28,87 +28,77 @@ class PlayerManager(BaseManager):
             self._random = random.Random()
 
     def init_balls(self, custom_init=None):
-        if custom_init is None:
+        if custom_init is None or len(custom_init) == 0:
             for i in range(self.team_num):
-                team_name = str(i)
+                team_id = i
                 for j in range(self.player_num_per_team):
-                    player_name = str(i * self.player_num_per_team + j)
-                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_name=team_name, name=player_name, border=self.border, spore_settings=self.spore_settings)
+                    player_id = i * self.player_num_per_team + j
+                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_id=team_id, player_id=player_id, 
+                                         border=self.border, spore_settings=self.spore_settings)
                     player.respawn(position=self.border.sample())
-                    self.players[player_name] = player
+                    self.players[player_id] = player
         else:
             init_dict = {}
             for i in range(self.team_num):
-                team_name = str(i)
-                init_dict[team_name] = {}
+                team_id = i
+                init_dict[team_id] = {}
                 for j in range(self.player_num_per_team):
-                    player_name = str(i * self.player_num_per_team + j)
-                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_name=team_name, name=player_name, border=self.border, spore_settings=self.spore_settings)
-                    self.players[player_name] = player
-                    init_dict[team_name][player_name] = False
+                    player_id = i * self.player_num_per_team + j
+                    player = HumanPlayer(cfg=self.cfg.ball_settings, team_id=team_id, player_id=player_id, 
+                                         border=self.border, spore_settings=self.spore_settings)
+                    self.players[player_id] = player
+                    init_dict[team_id][player_id] = False
             for ball_cfg in custom_init:
-                # [position.x, position.y, radius, player_name, team_name, 
-                #  vel.x, vel.y, acc.x, acc.y, vel_last.x,
-                #  vel_last.y, acc_last.x, acc_last.y, direction.x, direction.y,
-                #  last_given_acc.x, last_given_acc.y, age, cooling_last, stop_flag,
-                #  stop_time, acc_stop.x, acc_stop.y]
                 position = Vector2(*ball_cfg[0:2])
-                radius = ball_cfg[2]
-                player_name = ball_cfg[3]
-                team_name = ball_cfg[4]
-                ball = CloneBall(team_name=team_name, name=uuid.uuid1(), position=position, border=self.border, 
-                                 size=radius**2, vel=Vector2(0,0), acc=Vector2(0,0),
-                                 vel_last=Vector2(0,0), acc_last=Vector2(0,0), last_given_acc=Vector2(0,0),
-                                 stop_flag=True, owner=player_name, spore_settings=self.spore_settings, **self.cfg.ball_settings)
+                score = ball_cfg[2]
+                player_id = ball_cfg[3]
+                team_id = ball_cfg[4]
+                ball = CloneBall(ball_id=uuid.uuid1(), position=position, border=self.border, score=score, 
+                                 team_id=team_id, player_id=player_id, 
+                                 spore_settings=self.spore_settings, **self.cfg.ball_settings)
                 if len(ball_cfg) > 5:
-                    ball.vel = Vector2(*ball_cfg[5:7])
-                    ball.acc = Vector2(*ball_cfg[7:9])
-                    ball.vel_last = Vector2(*ball_cfg[9:11])
-                    ball.acc_last = Vector2(*ball_cfg[11:13])
-                    ball.direction = Vector2(*ball_cfg[13:15])
-                    ball.last_given_acc = Vector2(*ball_cfg[15:17])
-                    ball.age = ball_cfg[17]
-                    ball.cooling_last = ball_cfg[18]
-                    ball.stop_flag = ball_cfg[19]
-                    ball.stop_time = ball_cfg[20]
-                    ball.acc_stop = Vector2(*ball_cfg[21:23])
-                self.players[player_name].add_balls(ball)
-                init_dict[team_name][player_name] = True
-            for team_name, team in init_dict.items():
-                for player_name, player_init_flag in team.items():
+                    ball.vel_given = Vector2(*ball_cfg[5:7])
+                    ball.acc_given = Vector2(*ball_cfg[7:9])
+                    ball.vel_split = Vector2(*ball_cfg[9:11])
+                    ball.split_frame = Vector2(*ball_cfg[12])
+                    ball.frame_since_last_split = ball_cfg[13]
+                self.players[player_id].add_balls(ball)
+                init_dict[team_id][player_id] = True
+            for team_id, team in init_dict.items():
+                for player_id, player_init_flag in team.items():
                     if not player_init_flag:
-                        self.players[player_name].respawn(position=self.border.sample())
+                        self.players[player_id].respawn(position=self.border.sample())
             
     def get_balls(self):
         balls = []
-        for player_name, player in self.players.items():
+        for player_id, player in self.players.items():
             balls.extend(player.get_balls())
         return balls
 
     def get_players(self):
         return list(self.players.values())
 
-    def get_player_by_name(self, name):
-        assert name in self.players
-        return self.players[name]
+    def get_player_by_name(self, player_id):
+        assert player_id in self.players
+        return self.players[player_id]
     
     def add_balls(self, balls):
         if isinstance(balls, list):
             for ball in balls:
-                self.players[ball.owner].add_balls(ball)
+                self.players[ball.player_id].add_balls(ball)
         elif isinstance(balls, CloneBall):
-            self.players[balls.owner].add_balls(balls)
+            self.players[balls.player_id].add_balls(balls)
         return True
 
     def remove_balls(self, balls):
         if isinstance(balls, list):
             for ball in balls:
-                self.players[ball.owner].remove_balls(ball)
+                self.players[ball.player_id].remove_balls(ball)
         elif isinstance(balls, CloneBall):
-            self.players[balls.owner].remove_balls(balls)
+            self.players[balls.player_id].remove_balls(balls)
 
     def step(self):
-        for player_name, player in self.players.items():
+        for player_id, player in self.players.items():
             if player.get_clone_num() == 0:
                 player.respawn(position=self.border.sample())
 
@@ -117,19 +107,20 @@ class PlayerManager(BaseManager):
         Overview:
             Adjust all balls in all players
         '''
+        eats = {}
         for player in self.get_players():
-            player.adjust()
-        return True
+            eats[player.player_id] = player.adjust()
+        return eats
 
     def get_clone_num(self, ball):
-        return self.players[ball.owner].get_clone_num()
+        return self.players[ball.player_id].get_clone_num()
 
     def get_player_names(self):
         '''
         Overview:
             get all names of players
         '''
-        return [player.name for player in self.get_players()]
+        return [player.player_id for player in self.get_players()]
 
     def get_team_names(self):
         '''
@@ -138,9 +129,9 @@ class PlayerManager(BaseManager):
         '''
         ret = {}
         for player in self.get_players():
-            if player.team_name not in ret:
-                ret[player.team_name] = []
-            ret[player.team_name].append(player.name)
+            if player.team_id not in ret:
+                ret[player.team_id] = []
+            ret[player.team_id].append(player.player_id)
         return ret
 
     def get_player_names_with_team(self):
@@ -150,25 +141,32 @@ class PlayerManager(BaseManager):
         '''
         ret = {}
         for player in self.get_players():
-            if player.team_name not in ret:
-                ret[player.team_name] = []
-            ret[player.team_name].append(player.name)
+            if player.team_id not in ret:
+                ret[player.team_id] = []
+            ret[player.team_id].append(player.player_id)
         return list(ret.values())
 
-    def get_teams_size(self):
-        team_name_size = {}
+    def get_team_infos(self):
+        team_player_ids = {}
         for player in self.get_players():
-            if player.team_name not in team_name_size:
-                team_name_size[player.team_name] = player.get_total_size()
+            if player.team_id not in team_player_ids:
+                team_player_ids[player.team_id] = []
+            team_player_ids[player.team_id].append(player.player_id)
+        return sorted(team_player_ids.items())
+
+    def get_teams_score(self):
+        team_name_score = {}
+        for player in self.get_players():
+            if player.team_id not in team_name_score:
+                team_name_score[player.team_id] = player.get_total_score()
             else:
-                team_name_size[player.team_name] += player.get_total_size()
-        return team_name_size
+                team_name_score[player.team_id] += player.get_total_score()
+        return team_name_score
 
     def reset(self):
         '''
         Overview:
             reset manager
         '''
-        self.refresh_time_count = 0
         self.players = {}
         return True

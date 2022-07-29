@@ -27,7 +27,7 @@ class TestThornsManager:
         thorns_manager.init_balls()
         balls = thorns_manager.get_balls()
         assert len(balls) == thorns_manager.cfg.num_init
-        for i in range(10):
+        for i in range(2):
             logging.debug(balls[i])
         assert True
 
@@ -49,10 +49,10 @@ class TestThornsManager:
         thorns_manager.remove_balls(balls[:20])
         logging.debug('[ThornsManager.remove_balls] init num: {}, now num {}'
             .format(thorns_manager.cfg.num_init, len(thorns_manager.get_balls())))
-        thorns_refresh_time = thorns_manager.cfg.refresh_time
+        refresh_frame_freq = thorns_manager.cfg.refresh_frame_freq
         logging.debug('=================== test step ===================')
         for i in range(20):
-            thorns_manager.step(duration=thorns_refresh_time/2)
+            thorns_manager.step(duration=None)
             logging.debug('[FoodManager.step] {} food num = {}'.format(i, len(thorns_manager.get_balls())))
 
     def test_reset(self):
