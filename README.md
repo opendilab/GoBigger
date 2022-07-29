@@ -34,7 +34,7 @@ We pay more attention to the following points:
 
 GoBigger allows users to to interact with the multi-agent environment within the basic rules easily. Users can simply get the observation in the game and apply their operations for their agents through the given interface. GoBigger is built with simple rules and actions, though it has complicated observation spaces.
 
-<div align=center><img width = '640' height ='197' src ="assets/overview.gif"/></div>
+<div align=center><img width = '320' height ='112' src ="assets/overview.gif"/></div>
 
 ### Basic Rules
 
@@ -195,7 +195,7 @@ python -m gobigger.bin.play --mode st --vision-type partial
 
 In this mode, please use your mouse to control your balls to move, `Q` means to eject spore in your moving direction, `W` means to split your balls.
 
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
+<div align=center><img width = '320' height ='334' src ="assets/partial.gif"/></div>
 
 #### Play with bot & Full vision
 
@@ -205,22 +205,22 @@ You can launch a game with the following code:
 python -m gobigger.bin.play --mode st --vision-type full
 ```
 
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full.gif"/></div>
+<div align=center><img width = '320' height ='336' src ="assets/full.gif"/></div>
 
 
 ### High-level Operations in GoBigger
 
 #### Eject towards the center
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/mid_eject.gif"/></div>
+<div align=center><img width = '232' height ='214' src ="assets/mid_eject.gif"/></div>
 
 #### Teamwork
-<div align=center><img width = '310' height ='144' src ="https://github.com/opendilab/GoBigger/blob/main/assets/teamwork.gif"/></div>
+<div align=center><img width = '202' height ='186' src ="assets/teamwork.gif"/></div>
 
 #### Split and merge
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge.gif"/></div>
+<div align=center><img width = '394' height ='236' src ="assets/merge.gif"/></div>
 
 #### Split and eat others
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eat_others.gif"/></div>
+<div align=center><img width = '278' height ='214' src ="assets/eat_others.gif"/></div>
 
 ## Resources
 
