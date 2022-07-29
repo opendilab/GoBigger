@@ -63,9 +63,9 @@
 .. code-block:: python
 
     obs, _, _, _ = env.step()
-    global_state, player_state = obs
+    global_state, player_states = obs
 
-``global_state`` 具体如下：
+``global_state`` 包含一些全局信息，具体如下：
 
 .. code-block:: python
 
@@ -76,7 +76,7 @@
         'leaderboard': { team_name: team_size } # 当前的排行榜信息，包含每个队伍的分数。队伍的分数是队内玩家分数之和
     }
 
-``player_state`` 具体如下：
+``player_states`` 包含了每个玩家所能获得的信息，根据 ``player_id`` 来区分，具体如下：
 
 .. code-block:: python
 
@@ -84,17 +84,21 @@
         player_id: {
             'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # 视野框在全局视野中的位置
             'overlap': {
-                'food': [[position.x, position.y, radius], ...],   # 视野内食物球信息
-                'thorns': [[position.x, position.y, radius], ...], # 视野内荆棘球信息
-                'spore': [[position.x, position.y, radius], ...],  # 视野内孢子球信息
-                'clone': [[[position.x, position.y, radius, vel.x, vel.y, direction.x, direction.y, 
-                            player_id, team_id], ...], # 视野内玩家球信息，分别是位置xy，半径，当前速度xy，当前方向xy，所属玩家id，所属队伍id
+                'food': [[position.x, position.y, radius, score], ...],   # 视野内食物球信息，分别是位置xy，半径，分数
+                'thorns': [[position.x, position.y, radius, score, vel.x, vel.y], ...], # 视野内荆棘球信息，分别是位置xy，半径，分数，当前速度xy
+                'spore': [[position.x, position.y, radius, score, vel.x, vel.y, owner], ...],  # 视野内孢子球信息，分别是位置xy，半径，分数，当前速度xy，来自玩家的id
+                'clone': [[[position.x, position.y, radius, score, vel.x, vel.y, direction.x, direction.y, 
+                            player_id, team_id], ...], # 视野内玩家球信息，分别是位置xy，半径，分数，当前速度xy，当前方向xy，所属玩家id，所属队伍id
             }, 
-            'team_id': team_id, # 当前玩家所属队伍id
-        }
+            'team_name': team_name, # 当前玩家所属队伍id
+            'score': player_score, # 当前玩家的得分
+            'can_eject': bool, # 当前玩家能否执行吐孢子
+            'can_split': bool, # 当前玩家能否执行分裂
+        },
+        ...
     }
 
-``player_state`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。``overlap`` 是一个简单的字典，每个键值对代表了视野中的一种球的信息。``overlap`` 中包含了食物球，荆棘球，孢子球，分身球的结构化信息（位置和半径，如果是分身球则包含所属玩家名称和队伍名称）。具体来说，例如我们发现 ``food`` 字段的内容为 ``[[3.0, 4.0, 2], ..]`` （简单起见这里只展示了列表中的第一个元素），那么其中的含义是玩家的视野中，坐标 ``(3.0, 4.0)`` 位置存在一个半径为 ``2`` 的食物球。
+``player_states`` 中的 ``overlap`` 代表的是当前玩家视野中出现的球的结构化信息。``overlap`` 是一个简单的字典，每个键值对代表了视野中的一种球的信息。``overlap`` 中包含了食物球，荆棘球，孢子球，分身球的结构化信息（位置和半径，如果是分身球则包含所属玩家名称和队伍名称）。具体来说，例如我们发现 ``food`` 字段的内容为 ``[[3.0, 4.0, 2, 2], ..]`` （简单起见这里只展示了列表中的第一个元素），那么其中的含义是玩家的视野中，坐标 ``(3.0, 4.0)`` 位置存在一个半径为 ``2`` 的食物球，同时这个食物球的分数是 ``2``。
 
 请注意，每一种球的信息列表的长度是不确定的。例如，在当前帧视野中一共有20个食物球，那么当前 ``food`` 对应的列表长度为20。在下一帧，视野内的食物球如果变为25，则对应的列表长度将会变成25。 此外，如果某个球只有一部分出现在玩家视野中，GoBigger也会在 ``overlap`` 中给出该球的圆心和半径信息。
 
@@ -126,7 +130,7 @@
 
 大部分和标准比赛模式是一样的，唯一不同在于 clone 球部分会增加 ball_id 的信息。这个信息可以用来告诉玩家在提供 actions 的时候 ball_id 可以从这里拿。
 
-``player_state`` 具体如下：
+``player_states`` 具体如下：
 
 .. code-block:: python
 
@@ -135,7 +139,7 @@
             ...
             'overlap': {
                 ...
-                'clone': [[[position.x, position.y, radius, vel.x, vel.y, direction.x, direction.y, 
+                'clone': [[[position.x, position.y, radius, score, vel.x, vel.y, direction.x, direction.y, 
                             player_id, team_id, ball_id], ...], # 视野内玩家球信息，分别是位置xy，半径，当前速度xy，当前方向xy，所属玩家id，所属队伍id，球的id
             }, 
             ...

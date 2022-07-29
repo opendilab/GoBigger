@@ -57,9 +57,7 @@ def play_partial_against_bot():
         actions.update({agent.name: agent.step(obs[1][agent.name]) for agent in bot_agents})
         if not done:
             obs, reward, done, info = env.step(actions=actions)
-            # import pdb; pdb.set_trace()
             render.fill(obs[0], obs[1][0], player_num_per_team=1, fps=fps_real)
-            print(info['eats'][my_player_id])
             render.show()
             if i % fps_set == 0:
                 t2 = time.time()

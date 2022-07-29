@@ -59,7 +59,7 @@ GoBigger 是一个类 `Agar <https://agar.io/>`_ 游戏，后者是一款风靡�
 
 * 玩家的分身球
 
-    玩家的分身球就是玩家在游戏中操控的球。玩家可以对它的运动方向进行任意的改变，还可以吃掉比它小的其他球。在吃掉其他球的瞬间，玩家的分身球会获取到被吃球的质量，并且半径变大。为了增强游戏的可操作性，每个玩家的分身球都会有以下三种技能：
+    玩家的分身球就是玩家在游戏中操控的球。玩家可以对它的运动方向进行任意的改变，还可以吃掉比它小的其他球。在吃掉其他球的瞬间，玩家的分身球会获取到被吃球的质量，并且半径变大。为了增强游戏的可操作性，每个玩家的分身球都会有以下两种技能：
 
     .. only:: html
 
@@ -71,9 +71,7 @@ GoBigger 是一个类 `Agar <https://agar.io/>`_ 游戏，后者是一款风靡�
 
     * 吐孢子
 
-        Ejecting a spore-ball can help a player-ball decrease its size and make it move faster. When a player-ball ejects, the new spore-ball must appear on the player-ball's moving direction with a high speed and quickly slow down. 
-
-        吐孢子可以帮助玩家的分身球快速减少体积。体积越小，移动速度的上限将会越高。当某个分身球吐孢子时，孢子会沿着分身球的移动方向被发射出去，并在一定时间内速度衰减为零。
+        吐孢子可以帮助玩家的分身球快速减少体积。体积越小，移动速度的上限将会越高。当某个分身球吐孢子时，孢子会有一个初速度，并在一定时间内速度衰减为零。
 
         .. only:: html
 
@@ -95,17 +93,6 @@ GoBigger 是一个类 `Agar <https://agar.io/>`_ 游戏，后者是一款风靡�
 
               玩家正在进行分裂。
 
-    * 停止
-
-        停止技能可以使得玩家的所有分身球停止运动，并缓慢聚集在一起。如果玩家拥有多个分身球，该技能可以帮助玩家将分身球合并成为一个大的分身球。如果玩家只有一个分身球，那么该分身球会在原地静止不动。
-
-        .. only:: html
-
-            .. figure:: images/split_merge.gif
-              :width: 300
-              :align: center
-
-              玩家使用停止技能来进行合并。
 
 游戏规则
 ===============

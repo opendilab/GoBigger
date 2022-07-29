@@ -17,10 +17,9 @@ GoBigger is an efficient and straightforward *agar-like* game engine and provide
 
 We pay more attention to the following points:
 
-* Complex multi-agent game design
-* Complex observation spaces built on simple rules and simple actions
-* More detailed configuration
-* Custom opening with support for go-explore
+* A scalable environment that enables the simulation of various teams and agents in each team.
+* Rich action space and partially observable observation space.
+* More detailed configuration for different kinds of mini-games.
 
 
 ## Outline
@@ -60,26 +59,27 @@ GoBigger also provides a wealth of observable information, and the observation s
 
 The global state provides information related to the whole match, such as the map size, the total time and the last time of the match, and the leaderboard with team name and score.
 
-#### Player State
+#### Player States
 
-The player state should be like:
+The player states should be like:
 
 ```
 {
-    player_name: {
+    player_id: {
         'rectangle': [left_top_x, left_top_y, right_bottom_x, right_bottom_y], # the vision's position in the map
         'overlap': {
-            'food': [[position.x, position.y, radius], ...],
-            'thorns': [[position.x, position.y, radius], ...],
-            'spore': [[position.x, position.y, radius, owner_id], ...], 
-            'clone': [[position.x, position.y, radius, score, next_position.x, next_position.y,
-                       vel.x, vel.y, direction.x, direction.y, player_id, team_id], ...], 
+            'food': [[position.x, position.y, radius, score], ...], 
+            'thorns': [[position.x, position.y, radius, score, vel.x, vel.y], ...], 
+            'spore': [[position.x, position.y, radius, score, vel.x, vel.y, owner], ...], 
+            'clone': [[[position.x, position.y, radius, score, vel.x, vel.y, direction.x, direction.y, 
+                        player_id, team_id], ...],
         }, # all balls' info in vision
         'team_name': team_name, # the team which this player belongs to 
-        'score': score, # the score of the player
+        'score': player_score, # the score of the player
         'can_eject': bool, # if the player can do the `eject` action
         'can_split': bool, # if the player can do the `split` action
-    }
+    },
+    ...
 }
 ```
 
@@ -185,69 +185,42 @@ For more details, you can refer to [gobigger_env.py](https://github.com/opendila
 
 GoBigger allows users to play the game on their personal computers in real-time. Several modes are supported for users to explore this game.
 
-#### Single Player
+#### Play with bot & Partial vision
 
-If you want to play real-time game on your PC on your own, you can launch a game with the following code:
-
-```bash
-python -m gobigger.bin.play --player-num 1 --vision-type full
-```
-
-In this mode, the `up arrow` & `down arrow` & `left arrow` & `right arrow` allows your balls to move, `Q` means to eject spore in your moving direction, `W` means to split your balls, and `E` means to stop all your balls and gather them together.
-
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_single.gif"/></div>
-
-#### Double Players
-
-If you want to play the real-time game on your PC with your friends, you can launch a game with the following code:
+If you want to play real-time game on your PC, you can launch a game with the following code:
 
 ```bash
-python -m gobigger.bin.play --player-num 2 --vision-type full
+python -m gobigger.bin.play --mode st --vision-type partial
 ```
 
-In this mode, player1 uses the `up arrow` & `down arrow` & `left arrow` & `rigth arrow` to allow the balls to move, `[` means eject spore in your moving direction, `]` means split your balls, and `\` means stop all your balls and gather them together. Player2 uses `W` & `S` & `A` & `D` to allow the balls move, `1` means eject spore in your moving direction, `2` means split your balls, and `3` means stop all your balls and gather them together.
+In this mode, please use your mouse to control your balls to move, `Q` means to eject spore in your moving direction, `W` means to split your balls.
 
-<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full_double.gif"/></div>
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
 
-#### Single Players with Partial Vision
+#### Play with bot & Full vision
 
-If you want to play the real-time game on your PC with only partial vision, you can launch a game with the following code:
+You can launch a game with the following code:
 
 ```bash
-python -m gobigger.bin.play --player-num 1 --vision-type partial
+python -m gobigger.bin.play --mode st --vision-type full
 ```
 
-Your vision depends on all your balls’ positions and their size.
+<div align=center><img width = '400' height ='400' src ="https://github.com/opendilab/GoBigger/blob/main/assets/full.gif"/></div>
 
-<div align=center><img width = '320' height ='320' src ="https://github.com/opendilab/GoBigger/blob/main/assets/partial.gif"/></div>
-
-#### Single Players Against Bots
-
-If you want to play against a bot, you can launch a game with the following code:
-
-```bash
-python -m gobigger.bin.play --vs-bot
-```
-
-You can also add more bots to your game. Try to win the game with more bots!
-
-```bash
-python -m gobigger.bin.play --vs-bot --team-num 4
-```
 
 ### High-level Operations in GoBigger
 
 #### Eject towards the center
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge_quickly.gif"/></div>
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/mid_eject.gif"/></div>
 
-#### Surround others by splitting
-<div align=center><img width = '310' height ='144' src ="https://github.com/opendilab/GoBigger/blob/main/assets/split_eat_all.gif"/></div>
+#### Teamwork
+<div align=center><img width = '310' height ='144' src ="https://github.com/opendilab/GoBigger/blob/main/assets/teamwork.gif"/></div>
 
-#### Eat food balls quickly
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/fast_eat.gif"/></div>
+#### Split and merge
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/merge.gif"/></div>
 
-#### Concentrate size
-<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eject_merger.gif"/></div>
+#### Split and eat others
+<div align=center><img width = '312' height ='278' src ="https://github.com/opendilab/GoBigger/blob/main/assets/eat_others.gif"/></div>
 
 ## Resources
 
