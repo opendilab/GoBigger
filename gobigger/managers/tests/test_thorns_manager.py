@@ -27,7 +27,7 @@ class TestThornsManager:
         thorns_manager.init_balls()
         balls = thorns_manager.get_balls()
         assert len(balls) == thorns_manager.cfg.num_init
-        for i in range(10):
+        for i in range(2):
             logging.debug(balls[i])
         assert True
 
