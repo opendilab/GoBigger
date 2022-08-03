@@ -21,9 +21,11 @@ def demo_bot():
     env = GoBiggerEnv(dict(
         team_num=4, 
         player_num_per_team=3,
-        frame_limit=60*20*10,
+        frame_limit=60*20*1,
         playback_settings=dict(
             save_video=True,
+            save_all=True,
+            save_partial=True,
         ),
     ))
     obs = env.reset()
@@ -39,8 +41,8 @@ def demo_bot():
         obs, reward, done, info = env.step(actions=actions)
         t2 = time.time()
         time_step_all += t2-t1
-        logging.debug('{} {:.4f} envstep {:.3f} / {:.3f}, (step: {:.3f} / {:.3f}, obs: {:.3f} / {:.3f}), leaderboard={}'\
-            .format(i, obs[0]['last_frame_count'], t2-t1, time_step_all/(i+1), *info, obs[0]['leaderboard']))
+        logging.debug('{} {:.4f} envstep {:.3f} / {:.3f}, leaderboard={}'\
+            .format(i, obs[0]['last_frame_count'], t2-t1, time_step_all/(i+1), obs[0]['leaderboard']))
         if done:
             logging.debug('Game Over')
             break
@@ -48,4 +50,4 @@ def demo_bot():
 
 
 if __name__ == '__main__':
-    # demo_bot()
+    demo_bot()
