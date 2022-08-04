@@ -15,6 +15,7 @@ class HumanPlayer(BasePlayer):
         self.balls = {}
         self.ball_settings = cfg
         self.spore_settings = spore_settings
+        self.first_respawn = True
 
     def get_clone_num(self):
         '''
@@ -132,9 +133,13 @@ class HumanPlayer(BasePlayer):
 
     def respawn(self, position):
         ball_id = uuid.uuid1()
+        if self.first_respawn:
+            score = self.ball_settings.score_init
+            self.first_respawn = False
+        else:
+            score = self.ball_settings.score_respawn
         ball = CloneBall(ball_id=ball_id, position=position, border=self.border, 
-                         score=self.ball_settings.score_init,
-                         team_id=self.team_id, player_id=self.player_id, 
+                         score=score, team_id=self.team_id, player_id=self.player_id, 
                          spore_settings=self.spore_settings, **self.ball_settings)
         direction = Vector2(1, 0)
         # ball.stop()

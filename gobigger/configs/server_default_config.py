@@ -62,6 +62,7 @@ server_default_config = dict(
                 acc_weight=30,
                 vel_max=50,
                 score_init=1000, # 0.755,
+                score_respawn=1000, # score after respawn, usually the same with score_init
                 part_num_max=16,
                 on_thorns_part_num=10,
                 on_thorns_part_score_max=5000,

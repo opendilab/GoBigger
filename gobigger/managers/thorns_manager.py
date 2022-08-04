@@ -35,7 +35,7 @@ class ThornsManager(BaseManager):
 
     def refresh(self):
         left_num = self.cfg.num_max - len(self.balls)
-        todo_num = min(int(self.cfg.refresh_percent * left_num), left_num)
+        todo_num = min(math.ceil(self.cfg.refresh_percent * left_num), left_num)
         for _ in range(todo_num):
             self.add_balls(self.spawn_ball())
 
