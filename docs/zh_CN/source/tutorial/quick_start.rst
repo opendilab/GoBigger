@@ -11,7 +11,7 @@
 import random
 from gobigger.envs import create_env
 
-env = create_env('st_v0')
+env = create_env('st_t4p3')
 obs = env.reset()
 for i in range(1000):
     actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), -1],

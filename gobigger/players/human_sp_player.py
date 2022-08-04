@@ -34,7 +34,7 @@ class HumanSPPlayer(HumanPlayer):
 
     def respawn(self, position):
         ball = CloneBall(ball_id=self.sequence_generator.get(), position=position, border=self.border, 
-                         score=self.ball_settings.score_init, team_id=self.team_id, 
+                         score=self.ball_settings.score_respawn, team_id=self.team_id, 
                          player_id=self.player_id, spore_settings=self.spore_settings, 
                          sequence_generator=self.sequence_generator, **self.ball_settings)
         self.balls = {}
