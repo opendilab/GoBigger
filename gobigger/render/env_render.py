@@ -69,7 +69,8 @@ class EnvRender(BaseRender):
                 y = ball.position.y * self.scale_ratio_h + self.padding
                 r = ball.radius * self.scale_ratio_w
                 pygame.draw.circle(screen, PLAYER_COLORS[int(ball.team_id)][0], Vector2(x, y), r)
-                # pygame.draw.polygon(screen, PLAYER_COLORS[int(ball.team_id)][0], to_arrow(Vector2(x, y), r, ball.direction))
+                point_list = to_arrow(Vector2(x, y), r, ball.direction)
+                pygame.draw.polygon(screen, PLAYER_COLORS[int(ball.team_id)][0], point_list)
                 font_size = int(r/1.6)
                 font = pygame.font.SysFont('arial', max(font_size, 8), True)
                 txt = font.render('{}'.format(chr(int(ball.player_id%player_num_per_team)+65)), True, WHITE)
