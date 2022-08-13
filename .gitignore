@@ -131,3 +131,5 @@ dmypy.json
 .idea/
 
 *.DS_Store
+*.pb
+*.ac

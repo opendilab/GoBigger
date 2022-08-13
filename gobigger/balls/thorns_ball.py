@@ -77,3 +77,7 @@ class ThornsBall(BaseBall):
         elif self.score < self.score_min:
             self.score = self.score_min
         self.radius = self.score_to_radius(self.score)
+
+    def save(self):
+        return [self.position.x, self.position.y, self.radius]
+        

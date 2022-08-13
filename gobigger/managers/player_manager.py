@@ -7,14 +7,15 @@ from easydict import EasyDict
 from pygame.math import Vector2
 
 from .base_manager import BaseManager
-from gobigger.utils import format_vector, Border
+from gobigger.utils import format_vector, Border, SequenceGenerator
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 from gobigger.players import HumanPlayer
 
 
 class PlayerManager(BaseManager):
 
-    def __init__(self, cfg, border, team_num, player_num_per_team, spore_manager_settings, random_generator=None):
+    def __init__(self, cfg, border, team_num, player_num_per_team, spore_manager_settings, random_generator=None,
+                 sequence_generator=None):
         super(PlayerManager, self).__init__(cfg, border)
         self.players = {}
         self.team_num = team_num
@@ -26,6 +27,10 @@ class PlayerManager(BaseManager):
             self._random = random_generator
         else:
             self._random = random.Random()
+        if sequence_generator is not None:
+            self.sequence_generator = sequence_generator
+        else:
+            self.sequence_generator = SequenceGenerator()
 
     def init_balls(self, custom_init=None):
         if custom_init is None or len(custom_init) == 0:
@@ -34,7 +39,8 @@ class PlayerManager(BaseManager):
                 for j in range(self.player_num_per_team):
                     player_id = i * self.player_num_per_team + j
                     player = HumanPlayer(cfg=self.cfg.ball_settings, team_id=team_id, player_id=player_id, 
-                                         border=self.border, spore_settings=self.spore_settings)
+                                         border=self.border, spore_settings=self.spore_settings, 
+                                         sequence_generator=self.sequence_generator)
                     player.respawn(position=self.border.sample())
                     self.players[player_id] = player
         else:
@@ -45,7 +51,8 @@ class PlayerManager(BaseManager):
                 for j in range(self.player_num_per_team):
                     player_id = i * self.player_num_per_team + j
                     player = HumanPlayer(cfg=self.cfg.ball_settings, team_id=team_id, player_id=player_id, 
-                                         border=self.border, spore_settings=self.spore_settings)
+                                         border=self.border, spore_settings=self.spore_settings, 
+                                         sequence_generator=self.sequence_generator)
                     self.players[player_id] = player
                     init_dict[team_id][player_id] = False
             for ball_cfg in custom_init:
@@ -53,7 +60,7 @@ class PlayerManager(BaseManager):
                 score = ball_cfg[2]
                 player_id = ball_cfg[3]
                 team_id = ball_cfg[4]
-                ball = CloneBall(ball_id=uuid.uuid1(), position=position, border=self.border, score=score, 
+                ball = CloneBall(ball_id=self.sequence_generator.get(), position=position, border=self.border, score=score, 
                                  team_id=team_id, player_id=player_id, 
                                  spore_settings=self.spore_settings, **self.cfg.ball_settings)
                 if len(ball_cfg) > 5:

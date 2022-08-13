@@ -10,7 +10,7 @@ class PlayerSPManager(PlayerManager):
         super(PlayerSPManager, self).__init__(cfg, border, team_num, player_num_per_team, spore_manager_settings, 
                                               random_generator=random_generator)
         if sequence_generator is not None:
-            self.sequence_generator = sequence_generator()
+            self.sequence_generator = sequence_generator
         else:
             self.sequence_generator = SequenceGenerator()
 

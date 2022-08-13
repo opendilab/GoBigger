@@ -63,13 +63,17 @@ class BotAgent(BaseAgent):
         min_distance, min_thorns_ball = self.process_thorns_balls(thorns_balls, my_clone_balls[0])
         min_distance, min_food_ball = self.process_food_balls(food_balls, my_clone_balls[0])        
         if min_thorns_ball is not None:
-            direction = (min_thorns_ball['position'] - my_clone_balls[0]['position']).normalize()
+            direction = (min_thorns_ball['position'] - my_clone_balls[0]['position'])
         else:
             if min_food_ball is not None:
-                direction = (min_food_ball['position'] - my_clone_balls[0]['position']).normalize()
+                direction = (min_food_ball['position'] - my_clone_balls[0]['position'])
             else:
-                direction = (Vector2(0, 0) - my_clone_balls[0]['position']).normalize()
+                direction = (Vector2(0, 0) - my_clone_balls[0]['position'])
         action_type = 0
+        if direction.length()>0:
+            direction = direction.normalize()
+        else:
+            direction = Vector2(1, 1).normalize()
         self.actions_queue.put([direction.x, direction.y, action_type])
         action_ret = self.actions_queue.get()
         return action_ret

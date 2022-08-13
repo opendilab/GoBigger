@@ -7,18 +7,22 @@ from easydict import EasyDict
 from pygame.math import Vector2
 
 from .base_manager import BaseManager
-from gobigger.utils import format_vector, Border
+from gobigger.utils import format_vector, Border, SequenceGenerator
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 
 
 class SporeManager(BaseManager):
 
-    def __init__(self, cfg, border, random_generator=None):
+    def __init__(self, cfg, border, random_generator=None, sequence_generator=None):
         super(SporeManager, self).__init__(cfg, border)
         if random_generator is not None:
             self._random = random_generator
         else:
             self._random = random.Random()
+        if sequence_generator is not None:
+            self.sequence_generator = sequence_generator
+        else:
+            self.sequence_generator = SequenceGenerator()
 
     def get_balls(self):
         return list(self.balls.values())

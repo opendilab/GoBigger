@@ -3,7 +3,7 @@ from easydict import EasyDict
 from pygame.math import Vector2
 import logging
 
-from gobigger.utils import Border, create_collision_detection, deep_merge_dicts, PlayerStatesSPUtil, PlaybackUtil
+from gobigger.utils import Border, create_collision_detection, deep_merge_dicts, PlayerStatesSPUtil
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
 from gobigger.managers import FoodManager, SporeManager, ThornsManager, PlayerManager, PlayerSPManager
 from gobigger.configs import server_sp_default_config

@@ -313,3 +313,6 @@ class CloneBall(BaseBall):
     def __repr__(self) -> str:
         return '{}, vel_given={}, acc_given={}, frame_since_last_split={:.3f}, player_id={}, direction={}, team_id={}'\
                 .format(super().__repr__(), self.vel_given, self.acc_given, self.frame_since_last_split, self.player_id, self.direction, self.team_id)
+
+    def save(self):
+        return [self.position.x, self.position.y, self.radius, self.direction.x, self.direction.y, self.player_id, self.team_id]

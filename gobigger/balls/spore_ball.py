@@ -66,3 +66,6 @@ class SporeBall(BaseBall):
     def eat(self, ball):
         logging.debug('SporeBall can not eat others')
         return
+
+    def save(self):
+        return [self.position.x, self.position.y, self.radius]

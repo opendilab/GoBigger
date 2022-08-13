@@ -7,7 +7,6 @@ import cv2
 import math
 
 from .base_render import BaseRender
-from .env_render import EnvRender
 from gobigger.utils import FOOD_COLOR, THORNS_COLOR, SPORE_COLOR, PLAYER_COLORS, BACKGROUND, BLACK, RED, WHITE
 from gobigger.utils import to_aliased_circle, to_arrow
 

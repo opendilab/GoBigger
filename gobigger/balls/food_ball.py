@@ -31,3 +31,6 @@ class FoodBall(BaseBall):
     def eat(self, ball):
         logging.debug('FoodBall can not eat others')
         return
+
+    def save(self):
+        return [self.position.x, self.position.y, self.radius]

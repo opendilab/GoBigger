@@ -9,13 +9,28 @@ server_default_config = dict(
     match_ratio=1.0, # match_ratio will be multiple to manager to control ball num
     eat_ratio=1.3, # ball A could eat ball B only when the size_A > eat_ratio * size_B
     playback_settings=dict(
-        save_video=False,
-        save_fps=10,
-        save_resolution=552,
-        save_all=True,
-        save_partial=False,
-        save_dir='.',
-        save_name_prefix='testvideo',
+        playback_type='none', # ['', 'by_video', 'by_frame', 'by_action']
+        by_video=dict(
+            save_video=False,
+            save_fps=10,
+            save_resolution=552,
+            save_all=True,
+            save_partial=False,
+            save_dir='.',
+            save_name_prefix='test',
+        ),
+        by_frame=dict(
+            save_frame=False,
+            save_all=True,
+            save_partial=False,
+            save_dir='.',
+            save_name_prefix='test',
+        ),
+        by_action=dict(
+            save_action=False,
+            save_dir='.',
+            save_name_prefix='test',
+        ),
     ),
     opening_settings=dict(
         opening_type='none', # ['none', 'handcraft', 'from_frame']

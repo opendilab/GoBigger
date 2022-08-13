@@ -4,11 +4,12 @@ import logging
 
 from .base_player import BasePlayer
 from gobigger.balls import FoodBall, ThornsBall, CloneBall, SporeBall
+from gobigger.utils import SequenceGenerator
 
 
 class HumanPlayer(BasePlayer):
 
-    def __init__(self, cfg, team_id, player_id, border, spore_settings):
+    def __init__(self, cfg, team_id, player_id, border, spore_settings, sequence_generator=None):
         self.team_id = team_id
         self.player_id = player_id
         self.border = border
@@ -16,6 +17,10 @@ class HumanPlayer(BasePlayer):
         self.ball_settings = cfg
         self.spore_settings = spore_settings
         self.first_respawn = True
+        if sequence_generator is not None:
+            self.sequence_generator = sequence_generator
+        else:
+            self.sequence_generator = SequenceGenerator()
 
     def get_clone_num(self):
         '''
@@ -132,7 +137,7 @@ class HumanPlayer(BasePlayer):
         return True
 
     def respawn(self, position):
-        ball_id = uuid.uuid1()
+        ball_id = self.sequence_generator.get()
         if self.first_respawn:
             score = self.ball_settings.score_init
             self.first_respawn = False
@@ -140,7 +145,8 @@ class HumanPlayer(BasePlayer):
             score = self.ball_settings.score_respawn
         ball = CloneBall(ball_id=ball_id, position=position, border=self.border, 
                          score=score, team_id=self.team_id, player_id=self.player_id, 
-                         spore_settings=self.spore_settings, **self.ball_settings)
+                         spore_settings=self.spore_settings, sequence_generator=self.sequence_generator,
+                         **self.ball_settings)
         direction = Vector2(1, 0)
         # ball.stop()
         self.balls = {}
