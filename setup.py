@@ -35,6 +35,6 @@ setup(
         'opencv-python',
         'numpy>=1.10, <= 1.19',
         'numexpr',
-        'lz4>=4.0.2',
+        'lz4',
     ]
 )
