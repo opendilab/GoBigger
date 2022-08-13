@@ -4,17 +4,19 @@ import numpy as np
 import logging
 import uuid
 import copy
+import pickle
 
 from gobigger.render import EnvRender
+from .base_pb import BasePB
 
 
-class PlaybackUtil:
+class VideoPB(BasePB):
 
-    def __init__(self, playback_settings, game_fps, map_width, map_height):
+    def __init__(self, playback_settings, **kwargs):
         self.playback_settings = playback_settings
-        self.game_fps = game_fps
-        self.map_width = map_width
-        self.map_height = map_height
+        self.fps = kwargs['fps']
+        self.map_width = kwargs['map_width']
+        self.map_height = kwargs['map_height']
         self.save_video = self.playback_settings.save_video
         self.save_fps = self.playback_settings.save_fps
         self.save_resolution = self.playback_settings.save_resolution
@@ -33,7 +35,7 @@ class PlaybackUtil:
                 self.save_name_prefix = str(uuid.uuid1())
             self.save_fps = int(self.save_fps)
             self.save_resolution = int(self.save_resolution)
-            self.save_freq = self.game_fps // self.save_fps
+            self.save_freq = self.fps // self.save_fps
         self.render = EnvRender(game_screen_width=self.save_resolution, game_screen_height=self.save_resolution, 
                                 map_width=self.map_width, map_height=self.map_width)
         self.screens_all = []
@@ -66,13 +68,13 @@ class PlaybackUtil:
             raise NotImplementedError
         return screen_data_clip
 
-    def need_save(self, last_frame_count):
+    def need_save(self, last_frame_count, *args, **kwargs):
         return self.save_video and last_frame_count % self.save_freq == 0
 
-    def save_screen(self, food_balls, thorns_balls, spore_balls, players, player_num_per_team):
+    def save_step(self, food_balls, thorns_balls, spore_balls, players, player_num_per_team, *args, **kwargs):
         self.screens_all.append(self.render.get_screen(food_balls, thorns_balls, spore_balls, players, player_num_per_team))
 
-    def save_video_func(self):
+    def save_final(self, *args, **kwargs):
         if self.save_video:
             if self.save_all:
                 video_file_all = os.path.join(self.save_dir, '{}-all.mp4'.format(self.save_name_prefix))

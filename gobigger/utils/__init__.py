@@ -4,5 +4,5 @@ from .config_utils import deep_merge_dicts
 from .tool import *
 from .colors import *
 from .obs_utils import PlayerStatesUtil, PlayerStatesSPUtil
-from .playback_utils import PlaybackUtil
+# from .playback_utils import PlaybackUtil
 from .generator_utils import SequenceGenerator
