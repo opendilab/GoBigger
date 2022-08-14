@@ -160,7 +160,7 @@ class Server:
                             if tmp_spore_ball:
                                 self.spore_manager.add_balls(tmp_spore_ball)
                                 if self.save_frame:
-                                    self.diff_balls_modify[2][tmp_spore_ball.id] = tmp_spore_ball.save()
+                                    self.diff_balls_modify[2][tmp_spore_ball.ball_id] = tmp_spore_ball.save()
                     elif action_type == 2: # split
                         self.player_manager.add_balls(player.split(direction=direction))
                     player.move(direction=direction, duration=self.frame_duration)
