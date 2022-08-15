@@ -13,6 +13,7 @@ class GoBiggerEnv(gym.Env):
     def __init__(self, server_cfg=None, step_mul=2, **kwargs):
         self.server_cfg = server_cfg
         self.step_mul = step_mul
+        self.init_server()
     
     def step(self, actions):
         for i in range(self.step_mul):
@@ -31,7 +32,6 @@ class GoBiggerEnv(gym.Env):
         return obs, reward, done, info
 
     def reset(self):
-        self.init_server()
         self.server.reset()
         obs_raw = self.server.obs()
         global_state, player_states, info = obs_raw
