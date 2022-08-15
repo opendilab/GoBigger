@@ -37,10 +37,11 @@ class FramePB(BasePB):
         self.playback_data[last_frame_count] = [diff_balls_modify, diff_balls_remove, leaderboard]
 
     def save_final(self, cfg, *args, **kwargs):
-        self.playback_data['cfg'] = cfg
-        self.playback_path = os.path.join(self.save_dir, self.save_name_prefix + '.pb')
-        compressed_data = lz4.frame.compress(pickle.dumps(self.playback_data))
-        with open(self.playback_path, 'wb') as f:
-            pickle.dump(compressed_data, f)
-        logging.info('save pb at {}'.format(self.playback_path))
+        if self.save_frame:
+            self.playback_data['cfg'] = cfg
+            self.playback_path = os.path.join(self.save_dir, self.save_name_prefix + '.pb')
+            compressed_data = lz4.frame.compress(pickle.dumps(self.playback_data))
+            with open(self.playback_path, 'wb') as f:
+                pickle.dump(compressed_data, f)
+            logging.info('save pb at {}'.format(self.playback_path))
 
