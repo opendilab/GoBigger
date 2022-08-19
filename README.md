@@ -17,6 +17,8 @@ GoBigger is an efficient and straightforward *agar-like* game engine and provide
 
 We pay more attention to the following points:
 
+* Cooperation is more rewarding than playing alone.
+* Violent competition is easy to break out in a small area.
 * A scalable environment that enables the simulation of various teams and agents in each team.
 * Rich action space and partially observable observation space.
 * More detailed configuration for different kinds of mini-games.
@@ -40,8 +42,8 @@ GoBigger allows users to to interact with the multi-agent environment within the
 
 To understand the rules in the game, GoBigger provides a few concepts as follows:
 
-* `Match`: GoBigger will allow several agents (4 by default) to join in a match. There are many different units in a match, such as food balls, thorns balls, spore balls and clone balls. When this match ends, each agent should gain more size by eating other balls to get a higher rank. 
-* `Agent`: Each agent control a team, including several players (3 by default). Teamwork is essential for an agent to play against other agents.
+* `Match`: GoBigger will allow several agents to join in a match. There are many different units in a match, such as food balls, thorns balls, spore balls and clone balls. When this match ends, each agent should gain more size by eating other balls to get a higher rank. 
+* `Agent`: Each agent control a team, including several players. Teamwork is essential for an agent to play against other agents.
 * `Player`: Each player starts with one ball. To improve the operability of the game, GoBigger provides several operations for a player ball, including `split` and `eject`.
 * `Ball`: GoBigger provides 4 kinds of balls in a match.
     - `Food Ball`: Food balls are the neutral resources in the game. If a player ball eats a food ball, the food ball’s size will be parsed to the player ball.
@@ -146,7 +148,7 @@ After installation, you can launch your game environment easily according the fo
 import random
 from gobigger.envs import create_env
 
-env = create_env('st_t4p3')
+env = create_env('st_t2p2')
 obs = env.reset()
 for i in range(1000):
     actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
@@ -164,17 +166,17 @@ env.close()
 You will see output as follows. It shows the frame number and the leaderboard per frame.
 
 ```
-[0] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[1] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[2] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[3] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[4] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[5] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[6] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[7] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[8] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[9] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-[10] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+[0] leaderboard={0: 3000, 1: 3100.0}
+[1] leaderboard={0: 3000, 1: 3100.0}
+[2] leaderboard={0: 3000, 1: 3100.0}
+[3] leaderboard={0: 3000, 1: 3100.0}
+[4] leaderboard={0: 3000, 1: 3100.0}
+[5] leaderboard={0: 3000, 1: 3100.0}
+[6] leaderboard={0: 3000, 1: 3100.0}
+[7] leaderboard={0: 3000, 1: 3100.0}
+[8] leaderboard={0: 3000, 1: 3100.0}
+[9] leaderboard={0: 3000, 1: 3100.0}
+[10] leaderboard={0: 3000, 1: 3100.0}
 ...
 ```
 

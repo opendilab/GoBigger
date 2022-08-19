@@ -8,7 +8,7 @@ GoBigger的回放系统支持三种选择，可以通过环境的配置文件来
     config = dict(
         ...
         playback_settings=dict(
-            playback_type='none', # ['none', 'by_video', 'by_frame', 'by_action']
+            playback_type='none', # ['none', 'by_video', 'by_frame']
             by_video=dict(
                 save_video=False,
                 save_fps=10,

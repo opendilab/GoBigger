@@ -23,7 +23,6 @@ setup(
         'gobigger.render',
         'gobigger.envs',
         'gobigger.bin',
-        'gobigger.hyper',
         'gobigger.configs',
         'gobigger.playbacks',
     ],

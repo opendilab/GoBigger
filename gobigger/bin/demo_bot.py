@@ -50,11 +50,14 @@ def demo_bot():
 
 
 def demo_bot_st_t2p2():
-    env = create_env('st_t2p2', dict(
+    env = create_env('st_t3p2', dict(
         playback_settings=dict(
-            save_video=True,
+            playback_type='by_frame',
+            by_frame=dict(
+                save_frame=True,
+            ),
         ),
-    ))
+    ), step_mul=10)
     obs = env.reset()
     bot_agents = []
     team_infos = env.get_team_infos()

@@ -108,7 +108,7 @@ class Server:
             self.custom_init_spore = self.opening_settings.handcraft.spore
             self.custom_init_clone = self.opening_settings.handcraft.clone
         elif opening_type == 'from_frame':
-            if self.frame_path:
+            if self.frame_path and os.path.isfile(self.frame_path):
                 with open(self.frame_path, 'rb') as f:
                     data = pickle.load(f)
                 self.custom_init_food = data['food']
