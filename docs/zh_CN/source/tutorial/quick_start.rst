@@ -11,13 +11,13 @@
 import random
 from gobigger.envs import create_env
 
-env = create_env('st_t4p3')
+env = create_env('st_t2p2')
 obs = env.reset()
 for i in range(1000):
-    actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
-               1: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
-               2: [random.uniform(-1, 1), random.uniform(-1, 1), -1],
-               3: [random.uniform(-1, 1), random.uniform(-1, 1), -1]}
+    actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+               1: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+               2: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+               3: [random.uniform(-1, 1), random.uniform(-1, 1), 0]}
     obs, rew, done, info = env.step(actions)
     print('[{}] leaderboard={}'.format(i, obs[0]['leaderboard']))
     if done:
@@ -29,24 +29,24 @@ env.close()
 
 .. code-block::
 
-    [0] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [1] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [2] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [3] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [4] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [5] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [6] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [7] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [8] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [9] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
-    [10] leaderboard={0: 3000, 1: 3100.0, 2: 3000, 3: 3100.0}
+    [0] leaderboard={0: 3000, 1: 3100.0}
+    [1] leaderboard={0: 3000, 1: 3100.0}
+    [2] leaderboard={0: 3000, 1: 3100.0}
+    [3] leaderboard={0: 3000, 1: 3100.0}
+    [4] leaderboard={0: 3000, 1: 3100.0}
+    [5] leaderboard={0: 3000, 1: 3100.0}
+    [6] leaderboard={0: 3000, 1: 3100.0}
+    [7] leaderboard={0: 3000, 1: 3100.0}
+    [8] leaderboard={0: 3000, 1: 3100.0}
+    [9] leaderboard={0: 3000, 1: 3100.0}
+    [10] leaderboard={0: 3000, 1: 3100.0}
     ...
 
 
 自定义游戏环境
 ============================
 
-用户也可以选择通过修改配置 cfg，并通过我们提供的 ``gobigger.envs.create_env_custom`` 来自定义游戏环境。``gobigger.envs.create_env_custom`` 方法接收两个参数，第一个参数是 ``type``，可选值为 ``st`` 或 ``sp``，分别代表标准比赛模式，和独立动作比赛模式。关于两种模式的介绍具体可以看。以下我们基于标准比赛模式举几个简单的例子。
+用户也可以选择通过修改配置 cfg，并通过我们提供的 ``gobigger.envs.create_env_custom`` 方法来自定义游戏环境。``gobigger.envs.create_env_custom`` 方法接收两个参数，第一个参数是 ``type``，可选值为 ``st`` 或 ``sp``，分别代表标准比赛模式，和独立动作比赛模式。关于两种模式的介绍具体可以看。以下我们基于标准比赛模式举几个简单的例子。
 
 修改游戏中的队伍数量和玩家数量
 ------------------------------------
