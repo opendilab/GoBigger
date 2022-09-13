@@ -6,19 +6,19 @@ cfg_ori = EasyDict(server_default_config)
 st_t3p2 = EasyDict(dict(
     team_num=3,
     player_num_per_team=2,
-    map_width=80,
-    map_height=80,
+    map_width=88,
+    map_height=88,
     frame_limit=60*3*20,
     manager_settings=dict(
         food_manager=dict(
-            num_init=300,
-            num_min=300,
-            num_max=360,
+            num_init=400,
+            num_min=400,
+            num_max=460,
         ),
         thorns_manager=dict(
             num_init=4,
             num_min=4,
-            num_max=5,
+            num_max=6,
         ),
         player_manager=dict(
             ball_settings=dict(
