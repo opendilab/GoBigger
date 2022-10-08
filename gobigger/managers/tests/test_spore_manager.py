@@ -20,12 +20,12 @@ class TestSporeManager:
         return spore_manager
 
     def get_spore_ball(self):
-        name = uuid.uuid1()
+        ball_id = uuid.uuid1()
         border = Border(0, 0, 1000, 1000)
         position = Vector2(100, 100)
-        size = SporeBall.default_config().spore_radius_init ** 2
+        score = SporeBall.default_config().score_init
         direction = Vector2(1, 0)
-        return SporeBall(name, position, border=border, size=size, vel=None, acc=None, direction=direction)
+        return SporeBall(ball_id, position, border=border, score=score, direction=direction)
 
     def test_init(self):
         spore_manager = self.get_manager()

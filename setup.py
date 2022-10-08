@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='gobigger',
-    version='0.1.5',
+    version='0.2.0',
     description='Go-Bigger: Multi-Agent Decision Intelligence Environment',
     author='OpenDILab',
     license='Apache License, Version 2.0',
@@ -23,7 +23,8 @@ setup(
         'gobigger.render',
         'gobigger.envs',
         'gobigger.bin',
-        'gobigger.hyper',
+        'gobigger.configs',
+        'gobigger.playbacks',
     ],
     install_requires=[
         'easydict',
@@ -32,5 +33,7 @@ setup(
         'pytest>=5.0.0',
         'opencv-python',
         'numpy>=1.10, <= 1.19',
+        'numexpr',
+        'lz4',
     ]
 )

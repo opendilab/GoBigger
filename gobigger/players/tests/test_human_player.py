@@ -16,9 +16,9 @@ class TestHumanPlayer:
     def get_player(self):
         cfg = Server.default_config()
         border = Border(0, 0, cfg.map_width, cfg.map_height)
-        player_name = uuid.uuid1()
+        player_id = uuid.uuid1()
         return HumanPlayer(cfg=cfg.manager_settings.player_manager.ball_settings, 
-                           team_name='0', name=player_name, border=border, 
+                           team_id='0', player_id=player_id, border=border, 
                            spore_settings=cfg.manager_settings.spore_manager.ball_settings)
 
     def test_init(self):
@@ -44,7 +44,6 @@ class TestHumanPlayer:
         logging.debug('=================== after move ===================')
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
-        player.stop()
         for i in range(20):
             player.move()
 
@@ -56,7 +55,7 @@ class TestHumanPlayer:
         player.respawn(position=border.sample())
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
-        food_ball = FoodBall(name=uuid.uuid1(), position=border.sample(), border=border, size=1600)
+        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, score=40)
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
@@ -79,7 +78,6 @@ class TestHumanPlayer:
             for index, ball in enumerate(player.get_balls()):
                 logging.debug('{} {}'.format(index, ball))
         player.split()
-        player.stop()
         player.move()
 
     def test_adjust(self):
@@ -94,7 +92,7 @@ class TestHumanPlayer:
         logging.debug('=================== after adjust ===================')
         for index, ball in enumerate(player.get_balls()):
             logging.debug('{} {}'.format(index, ball))
-        food_ball = FoodBall(name=uuid.uuid1(), position=border.sample(), border=border, size=1600)
+        food_ball = FoodBall(ball_id=uuid.uuid1(), position=border.sample(), border=border, score=40)
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
         player.get_balls()[0].eat(food_ball, clone_num=len(player.get_balls()))
@@ -132,17 +130,17 @@ class TestHumanPlayer:
         player.respawn(position=border.sample())
 
         position = Vector2(100, 100)
-        team_name = uuid.uuid1()
-        name = uuid.uuid1()
-        size = CloneBall.default_config().radius_init ** 2
-        owner = uuid.uuid1()
-        ball1 = CloneBall(team_name, name, position, border=border, size=size, vel=None, acc=None, owner=owner, clone_num=1)
+        team_id = uuid.uuid1()
+        ball_id = uuid.uuid1()
+        score = CloneBall.default_config().score_init
+        player_id = uuid.uuid1()
+        ball1 = CloneBall(ball_id, position, border=border, score=score, team_id=team_id, player_id=player_id)
         position = Vector2(102, 102)
-        team_name = uuid.uuid1()
-        name = uuid.uuid1()
-        size = CloneBall.default_config().radius_init ** 2
-        owner = uuid.uuid1()
-        ball2 = CloneBall(team_name, name, position, border=border, size=size, vel=None, acc=None, owner=owner, clone_num=1)
+        team_id = uuid.uuid1()
+        ball_id = uuid.uuid1()
+        score = CloneBall.default_config().score_init
+        player_id = uuid.uuid1()
+        ball2 = CloneBall(ball_id, position, border=border, score=score, team_id=team_id, player_id=player_id)
         player.add_balls([ball1, ball2])
 
 

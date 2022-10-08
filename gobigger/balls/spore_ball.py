@@ -3,7 +3,7 @@ from easydict import EasyDict
 from pygame.math import Vector2
 import math
 
-from gobigger.utils import format_vector, add_size, Border, deep_merge_dicts
+from gobigger.utils import format_vector, add_score, Border, deep_merge_dicts
 from .base_ball import BaseBall
 
 
@@ -21,48 +21,51 @@ class SporeBall(BaseBall):
     def default_config():
         cfg = BaseBall.default_config()
         cfg.update(dict(
-            radius_min=3, # Minimum radius(Fixed)
-            radius_max=3, # Maximum radius(Fixed)
-            vel_init=50, # initial value if velocity(Fixed)
-            vel_zero_time=0.1, # The time it takes for the speed to decay to zero(S)
-            spore_radius_init=20, # initial radius(Fixed)
+            score_init=1.5,
+            vel_init=50,
+            vel_zero_frame=10,
         ))
         return EasyDict(cfg)
 
-    def __init__(self, name, position, border, size=1, vel=None, acc=None, direction=Vector2(0,0), **kwargs):
+    def __init__(self, ball_id, position, border, score, direction=Vector2(0,0), owner=-1, **kwargs):
         # init other kwargs
         kwargs = EasyDict(kwargs)
         cfg = SporeBall.default_config()
         cfg = deep_merge_dicts(cfg, kwargs)
-        super(SporeBall, self).__init__(name, position, border, size=size, vel=vel, acc=acc, **cfg)
+        super(SporeBall, self).__init__(ball_id, position, score=score, border=border, **cfg)
+        self.score_init = cfg.score_init
         self.vel_init = cfg.vel_init
-        self.vel_zero_time = cfg.vel_zero_time
-        self.spore_radius_init = cfg.spore_radius_init
+        self.vel_zero_frame = cfg.vel_zero_frame
         # normal kwargs
         self.direction = direction.normalize()
         self.vel = self.vel_init * self.direction
-        self.acc = - (self.vel_init / self.vel_zero_time) * self.direction
-        self.move_time = 0
-        # reset size
-        if math.sqrt(self.size) != self.spore_radius_init:
-            self.set_size(self.spore_radius_init**2)
+        self.vel_piece = self.vel / self.vel_zero_frame
+        self.owner = owner
+        self.move_frame = 0
+        # reset score
+        if self.score != self.score_init:
+            self.set_score(self.score_init)
         self.moving = True
         self.check_border()
 
     def move(self, direction=None, duration=0.05):
         assert direction is None
         assert duration > 0
-        self.position = self.position + self.vel * duration
-        self.move_time += duration
-        if self.move_time < self.vel_zero_time:
-            self.vel += self.acc * duration
-        else:
-            self.vel = Vector2(0, 0)
-            self.acc = Vector2(0, 0)
-            self.moving = False
+        if self.moving:
+            self.position = self.position + self.vel * duration
+            self.move_frame += 1
+            if self.move_frame < self.vel_zero_frame:
+                self.vel -= self.vel_piece
+            else:
+                self.vel = Vector2(0, 0)
+                self.vel_piece = Vector2(0, 0)
+                self.moving = False
         self.check_border()
         return True
 
     def eat(self, ball):
         logging.debug('SporeBall can not eat others')
         return
+
+    def save(self):
+        return [self.position.x, self.position.y, self.radius]
