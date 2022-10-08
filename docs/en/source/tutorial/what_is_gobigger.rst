@@ -4,7 +4,7 @@ What is GoBigger?
 Overview
 ===============
 
-GoBigger is an `Agar <https://agar.io/>`_ like game, which is one of the most popular game all over the world. In GoBigger, users control their owned balls to collect weight in a 2-d map with border. There are many other balls in the map, such as food-balls, thorns-balls, spore-balls and other players' balls. With the limited time, user are ranked by the weight they collect. In order to improve the antagonism of the game, users are allowed to eat other others' balls to get more weight. So in a game, users need to grow by eating food-balls and thorns-balls, and escape from the larger balls, and eat smaller balls to gather more weight quickly.
+GoBigger is an `Agar <https://agar.io/>`_ like game, which is one of the most popular game all over the world. In GoBigger, users control their owned balls to collect weight in a 2-d map with border. There are many other balls in the map, such as food balls, thorns balls, spore balls and other players' balls. With the limited time, user are ranked by the weight they collect. In order to improve the antagonism of the game, users are allowed to eat other others' balls to get more weight. So in a game, users need to grow by eating food-balls and thorns-balls, and escape from the larger balls, and eat smaller balls to gather more weight quickly.
 
 .. only:: html
 
@@ -12,15 +12,15 @@ GoBigger is an `Agar <https://agar.io/>`_ like game, which is one of the most po
       :width: 600
       :align: center
 
-      Players are controling player-balls in a game.
+      Players are controling clone balls in a game.
 
 For a more detailed exposition rules of the game, we will firstly introduce the balls in GoBigger.
 
 Balls
 ===============
-* Food-balls
+* Food balls
 
-    Food-balls are the neutral resources in the game. They will stay on where they are borned util someone comes and eats them. If a player-ball eat a food-ball, the food-ball's size will be parsed to the player-ball. There is a maximum number of food-balls in the map. Once the number of available food-balls is not enough, the game will generate new food-balls in random positions every certain time. 
+    Food balls are the neutral resources in the game. They will stay on where they are borned util someone comes and eats them. If a clone ball eat a food ball, the food ball's size will be parsed to the clone ball. There is a maximum number of food balls in the map. Once the number of available food balls is not enough, the game will generate new food balls in random positions every certain time. 
 
     .. only:: html
 
@@ -28,14 +28,14 @@ Balls
           :width: 300
           :align: center
 
-          A player-balls eat a food-ball.
+          A clone ball eat a food ball.
 
 
-* Thorns-balls
+* Thorn balls
 
-    Thorns-balls are also the neutral resources in the game. Different with food-balls, they have larger size and less quantity. If a player-ball eat a thorns-ball, the thorns-ball's size will be parsed to the player-ball. But at the same time, the player-ball will explode and will be splited into several pieces. In GoBigger, the pieces always have the same size, and they will appear evenly around the original player-ball. So be careful! If there are other player-balls larger than yours, you should pay more attention to decide whether to eat the thorns-balls.
+    Thorns balls are also the neutral resources in the game. Different with food balls, they have larger size and less quantity. If a clone ball eat a thorn ball, the thorn ball's size will be parsed to the clone ball. But at the same time, the clone ball will explode and will be splited into several pieces. In GoBigger, the pieces always have the same size, and they will appear evenly around the original clone ball. So be careful! If there are other clone balls larger than yours, you should pay more attention to decide whether to eat the thorns-balls.
 
-    Another feature of the thorns-balls is that they can be moved by player-balls through ejecting spore-balls. If a player-ball eject spore-balls to a thorns-ball, the thorns-ball will eat the spore-balls and grow larger. Besides, it will move on the moving direction of the spore-balls. That means if a player-ball wants to force a larger player-ball to explode, it can eject spore-balls to the thorns-ball and move it to the larger player-ball.
+    Another feature of the thorns-balls is that they can be moved by clone balls through ejecting spore balls. If a clone ball eject spore balls to a thorn ball, the thorn ball will eat the spore balls and grow larger. Besides, it will move on the moving direction of the spore balls. That means if a clone ball wants to force a larger clone ball to explode, it can eject spore balls to the thorn ball and move it to the larger clone ball.
 
     .. only:: html
 
@@ -43,11 +43,11 @@ Balls
           :width: 300
           :align: center
 
-          A player-balls eat a thorns-ball and explode.
+          A clone ball eat a thorn ball and explode.
 
-* Spore-balls
+* Spore balls
 
-    Spore-balls are ejected by the player-balls. They will stay on the map and can be eaten by any other player-balls. Spore-balls can not move or eat others.
+    Spore balls are ejected by the clone balls. They will stay on the map and can be eaten by any other clone balls. Spore balls can not move or eat others.
 
     .. only:: html
 
@@ -55,11 +55,11 @@ Balls
           :width: 300
           :align: center
 
-          A player-balls eject some spore-balls.
+          Clone balls eject some spore balls.
 
-* Player-balls
+* Clone balls
 
-    Player-balls are the balls you can control in the game. You can change its moving direction at any time if you want. In addition, it can eat other balls smaller than itself by covering others' center. Once a player-ball eat other balls, its size will raise and it radius will increase accordingly. A player-ball has there skills:
+    Clone balls are the balls you can control in the game. You can change its moving direction at any time if you want. In addition, it can eat other balls smaller than itself by covering others' center. Once a clone ball eat other balls, its size will raise and it radius will increase accordingly. A clone ball has there skills:
 
     .. only:: html
 
@@ -67,11 +67,11 @@ Balls
           :width: 300
           :align: center
 
-          A player-balls eat other player-balls.
+          Clone balls eat other clone balls.
 
     * Eject
 
-        Ejecting a spore-ball can help a player-ball decrease its size and make it move faster. When a player-ball ejects, the new spore-ball must appear on the player-ball's moving direction with a high speed and quickly slow down. 
+        Ejecting a spore ball can help a clone ball decrease its size and make it move faster. When a clone ball ejects, the new spore ball must appear on the clone ball's moving direction with a high speed and quickly slow down. 
 
         .. only:: html
 
@@ -79,11 +79,11 @@ Balls
               :width: 300
               :align: center
 
-              A player-ball eject to a thorns-ball and move it.
+              A clone ball eject to a thorn ball and move it.
 
     * Split
 
-        Spliting helps a player-ball to split itself in two pieces. The two pieces has the same size. Remember that all pieces will be merged in certain time. If you want to move faster, you can split and turn your balls into smaller size in order to get higher speed limit.
+        Spliting helps a clone ball to split itself in two pieces. The two pieces has the same size. Remember that all pieces will be merged in certain time. If you want to move faster, you can split and turn your balls into smaller size in order to get higher speed limit.
 
         .. only:: html
 
@@ -91,19 +91,8 @@ Balls
               :width: 300
               :align: center
 
-              A player-ball splits into two player-balls.
+              A clone ball splits into several clone balls.
 
-    * Stop
-
-        Stopping is a useful skill when a player wants all his player-balls to gather together. When you have numbers of cloned pieces, you can stop all your balls and soonly find them gather in a slow speed. If you have only one player-ball, you can call stop skill and make your player-ball still in place.
-
-        .. only:: html
-
-            .. figure:: images/split_merge.gif
-              :width: 300
-              :align: center
-
-              A player stop and finally merge all balls together.
 
 Rules of Game
 ===============
