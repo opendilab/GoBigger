@@ -8,22 +8,22 @@
 
 .. code-block:: python
 
-import random
-from gobigger.envs import create_env
+    import random
+    from gobigger.envs import create_env
 
-env = create_env('st_t2p2')
-obs = env.reset()
-for i in range(1000):
-    actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
-               1: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
-               2: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
-               3: [random.uniform(-1, 1), random.uniform(-1, 1), 0]}
-    obs, rew, done, info = env.step(actions)
-    print('[{}] leaderboard={}'.format(i, obs[0]['leaderboard']))
-    if done:
-        print('finish game!')
-        break
-env.close()
+    env = create_env('st_t2p2')
+    obs = env.reset()
+    for i in range(1000):
+        actions = {0: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+                   1: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+                   2: [random.uniform(-1, 1), random.uniform(-1, 1), 0],
+                   3: [random.uniform(-1, 1), random.uniform(-1, 1), 0]}
+        obs, rew, done, info = env.step(actions)
+        print('[{}] leaderboard={}'.format(i, obs[0]['leaderboard']))
+        if done:
+            print('finish game!')
+            break
+    env.close()
 
 在上述代码中，首先构建了环境，然后通过 ``env.step()`` 完成游戏每一步的进行，并获取到对应的 ``observation``，``reward``，``done``，``info`` 等信息。执行之后，将会得到类似下面的输出，给出了每一帧排行榜信息。
 
