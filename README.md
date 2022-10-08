@@ -261,7 +261,7 @@ Welcome to OpenDI Lab GoBigger community! Scan the QR code and add us on Wechat:
 
 ![QR code](assets/qr.png)
 
-Or you can contact us with [slack](https://opendilab.slack.com/join/shared_invite/zt-v9tmv4fp-nUBAQEH1_Kuyu_q4plBssQ#/shared-invite/email) or email (opendilab.contact@gmail.com).
+Or you can contact us with [slack](https://opendilab.slack.com/join/shared_invite/zt-v9tmv4fp-nUBAQEH1_Kuyu_q4plBssQ#/shared-invite/email) or email (opendilab@pjlab.org.cn).
 
 ## License
 
