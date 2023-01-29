@@ -23,11 +23,13 @@ We pay more attention to the following points:
 * Rich action space and partially observable observation space.
 * More detailed configuration for different kinds of mini-games.
 
+**More details can be found in our paper ([GoBigger: A Scalable Platform for Cooperative-Competitive Multi-Agent Interactive Simulation](https://openreview.net/forum?id=NnOZT_CR26Z)) accepted at ICLR2023.**
 
 ## Outline
 
 * [Overview](#overview)
 * [Getting Start](#getting-start)
+* [Citation](#citation)
 * [Resources](#resources)
 * [Join and Contribute](#join-and-contribute)
 * [License](#license)
@@ -223,6 +225,19 @@ python -m gobigger.bin.play --mode st --vision-type full
 
 #### Split and eat others
 <div align=center><img width = '278' height ='214' src ="assets/eat_others.gif"/></div>
+
+## Citation
+
+```
+@inproceedings{zhang2023gobigger,
+    author = {Ming Zhang and Shenghan Zhang and Zhenjie Yang and Lekai Chen and Jinliang Zheng and Chao Yang and Chuming Li and Hang Zhou and Yazhe Niu and Yu Liu},
+    title = {GoBigger: A Scalable Platform for Cooperative-Competitive Multi-Agent Interactive Simulation},
+    booktitle={International Conference on Learning Representations},
+    year = {2023},
+    url={https://openreview.net/forum?id=NnOZT_CR26Z}
+}
+```
+
 
 ## Resources
 
