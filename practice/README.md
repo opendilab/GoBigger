@@ -3,7 +3,8 @@ We offer multiple gameplay modes for players to enjoy, including development, ba
 
 ### Download Weight
 ```bash
-
+wget https://opendilab.net/download/GoBigger/solo_agent.pth.tar
+wget https://opendilab.net/download/GoBigger/team.pth.tar
 ```
 ### Quick Start
 
