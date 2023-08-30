@@ -56,7 +56,7 @@ class RealtimeRender(BaseRender):
                 txt_rect = txt.get_rect(center=(x, y))
                 self.screen.blit(txt, txt_rect)
 
-    def fill(self, food_balls, thorns_balls, spore_balls, players, player_num_per_team=1, fps=20):
+    def fill(self, food_balls, thorns_balls, spore_balls, players, player_num_per_team=1, fps=20, leaderboard=None):
         self.screen.fill(BACKGROUND)
         self.render_all_balls_colorful(food_balls, thorns_balls, spore_balls, players, player_num_per_team)
         # add line
@@ -67,13 +67,13 @@ class RealtimeRender(BaseRender):
         pygame.draw.line(self.screen, RED, (self.game_screen_width-self.padding, self.padding), 
                          (self.game_screen_width-self.padding, self.game_screen_width-self.padding), width=1)
         # for debug
-        # font = pygame.font.SysFont('Menlo', 15, True)
+        font = pygame.font.SysFont('Menlo', 15, True)
 
-        # assert len(leaderboard) > 0, 'leaderboard could not be None'
-        # leaderboard = sorted(leaderboard.items(), key=lambda d: d[1], reverse=True)
-        # for index, (team_id, team_size) in enumerate(leaderboard):
-        #     pos_txt = font.render('{}: {:.5f}'.format(team_id, team_size), 1, RED)
-        #     self.screen.blit(pos_txt, (20, 10+10*(index*2+1)))
+        if leaderboard is not None:
+            leaderboard = sorted(leaderboard.items(), key=lambda d: d[1], reverse=True)
+            for index, (team_id, team_size) in enumerate(leaderboard):
+                pos_txt = font.render('{}: {:.5f}'.format(team_id, team_size), 1, RED)
+                self.screen.blit(pos_txt, (20, 10+10*(index*2+1)))
 
         # fps_txt = font.render('fps: ' + str(fps), 1, RED)
         # last_frame_txt = font.render('frame_count: {} / {}'.format(frame_count, int(frame_count/20)), 1, RED)

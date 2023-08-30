@@ -1,0 +1,198 @@
+var1: &VIEW_BINARY_NUM 8
+var2: &ABS_VIEW_BINARY_NUM 7
+agent:
+  enable_baselines: [ 'score', 'spore','team_spore', 'clone','team_clone','opponent','team_opponent'  ]
+  features:
+    max_ball_num: 64
+    max_food_num: 256
+    max_spore_num: 128
+    direction_num: 12
+    spatial_x: 64
+    spatial_y: 64
+model:
+  ortho_init: True
+  value_head_init_gains:
+    score: 1
+    spore: 0.01
+    team_spore: 0.01
+    clone: 0.01
+    team_clone: 0.01
+    opponent: 0.01
+    team_opponent: 0.01
+    min_dist: 0.01
+    max_dist: 0.01
+  scalar_encoder:
+    modules:
+      view_x:
+        arc: sign_binary
+        num_embeddings: *ABS_VIEW_BINARY_NUM
+        embedding_dim: 8
+      view_y:
+        arc: sign_binary
+        num_embeddings: *ABS_VIEW_BINARY_NUM
+        embedding_dim: 8
+      view_width:
+        arc: binary
+        num_embeddings: *ABS_VIEW_BINARY_NUM
+        embedding_dim: 8
+#      view_height:
+#        arc: binary
+#        num_embeddings: *ABS_VIEW_BINARY_NUM
+#        embedding_dim: 8
+      score:
+        arc: one_hot
+        num_embeddings: 10
+        embedding_dim: 8
+      team_score:
+        arc: one_hot
+        num_embeddings: 10
+        embedding_dim: 8
+      rank:
+        arc: one_hot
+        num_embeddings: 4
+        embedding_dim: 8
+      time:
+        arc: time
+        embedding_dim: 8
+      last_action_type:
+        arc: one_hot
+        num_embeddings: 27 # direction_num * 2 + 3
+    input_dim: 80
+    hidden_dim: 64
+    layer_num: 2
+    norm_type: 'none'
+    output_dim: 32
+    activation: 'relu'
+  team_encoder:
+    modules:
+      alliance:
+        arc: one_hot
+        num_embeddings: 2
+      view_x:
+        arc: sign_binary
+        num_embeddings: *ABS_VIEW_BINARY_NUM
+      view_y:
+        arc: sign_binary
+        num_embeddings: *ABS_VIEW_BINARY_NUM
+#      view_width:
+#        arc: binary
+#        num_embeddings: *ABS_VIEW_BINARY_NUM
+#        embedding_dim: 12
+#      view_height:
+#        arc: binary
+#        num_embeddings: *ABS_VIEW_BINARY_NUM
+#        embedding_dim: 12
+#      score:
+#        arc: one_hot
+#        num_embeddings: 10
+#        embedding_dim: 12
+#      team_score:
+#        arc: one_hot
+#        num_embeddings: 10
+#        embedding_dim: 12
+#      team_rank:
+#        arc: one_hot
+#        num_embeddings: 10
+#        embedding_dim: 12
+    embedding_dim: 16
+    encoder:
+      input_dim: 16
+      hidden_dim: 32
+      layer_num: 2
+      activation: 'relu'
+      norm_type: 'none'
+    transformer:
+      head_num: 4
+      ffn_size: 32
+      layer_num: 2
+      activation: 'relu'
+      variant: 'postnorm'
+    output:
+      output_dim: 16
+      activation: 'relu'
+      norm_type: 'none'
+  ball_encoder:
+    modules:
+      alliance:
+        arc: one_hot
+        num_embeddings: 4
+      score:
+        arc: one_hot
+        num_embeddings: 50
+      radius:
+        arc: unsqueeze
+#      score_ratio:
+#        arc: one_hot
+#        num_embeddings: 50
+      rank:
+        arc: one_hot
+        num_embeddings: 5
+      x:
+        arc: sign_binary
+        num_embeddings: *VIEW_BINARY_NUM
+        embedding_dim: 8
+      y:
+        arc: sign_binary
+        num_embeddings: *VIEW_BINARY_NUM
+        embedding_dim: 8
+      next_x:
+        arc: sign_binary
+        num_embeddings: *VIEW_BINARY_NUM
+        embedding_dim: 8
+      next_y:
+        arc: sign_binary
+        num_embeddings: *VIEW_BINARY_NUM
+        embedding_dim: 8
+    embedding_dim: 64
+    encoder:
+      input_dim: 92
+      hidden_dim: 128
+      layer_num: 2
+      activation: 'relu'
+      norm_type: 'none'
+    transformer:
+      head_num: 4
+      ffn_size: 64
+      layer_num: 3
+      activation: 'relu'
+      variant: 'postnorm'
+    output:
+      output_dim: 64
+      activation: 'relu'
+      norm_type: 'none'
+  spatial_encoder:
+    scatter:
+      input_dim: 64
+      output_dim: 16
+      scatter_type: add
+      activation: 'relu'
+      norm_type: 'none'
+    resnet:
+      project_dim: 12
+      down_channels: [32, 32, 16 ]
+      activation: 'relu'
+      norm_type: 'none'
+    output:
+      output_dim: 64
+      activation: 'relu'
+      norm_type: 'none'
+  policy:
+    embedding_dim: 64
+    project:
+      input_dim: 176 # scalar + team + ball + spatial
+      activation: 'relu'
+      norm_type: 'none'
+    resnet:
+      activation: 'relu'
+      norm_type: 'none'
+      res_num: 3
+  value:
+    embedding_dim: 64
+    project:
+      input_dim: 176 # scalar + team + ball + spatial
+      activation: 'relu'
+      norm_type: 'none'
+    resnet:
+      activation: 'relu'
+      norm_type: 'none'
+      res_num: 3
