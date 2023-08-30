@@ -32,7 +32,7 @@ setup(
         'pygame>=2.0.0',
         'pytest>=5.0.0',
         'opencv-python',
-        'numpy>=1.10, <= 1.19',
+        'numpy>=1.10',
         'numexpr',
         'lz4',
     ]
